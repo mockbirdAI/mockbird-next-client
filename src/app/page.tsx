@@ -1,39 +1,18 @@
 import React from 'react';
-import prisma from '@/lib/prisma';
-import Post from '@/common/components/Post';
-import Link from 'next/link';
 
-async function getPosts() {
-  const posts = await prisma.post.findMany({
-    where: {published: true},
-    include: {
-      author: {
-        select: {name: true}
-      }
-    }
-  });
-  return posts;
-}
-
-export default async function Home() {
-  const posts = await getPosts();
+const LandingPage: React.FC = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <Link href="/add-post">Add Post</Link>
-      <h1>Feed</h1>
-      {
-        posts.map((post) => {
-          return (
-            <Post 
-              key={post.id}
-              id={post.id}
-              title={post.title}
-              content={post.content}
-              authorName={post.author?.name}
-            />
-          )
-        })
-      }
-    </main>
+    <div className="bg-gray-100">
+
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">Welcome to Your SaaS</h1>
+          <p className="text-lg text-gray-600 mb-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod justo id nunc tincidunt, vitae tincidunt nisl tincidunt.</p>
+          <a href="#" className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Get Started</a>
+        </div>
+      </main>
+    </div>
   );
-}
+};
+
+export default LandingPage;

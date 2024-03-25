@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AddPost(){
-    const [title, setTitle] = useState('');
+  const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const router = useRouter()
 

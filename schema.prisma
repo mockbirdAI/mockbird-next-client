@@ -5,26 +5,118 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model Post {
-  id        String     @default(cuid()) @id
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  String?
+enum UserRole {
+  RECRUITER
+  CANDIDATE
+}
+
+enum InterviewStatus {
+  PENDING_ACCEPTANCE
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
 }
 
 model User {
-  id            String       @default(cuid()) @id
-  name          String?
-  email         String?   @unique
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  posts         Post[]
-  @@map(name: "users")
+  id                  Int           @id @default(autoincrement())
+  email               String        @unique
+  password            String
+  firstName           String
+  lastName            String
+  role                UserRole
+  profile             Profile?
+  candidateInterviews Interview[]   @relation("CandidateInterviews")
+  recruiterInterviews Interview[]   @relation("RecruiterInterviews")
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  UserCompany         UserCompany[]
+}
+
+model Profile {
+  id             Int      @id @default(autoincrement())
+  userId         Int      @unique
+  linkedinUrl    String?
+  resumeUrl      String?
+  bio            String?
+  profilePicture String?
+  user           User     @relation(fields: [userId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Company {
+  id          Int           @id @default(autoincrement())
+  name        String
+  industry    String?
+  size        String?
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  UserCompany UserCompany[]
+  Interview   Interview[]
+}
+
+model Role {
+  id          Int         @id @default(autoincrement())
+  title       String
+  description String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  Interview   Interview[]
+}
+
+model UserCompany {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  companyId Int
+  role      String
+  startDate DateTime
+  endDate   DateTime?
+  user      User      @relation(fields: [userId], references: [id])
+  company   Company   @relation(fields: [companyId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([userId, companyId])
+}
+
+model Interview {
+  id            Int             @id @default(autoincrement())
+  candidateId   Int
+  recruiterId   Int
+  roleId        Int
+  companyId     Int
+  scheduledTime DateTime
+  duration      Int // Duration in minutes
+  status        InterviewStatus
+  feedback      String?
+  candidate     User            @relation(name: "CandidateInterviews", fields: [candidateId], references: [id])
+  recruiter     User            @relation(name: "RecruiterInterviews", fields: [recruiterId], references: [id])
+  role          Role            @relation(fields: [roleId], references: [id])
+  company       Company         @relation(fields: [companyId], references: [id])
+  payment       Payment? // Added this line: Optional one-to-one relation to Payment
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model Payment {
+  id              Int           @id @default(autoincrement())
+  interviewId     Int           @unique
+  amount          Float
+  status          PaymentStatus
+  transactionDate DateTime
+  interview       Interview     @relation(fields: [interviewId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
