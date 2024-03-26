@@ -12,7 +12,7 @@ async function getRecruiters() {
       role: UserRole.RECRUITER
     }
   })
-  if (!recruiters) {
+  if (recruiters === null || recruiters === undefined) {
     return [];
   }
   return recruiters;
