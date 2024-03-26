@@ -47,7 +47,7 @@ const Navbar = async () => {
                     size: "sm",
                     className: "sm:hidden mr-3",
                   })}
-                  href="/dashboard"
+                  href="/"
                 >
                   Dashboard
                 </Link>
@@ -90,7 +90,7 @@ const Navbar = async () => {
                     className={buttonVariants({
                       size: "sm",
                     })}
-                    href="/dashboard"
+                    href="/"
                   >
                     Dashboard
                   </Link>

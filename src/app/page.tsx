@@ -159,11 +159,10 @@ export default function Home() {
             <div className="mb-6 px-6 lg:px-8">
               <div className="mx-auto max-w-2xl sm:text-center">
                 <h2 className="mt-2 text-4xl font-bold text-gray-900 sm:text-5xl">
-                  Practice in Real Life Scenarios
+                  Our Services
                 </h2>
                 <p className="mt-4 text-lg text-gray-600">
-                  Get help if you make a mistake and guidance on saying
-                  something in your target language.
+                Empowering candidates and recruiters with cutting-edge tools and support
                 </p>
               </div>
             </div>
@@ -172,9 +171,9 @@ export default function Home() {
             <div className="flex items-center justify-center">
               <div className="flex flex-col gap-6 md:flex-row">
                 <Card className="flex flex-col items-center justify-center gap-2 p-6 md:flex-1">
-                  <CardTitle>At the Cafe</CardTitle>
+                  <CardTitle>Prep Pro</CardTitle>
                   <CardDescription className="mb-3 text-center">
-                    Learn how to order drinks and snacks
+                  Access our comprehensive suite of preparation services and practice tools to excel in interviews.
                   </CardDescription>
                   <Image
                     src="/coffee.webp"
@@ -185,9 +184,9 @@ export default function Home() {
                   />
                 </Card>
                 <Card className="flex flex-col items-center justify-center gap-2 p-6 md:flex-1">
-                  <CardTitle>Getting A Taxi</CardTitle>
+                  <CardTitle>Talent Connect</CardTitle>
                   <CardDescription className="mb-3 text-center">
-                    Learn how to navigate and get directions
+                  Connect with verified top-tier talent acquisition professionals and find the perfect fit for your needs.
                   </CardDescription>
                   <Image
                     src="/taxi.webp"
@@ -199,9 +198,9 @@ export default function Home() {
                 </Card>
 
                 <Card className="flex flex-col items-center justify-center gap-2 p-6 md:flex-1">
-                  <CardTitle>Social Activities</CardTitle>
+                  <CardTitle>Data Insights</CardTitle>
                   <CardDescription className="mb-3 text-center">
-                    Learn how to make plans and catch up with friends
+                  Receive valuable post-interview feedback and insights for continuous improvement in your interview skills.
                   </CardDescription>
                   <Image
                     src="/schedule.webp"
