@@ -57,7 +57,7 @@ const Navbar = async () => {
             <div className="hidden items-center space-x-4 sm:flex">
               {!isUserSignedIn ? (
                 <>
-                  <Link
+                  {/* <Link
                     href="/pricing"
                     className={buttonVariants({
                       variant: "ghost",
@@ -66,7 +66,7 @@ const Navbar = async () => {
                     })}
                   >
                     Pricing
-                  </Link>
+                  </Link> */}
                   <Link
                     className={buttonVariants({
                       variant: "ghost",
