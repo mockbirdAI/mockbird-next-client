@@ -11,18 +11,17 @@ import { authOptions } from "@/lib/auth";
 import SignOutButton from "./SignOutButton";
 
 const Navbar = async () => {
-  // Replace with your auth of choice, e.g. Clerk: const { userId } = auth();
   const session = await getServerSession(authOptions);
   const isUserSignedIn = session?.user ? true : false;
 
   return (
     <nav
       className={cn(
-        "sticky h-14 inset-x-0 top-0 z-30 border-b border-gray-200  bg-white/40 backdrop-blur-lg transition-all"
+        "sticky h-14 inset-x-0 top-0 z-30 bg-gray-900 text-white border-b border-gray-700 backdrop-blur-lg transition-all"
       )}
     >
       <MaxWidthWrapper>
-        <div className="flex h-14 items-center justify-between border-b border-zinc-200">
+        <div className="flex h-14 items-center justify-between">
           <Link
             href={isUserSignedIn ? "/dashboard" : "/"}
             className="flex z-40 justify-center items-center gap-1"
@@ -44,8 +43,9 @@ const Navbar = async () => {
               <div>
                 <Link
                   className={buttonVariants({
+                    variant: "outline",
                     size: "sm",
-                    className: "sm:hidden mr-3",
+                    className: "text-white border-white sm:hidden mr-3",
                   })}
                   href="/dashboard"
                 >
@@ -62,6 +62,7 @@ const Navbar = async () => {
                     className={buttonVariants({
                       variant: "ghost",
                       size: "sm",
+                      className: "text-white"
                     })}
                   >
                     Pricing
@@ -70,6 +71,7 @@ const Navbar = async () => {
                     className={buttonVariants({
                       variant: "ghost",
                       size: "sm",
+                      className: "text-white"
                     })}
                     href="/sign-in"
                   >
@@ -77,7 +79,9 @@ const Navbar = async () => {
                   </Link>
                   <Link
                     className={buttonVariants({
+                      variant: "default",
                       size: "sm",
+                      className: "bg-sxpurple text-white hover:bg-sxpurple/80"
                     })}
                     href="/sign-up"
                   >
@@ -89,6 +93,7 @@ const Navbar = async () => {
                   <Link
                     className={buttonVariants({
                       size: "sm",
+                      className: "text-white border-white"
                     })}
                     href="/dashboard"
                   >
@@ -99,9 +104,8 @@ const Navbar = async () => {
               )}
             </div>
 
-            {/* User profile mockup below, e.g using Clerk: <UserButton afterSignOutUrl="/" /> */}
             {isUserSignedIn && (
-              <div className="bg-emerald-600 border-2 border-black shadow-lg rounded-full w-10 h-10"></div>
+              <div className="bg-emerald-600 border-2 border-gray-700 shadow-lg rounded-full w-10 h-10"></div>
             )}
           </div>
         </div>

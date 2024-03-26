@@ -5,11 +5,19 @@ const page = async () => {
   const session = await getServerSession(authOptions);
 
   if (session?.user) {
-    return <h2>Admin page - welcome back {session?.user.firstName}</h2>
+    return (
+      <div className="h-screen">
+        <h2>Admin page - welcome back {session?.user.firstName}</h2>
+      </div>
+
+    )
   }
 
   return (
-    <h2>Please login to see this admin page.</h2>
+    <div className="h-screen">
+      <h2>Please login to see this admin page.</h2>
+    </div>
+    
   );
 }
 

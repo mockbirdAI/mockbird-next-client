@@ -18,11 +18,11 @@ export default function Home() {
         </div>
 
         <h1 className="max-w-4xl text-5xl font-bold md:text-6xl lg:text-7xl">
-          <span className="text-blue-600">Reshaping</span> the Interview
+          <span className="text-sxpurple">Reshaping</span> the Interview
           Experience
         </h1>
 
-        <p className="mt-5 max-w-prose text-lg text-zinc-700 sm:text-2xl">
+        <p className="mt-5 max-w-prose text-lg sm:text-2xl">
         Empowering candidates and recruiters with innovative tools and support.
         </p>
 
@@ -52,7 +52,7 @@ export default function Home() {
                 clipPath:
                   "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
               }}
-              className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#0a95ff] to-[#95f2fa] opacity-30 sm:left-[calc(50%-20rem)] sm:w-[72.1875rem] sm:translate-y-8"
+              className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-sxpurple to-purple-800 opacity-30 sm:left-[calc(50%-20rem)] sm:w-[72.1875rem] sm:translate-y-8"
             />
           </div>
 
@@ -95,12 +95,11 @@ export default function Home() {
           <div>
             <div className="mb-6 px-6 lg:px-8">
               <div className="mx-auto max-w-2xl sm:text-center">
-                <h2 className="mt-2 text-4xl font-bold text-gray-900 sm:text-5xl">
+                <h2 className="mt-2 text-4xl font-bold sm:text-5xl">
                   Start your first session in seconds
                 </h2>
-                <p className="mt-4 text-lg text-gray-600">
-                  Improving your spoken fluency has never been easier than with
-                  Convo.
+                <p className="mt-4 text-lg">
+                  We understand that interviews can be daunting. Let us provide you practice to help you ace your next interview.
                 </p>
               </div>
             </div>
@@ -109,11 +108,11 @@ export default function Home() {
             <ol className="my-2 space-y-4 pt-2 md:flex md:space-x-6 md:space-y-0 md:px-8">
               <li className="md:flex-1">
                 <div className="flex flex-col space-y-2 border-l-4 border-zinc-300 py-2 pl-4 md:border-l-0 md:border-t-2 md:pb-0 md:pl-0 md:pt-4">
-                  <span className="text-sm font-medium text-blue-600">
+                  <span className="text-sm font-medium text-sxpurple">
                     Step 1
                   </span>
                   <span className="text-xl font-semibold">
-                    Sign up for a Free Account
+                    Tell us about yourself.
                   </span>
                   {/* <span className="mt-2 text-zinc-700">
                 Either starting out with a free plan or choose our{" "}
@@ -129,22 +128,22 @@ export default function Home() {
               </li>
               <li className="md:flex-1">
                 <div className="flex flex-col space-y-2 border-l-4 border-zinc-300 py-2 pl-4 md:border-l-0 md:border-t-2 md:pb-0 md:pl-0 md:pt-4">
-                  <span className="text-sm font-medium text-blue-600">
+                  <span className="text-sm font-medium text-sxpurple">
                     Step 2
                   </span>
                   <span className="text-xl font-semibold">
-                    Choose a <span className="text-blue-600">Language</span> &{" "}
-                    <span className="text-blue-600">Scenario</span>
+                    Find and book time with a <span className="text-sxpurple">Recruiter</span> that fits your{" "}
+                    <span className="text-sxpurple">Needs</span>.
                   </span>
                 </div>
               </li>
               <li className="md:flex-1">
                 <div className="flex flex-col space-y-2 border-l-4 border-zinc-300 py-2 pl-4 md:border-l-0 md:border-t-2 md:pb-0 md:pl-0 md:pt-4">
-                  <span className="text-sm font-medium text-blue-600">
+                  <span className="text-sm font-medium text-sxpurple">
                     Step 3
                   </span>
                   <span className="text-xl font-semibold">
-                    Start Your Speaking Session
+                    Have a personalized <span className="text-sxpurple">1:1</span> session catered towards your interview prep.
                   </span>
                   {/* <span className="mt-2 text-zinc-700">
                 
@@ -158,10 +157,10 @@ export default function Home() {
           <div>
             <div className="mb-6 px-6 lg:px-8">
               <div className="mx-auto max-w-2xl sm:text-center">
-                <h2 className="mt-2 text-4xl font-bold text-gray-900 sm:text-5xl">
+                <h2 className="mt-2 text-4xl font-bold sm:text-5xl">
                   Our Services
                 </h2>
-                <p className="mt-4 text-lg text-gray-600">
+                <p className="mt-4 text-lg">
                 Empowering candidates and recruiters with cutting-edge tools and support.
                 </p>
               </div>
@@ -214,7 +213,7 @@ export default function Home() {
             </div>
             <div className="mb-6 px-6 lg:px-8">
               <div className="mx-auto max-w-2xl text-center">
-                <p className="mt-4 text-lg text-gray-600">and many more...</p>
+                <p className="mt-4 text-lg">and many more...</p>
               </div>
             </div>
           </div>
@@ -223,12 +222,11 @@ export default function Home() {
           <div>
             <div className="mb-6 px-6 lg:px-8">
               <div className="mx-auto max-w-2xl sm:text-center">
-                <h2 className="mt-2 text-4xl font-bold text-gray-900 sm:text-5xl">
-                  Powered by
+                <h2 className="mt-2 text-4xl font-bold sm:text-5xl">
+                  Meet Monthly Unmasked Experts
                 </h2>
-                <p className="mt-4 text-lg text-gray-600">
-                  These are the technologies behind the scene that make Convo
-                  possible
+                <p className="mt-4 text-lg">
+                  Know you're in good hands with our team of experts.
                 </p>
               </div>
             </div>
@@ -236,13 +234,13 @@ export default function Home() {
             <div className="flex items-center justify-center">
               <div className="flex flex-col gap-6 md:flex-row">
                 <Card className="flex flex-col items-center justify-center gap-2 p-6 md:flex-1">
-                  <CardTitle>Whisper AI</CardTitle>
+                  <CardTitle>Person 1</CardTitle>
                   <CardDescription className="mb-3 text-center">
-                    Speech to text
+                    Role @ Company
                   </CardDescription>
                   <Image
-                    src="/mic.webp"
-                    alt="cafe scenario"
+                    src=""
+                    alt=""
                     width={128}
                     height={128}
                     quality={100}
@@ -250,13 +248,13 @@ export default function Home() {
                   />
                 </Card>
                 <Card className="flex flex-col items-center justify-center gap-2 p-6 md:flex-1">
-                  <CardTitle>GPT 4</CardTitle>
+                  <CardTitle>Person 2</CardTitle>
                   <CardDescription className="mb-3 text-center">
-                    Comprehensive prompts and responses
+                    Role @ Company
                   </CardDescription>
                   <Image
-                    src="/openai.webp"
-                    alt="cafe scenario"
+                    src=""
+                    alt=""
                     width={128}
                     height={128}
                     quality={100}
@@ -265,13 +263,13 @@ export default function Home() {
                 </Card>
 
                 <Card className="flex flex-col items-center justify-center gap-2 p-6 md:flex-1">
-                  <CardTitle>WebSpeech</CardTitle>
+                  <CardTitle>Person 3</CardTitle>
                   <CardDescription className="mb-3 text-center">
-                    Text to speech
+                    Role @ Company
                   </CardDescription>
                   <Image
-                    src="/speaker.webp"
-                    alt="cafe scenario"
+                    src=""
+                    alt=""
                     width={128}
                     height={128}
                     quality={100}
@@ -286,11 +284,11 @@ export default function Home() {
           <div>
             <div className="mb-6 px-6 lg:px-8">
               <div className="mx-auto max-w-2xl sm:text-center">
-                <h2 className="mt-2 text-4xl font-bold text-gray-900 sm:text-5xl">
+                <h2 className="mt-2 text-4xl font-bold sm:text-5xl">
                   Feedback
                 </h2>
-                <p className="mt-4 text-lg text-gray-600">
-                  What are people saying about Convo
+                <p className="mt-4 text-lg">
+                  What are people saying about StealthXI
                 </p>
               </div>
             </div>
