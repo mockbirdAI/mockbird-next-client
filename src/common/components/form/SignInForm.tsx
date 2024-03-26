@@ -16,7 +16,7 @@ import { Button } from '@/common/components/ui/Button';
 import Link from 'next/link';
 import GoogleSignInButton from '@/common/components/GoogleSignInButton';
 import { signIn } from 'next-auth/react';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/common/components/ui/use-toast';
 
 const FormSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email'),

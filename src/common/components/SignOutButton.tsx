@@ -3,7 +3,7 @@
 import React from "react";
 import { Button, buttonVariants } from "./ui/Button";
 import { signOut } from "next-auth/react";
-import { toast, useToast } from "@/components/ui/use-toast";
+import { toast, useToast } from "@/common/components/ui/use-toast";
 
 const SignOutButton = () => {
   return (

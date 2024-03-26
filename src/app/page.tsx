@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-export default function Home() {
+export default async function Home() {
   return (
     <>
       {/* Hero */}
