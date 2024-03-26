@@ -12,6 +12,9 @@ async function getRecruiters() {
       role: UserRole.RECRUITER
     }
   })
+  if (!recruiters) {
+    return [];
+  }
   return recruiters;
 }
 
