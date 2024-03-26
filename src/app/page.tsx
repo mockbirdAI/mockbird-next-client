@@ -226,7 +226,7 @@ export default function Home() {
                   Meet Monthly Unmasked Experts
                 </h2>
                 <p className="mt-4 text-lg">
-                  Know you're in good hands with our team of experts.
+                  Know you&apos;re in good hands with our team of experts.
                 </p>
               </div>
             </div>
