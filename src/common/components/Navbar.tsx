@@ -24,7 +24,7 @@ const Navbar = async () => {
       <MaxWidthWrapper>
         <div className="flex h-14 items-center justify-between border-b border-zinc-200">
           <Link
-            href="/"
+            href={isUserSignedIn ? "/dashboard" : "/"}
             className="flex z-40 justify-center items-center gap-1"
           >
             <Image
@@ -47,7 +47,7 @@ const Navbar = async () => {
                     size: "sm",
                     className: "sm:hidden mr-3",
                   })}
-                  href="/"
+                  href="/dashboard"
                 >
                   Dashboard
                 </Link>
@@ -73,7 +73,7 @@ const Navbar = async () => {
                     })}
                     href="/sign-in"
                   >
-                    Sign in
+                    Log In
                   </Link>
                   <Link
                     className={buttonVariants({
@@ -81,7 +81,7 @@ const Navbar = async () => {
                     })}
                     href="/sign-up"
                   >
-                    Get started
+                    Sign Up
                   </Link>
                 </>
               ) : (
@@ -90,7 +90,7 @@ const Navbar = async () => {
                     className={buttonVariants({
                       size: "sm",
                     })}
-                    href="/"
+                    href="/dashboard"
                   >
                     Dashboard
                   </Link>

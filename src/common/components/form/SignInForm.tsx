@@ -40,7 +40,7 @@ const SignInForm = () => {
       email: values.email,
       password: values.password,
       redirect: true, 
-      callbackUrl: '/admin'
+      callbackUrl: '/dashboard'
     });
     // if (!signInData || signInData?.error) {
     //   toast({

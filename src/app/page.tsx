@@ -36,7 +36,7 @@ export default function Home() {
           )}
           href={"/dashboard"}
         >
-          Start Speaking Now
+          Start Prepping Now
         </Link>
       </MaxWidthWrapper>
 
@@ -162,7 +162,7 @@ export default function Home() {
                   Our Services
                 </h2>
                 <p className="mt-4 text-lg text-gray-600">
-                Empowering candidates and recruiters with cutting-edge tools and support
+                Empowering candidates and recruiters with cutting-edge tools and support.
                 </p>
               </div>
             </div>
