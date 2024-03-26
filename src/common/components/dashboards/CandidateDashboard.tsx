@@ -1,6 +1,7 @@
 import { UserRole } from '@prisma/client';
 import React from 'react';
 import PersonCard from '../PersonCard';
+import prisma from '@/lib/prisma';
 
 interface SessionProps {
   session: any;
