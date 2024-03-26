@@ -1,12 +1,14 @@
 import { Button } from '@/common/components/ui/Button';
 import { UserRole } from '@prisma/client';
 import React from 'react';
+import prisma from '@/lib/prisma';
 
 async function getRecruiterUser(id: string) {
   const userIdTemp = Number(id);
-  const recruiters = await prisma?.user.findUniqueOrThrow({
+  const recruiters = await prisma.user.findUniqueOrThrow({
     where: {
-      id: userIdTemp
+      id: userIdTemp,
+      role: UserRole.RECRUITER
     }
   })
   return recruiters;
@@ -14,9 +16,9 @@ async function getRecruiterUser(id: string) {
 
 async function getRecruiterProfile(id: string) {
   const userIdTemp = Number(id);
-  const recruiters = await prisma?.profile.findUniqueOrThrow({
+  const recruiters = await prisma.profile.findUniqueOrThrow({
     where: {
-      userId: userIdTemp
+      userId: userIdTemp,
     }
   })
   return recruiters;

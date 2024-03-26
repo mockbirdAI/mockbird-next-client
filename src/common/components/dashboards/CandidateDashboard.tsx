@@ -8,15 +8,12 @@ interface SessionProps {
 }
 
 async function getRecruiters() {
-  const recruiters = await prisma?.user.findMany({
+  const recruiters = await prisma.user.findMany({
     where: {
       role: UserRole.RECRUITER
     }
   })
-  if (recruiters === null || recruiters === undefined) {
-    return [];
-  }
-  return recruiters;
+  return recruiters || [];
 }
 
 const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
