@@ -4,12 +4,16 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 import MaxWidthWrapper from "@/common/components/MaxWidthWrapper";
-import { buttonVariants } from "@/common/components/ui/Button";
+import { Button, buttonVariants } from "@/common/components/ui/Button";
 import { MobileNav } from "@/common/components/MobileNav";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import SignOutButton from "./SignOutButton";
 
-const Navbar = () => {
+const Navbar = async () => {
   // Replace with your auth of choice, e.g. Clerk: const { userId } = auth();
-  const isUserSignedIn = false;
+  const session = await getServerSession(authOptions);
+  const isUserSignedIn = session?.user ? true : false;
 
   return (
     <nav
@@ -37,15 +41,17 @@ const Navbar = () => {
             {!isUserSignedIn ? (
               <MobileNav />
             ) : (
-              <Link
-                className={buttonVariants({
-                  size: "sm",
-                  className: "sm:hidden mr-3",
-                })}
-                href="/dashboard"
-              >
-                Dashboard
-              </Link>
+              <div>
+                <Link
+                  className={buttonVariants({
+                    size: "sm",
+                    className: "sm:hidden mr-3",
+                  })}
+                  href="/dashboard"
+                >
+                  Dashboard
+                </Link>
+              </div>
             )}
 
             <div className="hidden items-center space-x-4 sm:flex">
@@ -88,6 +94,7 @@ const Navbar = () => {
                   >
                     Dashboard
                   </Link>
+                  <SignOutButton />
                 </>
               )}
             </div>
