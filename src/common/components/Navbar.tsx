@@ -13,6 +13,7 @@ import SignOutButton from "./SignOutButton";
 const Navbar = async () => {
   const session = await getServerSession(authOptions);
   const isUserSignedIn = session?.user ? true : false;
+  const isRecruiter = session?.user?.role === "recruiter" ? true : false;
 
   return (
     <nav
@@ -92,6 +93,7 @@ const Navbar = async () => {
                 <>
                   <Link
                     className={buttonVariants({
+                      variant: "outline",
                       size: "sm",
                       className: "text-white border-white"
                     })}
