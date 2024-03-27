@@ -25,6 +25,7 @@ enum RequestStatus {
   PENDING
   ACCEPTED
   DECLINED
+  CANCELLED
 }
 
 enum PaymentStatus {

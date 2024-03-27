@@ -1,10 +1,11 @@
 import { Button } from '@/common/components/ui/Button';
-import { $Enums, RequestStatus, UserRole } from '@prisma/client';
+import { $Enums, InterviewRequest, RequestStatus, UserRole } from '@prisma/client';
 import React from 'react';
 import prisma from '@/lib/prisma';
 import BookTimeModal from '@/common/components/BookTimeModal';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import CancelInterviewRequestButton from '@/common/components/CancelInterviewRequestButton';
 
 export interface RecruiterUser {
   id: number;
@@ -72,11 +73,23 @@ const CandidateDashboard: React.FC<any> = async ({ params }: { params: { recruit
   const session = await getServerSession(authOptions);
 
   let disableBookTime = false;
+  let pendingRequest: InterviewRequest = {
+    id: 0,
+    candidateId: 0,
+    recruiterId: 0,
+    proposedTime: new Date(),
+    purpose: '',
+    status: RequestStatus.PENDING,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  
+  };
 
   if (recruiterUser?.recruiterRequests) {
     recruiterUser?.recruiterRequests.forEach((request) => {
       if (request.candidateId === Number(session?.user.id)) {
         disableBookTime = true;
+        pendingRequest = request;
       }
     });
   }
@@ -93,6 +106,19 @@ const CandidateDashboard: React.FC<any> = async ({ params }: { params: { recruit
         <div>
           <BookTimeModal disabled={disableBookTime} recruiterUser={recruiterUser} recruiterProfile={recruiterProfile} />
         </div>
+        
+        {disableBookTime && pendingRequest &&(
+          <div className='border p-5'>
+            <h1>Request Info:</h1>
+            <div>
+              <p>Status: {pendingRequest?.status}</p>
+              <p>Date: {pendingRequest?.proposedTime.toDateString()}</p>
+              <p>Time: {pendingRequest?.proposedTime.toTimeString()}</p>
+              <p>Purpose: {pendingRequest.purpose ? pendingRequest?.purpose : "N/A"}</p>
+              <CancelInterviewRequestButton requestId={pendingRequest.id} />
+            </div>
+          </div>
+        )}
 
     </div>
   );

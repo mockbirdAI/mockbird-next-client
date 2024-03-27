@@ -5,14 +5,15 @@ import { Button } from './ui/Button';
 import { useRouter } from 'next/navigation';
 import { User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
+import CancelInterviewButton from './CancelInterviewButton';
 
-interface InterviewRequestCardProps {
+interface InterviewCardProps {
   candidate: User;
   scheduledTime: Date;
-  requestId: number;
+  interviewId: number;
 }
 
-const createInterview = async (candidateId: number, recruiterId: number, scheduledTime: Date, requestId: number) => {
+const cancelInterview = async (interviewId: number) => {
   try {
     const res = await fetch('/api/create-interview', {
       method: 'POST',
@@ -20,10 +21,7 @@ const createInterview = async (candidateId: number, recruiterId: number, schedul
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        candidateId,
-        recruiterId,
-        scheduledTime,
-        requestId
+        interviewId
       })
     });
   } catch (error) {
@@ -31,7 +29,7 @@ const createInterview = async (candidateId: number, recruiterId: number, schedul
   }
 }
 
-const InterviewRequestCard: React.FC<InterviewRequestCardProps> = ({ candidate, scheduledTime, requestId }) => {
+const InterviewCard: React.FC<InterviewCardProps> = ({ candidate, scheduledTime, interviewId }) => {
   const router = useRouter();
   const { data: session } = useSession();
   return (
@@ -39,10 +37,14 @@ const InterviewRequestCard: React.FC<InterviewRequestCardProps> = ({ candidate, 
       <h2 className="name">{candidate.firstName} {candidate.lastName}</h2>
       <p className="occupation">{candidate.email}</p>
       <p className="occupation">{scheduledTime.toDateString()} @ {scheduledTime.toTimeString()}</p>
+      <p>Meeting URL: <a target='_blank' className='underline' href={"https://zoom.us/"}>https://zoom.us/</a> </p>
+      <div className='mt-2'>
+        <CancelInterviewButton interviewId={interviewId} />
+      </div>
       <div>
       </div>
     </div>
   );
 };
 
-export default InterviewRequestCard;
+export default InterviewCard;

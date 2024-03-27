@@ -11,7 +11,7 @@ export async function POST(request: any) {
       id: requestId,
     },
     data: {
-      status: RequestStatus.DECLINED,
+      status: RequestStatus.CANCELLED,
     }
    })
 

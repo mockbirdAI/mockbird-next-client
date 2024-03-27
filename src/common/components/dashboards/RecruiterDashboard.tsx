@@ -2,7 +2,7 @@ import React from 'react';
 import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { RequestStatus, UserRole } from '@prisma/client';
+import { RequestStatus, UserRole, InterviewStatus } from '@prisma/client';
 import InterviewRequestCard from '../InterviewRequestCard';
 import InterviewCard from '../InterviewCard';
 
@@ -29,6 +29,9 @@ async function getUserData() {
       recruiterInterviews: {
         include: {
           candidate: true
+        },
+        where: {
+          status: InterviewStatus.SCHEDULED
         }
       },
     }
@@ -70,7 +73,7 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                       <InterviewCard 
                         candidate={interview.candidate}
                         scheduledTime={interview.scheduledTime}
-                        requestId={interview.id}
+                        interviewId={interview.id}
                       />
                     </li>
                   )
