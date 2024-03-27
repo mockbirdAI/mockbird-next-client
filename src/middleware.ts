@@ -4,4 +4,4 @@ import { authOptions } from "./lib/auth";
 
 export { default } from "next-auth/middleware"
 
-export const config = { matcher: ['/dashboard/:path*', '/api/:function*'] }
+export const config = { matcher: ['/dashboard/:path*'] }
