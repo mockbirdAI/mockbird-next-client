@@ -5,6 +5,7 @@ import { Button } from './ui/Button';
 import { useRouter } from 'next/navigation';
 import { User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
+import { useToast } from './ui/use-toast';
 
 interface InterviewRequestCardProps {
   candidate: User;
@@ -50,6 +51,7 @@ const declineInterview = async (requestId: number) => {
 const InterviewRequestCard: React.FC<InterviewRequestCardProps> = ({ candidate, proposedTime, requestId }) => {
   const router = useRouter();
   const { data: session } = useSession();
+  const { toast } = useToast();
   return (
     <div className="border flex flex-col p-4 me-5 justify-between">
       <h2 className="name">{candidate.firstName} {candidate.lastName}</h2>
@@ -61,6 +63,10 @@ const InterviewRequestCard: React.FC<InterviewRequestCardProps> = ({ candidate, 
           onClick={async () => {
             console.log("ACCEPTED INTERVIEW");
             await acceptInterview(candidate.id, Number(session?.user.id), proposedTime, requestId);
+            toast({
+              title: 'Interview Request Accepted',
+              description: 'You have accepted the interview request!',
+            });
             router.refresh();
           }}
         >
@@ -70,8 +76,11 @@ const InterviewRequestCard: React.FC<InterviewRequestCardProps> = ({ candidate, 
           variant="outline"
           className='ms-2'
           onClick={async () => {
-            console.log("Decline INTERVIEW");
             await declineInterview(requestId);
+            toast({
+              title: 'Interview Request Declined',
+              description: 'You have declined the interview request!',
+            });
             router.refresh();
           }}
         >

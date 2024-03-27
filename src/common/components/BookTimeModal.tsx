@@ -71,7 +71,9 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
             <Label htmlFor="name" className="text-right">
               When
             </Label>
-            <SelectTimeSlots onChange={(e: Date) => setSelectedTimeSlot(e)} timeslots={[new Date()]} />
+            <div className="col-span-3">
+              <SelectTimeSlots onChange={(e: Date) => setSelectedTimeSlot(e)} timeslots={[new Date()]} />
+            </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="purpose" className="text-right">

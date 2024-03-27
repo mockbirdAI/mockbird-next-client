@@ -27,7 +27,7 @@ export function SelectTimeSlots({ timeslots, onChange }: TimeSlotsProps) {
 
   return (
     <Select value={selectedTime} onValueChange={(e) => handleSelect(e)}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-full">
         <SelectValue placeholder="Select a Time Slot">{selectedTime}</SelectValue>
       </SelectTrigger>
       <SelectContent>
