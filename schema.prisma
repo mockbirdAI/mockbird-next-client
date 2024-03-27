@@ -110,6 +110,7 @@ model InterviewRequest {
   candidateId  Int
   recruiterId  Int
   proposedTime DateTime
+  purpose      String?
   status       RequestStatus
   candidate    User          @relation("CandidateRequests", fields: [candidateId], references: [id])
   recruiter    User          @relation("RecruiterRequests", fields: [recruiterId], references: [id])

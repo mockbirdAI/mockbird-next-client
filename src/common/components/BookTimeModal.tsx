@@ -17,8 +17,9 @@ import { TextArea } from "@/common/components/ui/TextArea";
 import prisma from "@/lib/prisma";
 import { useSession } from "next-auth/react";
 import { useToast } from "./ui/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { SelectTimeSlots } from "./SelectTimeSlot";
 
 interface BookTimeModalProps {
   disabled?: boolean;
@@ -26,7 +27,7 @@ interface BookTimeModalProps {
   recruiterProfile: RecruiterProfile;
 }
 
-const createInterviewRequest = async (candidateId: number, recruiterId: number, proposedTime: string) => {
+const createInterviewRequest = async (candidateId: number, recruiterId: number, proposedTime: Date | null, purpose: string) => {
   try {
     const res = await fetch('/api/create-interview-request', {
       method: 'POST',
@@ -36,6 +37,7 @@ const createInterviewRequest = async (candidateId: number, recruiterId: number, 
       body: JSON.stringify({
         candidateId,
         recruiterId,
+        purpose,
         proposedTime
       })
     });
@@ -47,8 +49,11 @@ const createInterviewRequest = async (candidateId: number, recruiterId: number, 
 export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: BookTimeModalProps) {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null);
+  const [purpose, setPurpose] = useState('');
   const { toast } = useToast();
   const router = useRouter();
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -64,35 +69,26 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
-              Name
+              When
             </Label>
-            <Input
-              id="name"
-              defaultValue="Pedro Duarte"
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
+            <SelectTimeSlots onChange={(e: Date) => setSelectedTimeSlot(e)} timeslots={[new Date()]} />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="purpose" className="text-right">
               Request
             </Label>
-            <TextArea placeholder="Describe the purpose of the meeting..." className="col-span-3" />
+            <TextArea 
+              placeholder="Describe the purpose of the meeting..." 
+              className="col-span-3" 
+              value={purpose}
+              onChange={(e) => setPurpose(e.target.value)}
+            />
           </div>
         </div>
         <DialogFooter>
           <Button
             onClick={async () => {
-              await createInterviewRequest(Number(session?.user.id), recruiterUser.id, '2021-01-08T14:42:34.678Z');
+              await createInterviewRequest(Number(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose);
               setOpen(false);
               toast({
                 title: "Interview",

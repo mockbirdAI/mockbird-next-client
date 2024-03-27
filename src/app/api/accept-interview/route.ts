@@ -4,7 +4,6 @@ import { NextResponse } from "next/server"
 
 export async function POST(request: any) {
   const res = await request.json()
-  console.log(res);
   const {candidateId, recruiterId, proposedTime, requestId } = res;
 
    const result = await prisma.interview.create({

@@ -38,10 +38,9 @@ const InterviewRequestCard: React.FC<InterviewRequestCardProps> = ({ candidate, 
     <div className="border flex flex-col p-4 me-5 justify-between">
       <h2 className="name">{candidate.firstName} {candidate.lastName}</h2>
       <p className="occupation">{candidate.email}</p>
-      <p className="occupation">{String(scheduledTime)}</p>
+      <p className="occupation">{scheduledTime.toDateString()} @ {scheduledTime.toTimeString()}</p>
       <div>
       </div>
-      
     </div>
   );
 };

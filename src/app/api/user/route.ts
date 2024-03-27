@@ -15,12 +15,12 @@ const userSchema = z
       .string()
       .min(1, 'Password is required')
       .min(8, 'Password must have than 8 characters'),
-    // confirmPassword: z.string().min(1, 'Password confirmation is required'),
+      confirmPassword: z.string().min(1, 'Password confirmation is required'),
   })
-  // .refine((data) => data.password === data.confirmPassword, {
-  //   path: ['confirmPassword'],
-  //   message: 'Password do not match',
-  // });
+  .refine((data) => String(data.password) === String(data.confirmPassword), {
+    path: ['confirmPassword'],
+    message: 'Password do not match',
+  });
 
 export async function POST(request: Request) {
   try {

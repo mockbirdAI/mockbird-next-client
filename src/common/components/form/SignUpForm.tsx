@@ -26,12 +26,12 @@ const FormSchema = z
       .string()
       .min(1, 'Password is required')
       .min(8, 'Password must have than 8 characters'),
-    // confirmPassword: z.string().min(1, 'Password confirmation is required'),
+    confirmPassword: z.string().min(1, 'Password confirmation is required'),
   })
-  // .refine((data) => data.password === data.confirmPassword, {
-  //   path: ['confirmPassword'],
-  //   message: 'Password do not match',
-  // });
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Password do not match',
+  });
 
 const SignUpForm = () => {
   const router = useRouter();
@@ -42,6 +42,7 @@ const SignUpForm = () => {
       password: '',
       firstName: '',
       lastName: '',
+      confirmPassword: '',
     },
   });
 
@@ -54,6 +55,7 @@ const SignUpForm = () => {
       body: JSON.stringify({
         email: values.email,
         password: values.password,
+        confirmPassword: values.confirmPassword,
         firstName: values.firstName,
         lastName: values.lastName,
       }),
@@ -126,23 +128,23 @@ const SignUpForm = () => {
               </FormItem>
             )}
           />
-          {/* <FormField
+          <FormField
             control={form.control}
             name='confirmPassword'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Re-Enter your password</FormLabel>
+                <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder='Re-Enter your password'
                     type='password'
+                    placeholder='Enter your password'
                     {...field}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
+          />
         </div>
         <Button className='w-full mt-6' type='submit'>
           Sign up
