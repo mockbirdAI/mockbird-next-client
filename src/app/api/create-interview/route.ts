@@ -5,13 +5,13 @@ import { NextResponse } from "next/server"
 export async function POST(request: any) {
   const res = await request.json()
   console.log(res);
-  const {candidateId, recruiterId, scheduledTime, requestId } = res;
+  const {candidateId, recruiterId, proposedTime, requestId } = res;
 
    const result = await prisma.interview.create({
     data: {
       candidateId,
       recruiterId,
-      scheduledTime,
+      scheduledTime: proposedTime,
       duration: 60,
       status: InterviewStatus.SCHEDULED,
       requestId,
