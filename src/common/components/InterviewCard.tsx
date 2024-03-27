@@ -8,11 +8,11 @@ import { useSession } from 'next-auth/react';
 
 interface InterviewRequestCardProps {
   candidate: User;
-  proposedTime: Date;
+  scheduledTime: Date;
   requestId: number;
 }
 
-const createInterview = async (candidateId: number, recruiterId: number, proposedTime: Date, requestId: number) => {
+const createInterview = async (candidateId: number, recruiterId: number, scheduledTime: Date, requestId: number) => {
   try {
     const res = await fetch('/api/create-interview', {
       method: 'POST',
@@ -22,7 +22,7 @@ const createInterview = async (candidateId: number, recruiterId: number, propose
       body: JSON.stringify({
         candidateId,
         recruiterId,
-        proposedTime,
+        scheduledTime,
         requestId
       })
     });
@@ -31,25 +31,15 @@ const createInterview = async (candidateId: number, recruiterId: number, propose
   }
 }
 
-const InterviewRequestCard: React.FC<InterviewRequestCardProps> = ({ candidate, proposedTime, requestId }) => {
+const InterviewRequestCard: React.FC<InterviewRequestCardProps> = ({ candidate, scheduledTime, requestId }) => {
   const router = useRouter();
   const { data: session } = useSession();
   return (
     <div className="border flex flex-col p-4 me-5 justify-between">
       <h2 className="name">{candidate.firstName} {candidate.lastName}</h2>
       <p className="occupation">{candidate.email}</p>
-      <p className="occupation">{String(proposedTime)}</p>
+      <p className="occupation">{String(scheduledTime)}</p>
       <div>
-        <Button 
-          variant="default"
-          onClick={async () => {
-            console.log("ACCEPTED INTERVIEW");
-            await createInterview(candidate.id, Number(session?.user.id), proposedTime, requestId);
-            router.refresh();
-          }}
-        >
-          Accept
-        </Button>
       </div>
       
     </div>

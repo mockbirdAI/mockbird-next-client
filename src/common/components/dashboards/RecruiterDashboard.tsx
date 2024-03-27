@@ -2,8 +2,9 @@ import React from 'react';
 import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { UserRole } from '@prisma/client';
+import { RequestStatus, UserRole } from '@prisma/client';
 import InterviewRequestCard from '../InterviewRequestCard';
+import InterviewCard from '../InterviewCard';
 
 interface SessionProps {
   session: any;
@@ -19,7 +20,10 @@ async function getUserData() {
     include: {
       recruiterRequests: {
         include: {
-          candidate: true
+          candidate: true,
+        },
+        where: {
+          status: RequestStatus.PENDING
         }
       },
       recruiterInterviews: {
@@ -50,6 +54,7 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                       <InterviewRequestCard 
                         candidate={request.candidate}
                         proposedTime={request.proposedTime}
+                        requestId={request.id}
                       />
                     </li>
                   )
@@ -58,6 +63,19 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
             </div>
             <div className='w-1/2'>
               <h1>Accepted Interviews</h1>
+              <ul>
+                {userData.recruiterInterviews?.map((interview) => {
+                  return (
+                    <li key={interview.id}>
+                      <InterviewCard 
+                        candidate={interview.candidate}
+                        scheduledTime={interview.scheduledTime}
+                        requestId={interview.id}
+                      />
+                    </li>
+                  )
+                }, [])}
+              </ul>
             </div>
           </div>
           
