@@ -1,5 +1,5 @@
 import { Button } from '@/common/components/ui/Button';
-import { $Enums, UserRole } from '@prisma/client';
+import { $Enums, RequestStatus, UserRole } from '@prisma/client';
 import React from 'react';
 import prisma from '@/lib/prisma';
 import BookTimeModal from '@/common/components/BookTimeModal';
@@ -37,7 +37,11 @@ async function getRecruiterUser(id: string) {
         role: UserRole.RECRUITER
       },
       include: {
-        recruiterRequests: true,
+        recruiterRequests: {
+          where: {
+            status: RequestStatus.PENDING
+          }
+        },
         recruiterInterviews: true,
       }
     })
@@ -66,8 +70,6 @@ const CandidateDashboard: React.FC<any> = async ({ params }: { params: { recruit
   const recruiterProfile = await getRecruiterProfile(params.recruiterId);
   const recruiterUser = await getRecruiterUser(params.recruiterId);
   const session = await getServerSession(authOptions);
-
-  console.log(recruiterUser?.recruiterRequests);
 
   let disableBookTime = false;
 
