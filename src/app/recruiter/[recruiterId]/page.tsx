@@ -3,6 +3,8 @@ import { $Enums, UserRole } from '@prisma/client';
 import React from 'react';
 import prisma from '@/lib/prisma';
 import BookTimeModal from '@/common/components/BookTimeModal';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
 export interface RecruiterUser {
   id: number;
@@ -33,6 +35,10 @@ async function getRecruiterUser(id: string) {
       where: {
         id: userIdTemp,
         role: UserRole.RECRUITER
+      },
+      include: {
+        recruiterRequests: true,
+        recruiterInterviews: true,
       }
     })
   return recruiters;
@@ -51,13 +57,27 @@ async function getRecruiterProfile(id: string) {
     })
   return recruiters;
   } catch (error) {
+    console.error(error)
     return null;
   }
 }
 
 const CandidateDashboard: React.FC<any> = async ({ params }: { params: { recruiterId: string } }) => {
   const recruiterProfile = await getRecruiterProfile(params.recruiterId);
-  const recruiterUser = await getRecruiterUser(params.recruiterId)
+  const recruiterUser = await getRecruiterUser(params.recruiterId);
+  const session = await getServerSession(authOptions);
+
+  console.log(recruiterUser?.recruiterRequests);
+
+  let disableBookTime = false;
+
+  if (recruiterUser?.recruiterRequests) {
+    recruiterUser?.recruiterRequests.forEach((request) => {
+      if (request.candidateId === Number(session?.user.id)) {
+        disableBookTime = true;
+      }
+    });
+  }
 
   if (!recruiterProfile || !recruiterUser) {
     return <div className='h-screen'>404. Profile Not Found</div>
@@ -69,7 +89,7 @@ const CandidateDashboard: React.FC<any> = async ({ params }: { params: { recruit
         <h2>{recruiterProfile?.bio}</h2>
         <h2>{recruiterProfile?.linkedinUrl}</h2>
         <div>
-          <BookTimeModal recruiterUser={recruiterUser} recruiterProfile={recruiterProfile} />
+          <BookTimeModal disabled={disableBookTime} recruiterUser={recruiterUser} recruiterProfile={recruiterProfile} />
         </div>
 
     </div>

@@ -13,17 +13,46 @@ import {
 } from "@/common/components/ui/Dialog"
 import { Input } from "@/common/components/ui/Input"
 import { Label } from "@/common/components/ui/Label"
+import { TextArea } from "@/common/components/ui/TextArea";
+import prisma from "@/lib/prisma";
+import { useSession } from "next-auth/react";
+import { useToast } from "./ui/use-toast";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface BookTimeModalProps {
+  disabled?: boolean;
   recruiterUser: RecruiterUser;
   recruiterProfile: RecruiterProfile;
 }
 
-export function BookTimeModal({ recruiterUser, recruiterProfile }: BookTimeModalProps) {
+const createInterviewRequest = async (candidateId: number, recruiterId: number, proposedTime: string) => {
+  try {
+    const res = await fetch('/api/create-interview-request', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        candidateId,
+        recruiterId,
+        proposedTime
+      })
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: BookTimeModalProps) {
+  const { data: session } = useSession();
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Book Time</Button>
+        <Button disabled={disabled} variant="outline">{disabled ? "Pending..." : "Book Time"}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -53,9 +82,28 @@ export function BookTimeModal({ recruiterUser, recruiterProfile }: BookTimeModal
               className="col-span-3"
             />
           </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="purpose" className="text-right">
+              Request
+            </Label>
+            <TextArea placeholder="Describe the purpose of the meeting..." className="col-span-3" />
+          </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Send Interview Request</Button>
+          <Button
+            onClick={async () => {
+              await createInterviewRequest(Number(session?.user.id), recruiterUser.id, '2021-01-08T14:42:34.678Z');
+              setOpen(false);
+              toast({
+                title: "Interview",
+                description: "Interview request sent!",
+              })
+              router.refresh();
+            }}
+            type="submit"
+          >
+            Send Interview Request
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
