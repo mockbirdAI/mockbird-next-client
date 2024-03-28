@@ -61,7 +61,6 @@ const InterviewRequestCard: React.FC<InterviewRequestCardProps> = ({ candidate, 
         <Button 
           variant="default"
           onClick={async () => {
-            console.log("ACCEPTED INTERVIEW");
             await acceptInterview(candidate.id, Number(session?.user.id), proposedTime, requestId);
             toast({
               title: 'Interview Request Accepted',

@@ -43,46 +43,46 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
   const userData = await getUserData();
   return (
     <div className="h-screen">
-        <h2>Recruiter Dashboard - welcome back {session?.user.firstName}</h2>
-        
-        <div className='flex flex-col'>
-          
-          <div className='flex flex-row'>
-            <div className='w-1/2'>
-              <h1>Candidate Requests</h1>
-              <ul>
-                {userData.recruiterRequests?.map((request) => {
-                  return (
-                    <li key={request.id}>
-                      <InterviewRequestCard 
-                        candidate={request.candidate}
-                        proposedTime={request.proposedTime}
-                        requestId={request.id}
-                      />
-                    </li>
-                  )
-                }, [])}
-              </ul>
-            </div>
-            <div className='w-1/2'>
-              <h1>Accepted Interviews</h1>
-              <ul>
-                {userData.recruiterInterviews?.map((interview) => {
-                  return (
-                    <li key={interview.id}>
-                      <InterviewCard 
-                        candidate={interview.candidate}
-                        scheduledTime={interview.scheduledTime}
-                        interviewId={interview.id}
-                      />
-                    </li>
-                  )
-                }, [])}
-              </ul>
-            </div>
+      <div className='flex justify-center'>
+        <h2>Recruiter Dashboard - Welcome Back {session?.user.firstName}!</h2>
+      </div>        
+      <div className='flex flex-col m-10'>
+        <div className='flex flex-row'>
+          <div className='w-1/2'>
+            <h1>Candidate Requests</h1>
+            <ul>
+              {userData.recruiterRequests?.map((request) => {
+                return (
+                  <li key={request.id}>
+                    <InterviewRequestCard 
+                      candidate={request.candidate}
+                      proposedTime={request.proposedTime}
+                      requestId={request.id}
+                    />
+                  </li>
+                )
+              }, [])}
+            </ul>
           </div>
-          
+          <div className='w-1/2'>
+            <h1>Accepted Interviews</h1>
+            <ul>
+              {userData.recruiterInterviews?.map((interview) => {
+                return (
+                  <li key={interview.id}>
+                    <InterviewCard 
+                      interviewToken={interview.hostToken}
+                      candidate={interview.candidate}
+                      scheduledTime={interview.scheduledTime}
+                      interviewId={interview.id}
+                    />
+                  </li>
+                )
+              }, [])}
+            </ul>
+          </div>
         </div>
+      </div>
     </div>
   );
 };
