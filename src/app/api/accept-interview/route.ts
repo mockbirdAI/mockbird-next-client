@@ -29,8 +29,6 @@ export async function POST(request: any) {
     const response = await fetch(meetingURL, options);
     const data = await response.json();
     dyteMeetingId = data.data.id;
-    console.log("DYTE")
-    console.log(data);
   } catch (error) {
     console.error(error);
   }
