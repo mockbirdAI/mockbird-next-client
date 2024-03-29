@@ -3,8 +3,6 @@ import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { RequestStatus, UserRole, InterviewStatus } from '@prisma/client';
-import InterviewRequestCard from '../InterviewRequestCard';
-import InterviewCard from '../InterviewCard';
 
 import {
   Card,
@@ -16,7 +14,6 @@ import {
 
 import { CalendarDateRangePicker } from "@/common/components/ui/DateRangePicker";
 import { Overview } from "@/common/components/Overview";
-import { RecentSales } from "@/common/components/RecentSales";
 import { Button } from "@/common/components/ui/Button";
 import { ScrollArea } from "@/common/components/ui/ScrollArea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/common/components/ui/Tabs";
@@ -60,52 +57,11 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
   const userData = await getUserData();
   return (
     <div className="h-screen">
-      {/* <div className='flex justify-center'>
-        <h2>Recruiter Dashboard - Welcome Back {session?.user.firstName}!</h2>
-      </div>        
-      <div className='flex flex-col m-10'>
-        <div className='flex flex-row'>
-          <div className='w-1/2'>
-            <h1>Candidate Requests</h1>
-            <ul>
-              {userData.recruiterRequests?.map((request) => {
-                return (
-                  <li key={request.id}>
-                    <InterviewRequestCard 
-                      candidate={request.candidate}
-                      proposedTime={request.proposedTime}
-                      requestId={request.id}
-                    />
-                  </li>
-                )
-              }, [])}
-            </ul>
-          </div>
-          <div className='w-1/2'>
-            <h1>Accepted Interviews</h1>
-            <ul>
-              {userData.recruiterInterviews?.map((interview) => {
-                return (
-                  <li key={interview.id}>
-                    <InterviewCard 
-                      interviewToken={interview.hostToken}
-                      candidate={interview.candidate}
-                      scheduledTime={interview.scheduledTime}
-                      interviewId={interview.id}
-                    />
-                  </li>
-                )
-              }, [])}
-            </ul>
-          </div>
-        </div>
-      </div> */}
-
       <ScrollArea className="h-full">
         <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">
-              Hi, Welcome back {session?.user.firstName} 👋
+              Hi {session?.user.firstName}, Welcome back 👋
             </h2>
             <div className="hidden md:flex items-center space-x-2">
               <CalendarDateRangePicker />
