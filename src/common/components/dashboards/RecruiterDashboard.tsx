@@ -205,7 +205,8 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                       ) : null}
                       {userData.recruiterInterviews?.map((interview) => {
                         return (
-                          <InterviewListItem 
+                          <InterviewListItem
+                            key={interview.id} 
                             interviewToken={interview.hostToken}
                             candidate={interview.candidate}
                             scheduledTime={interview.scheduledTime}
@@ -233,7 +234,8 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                     ) : null}
                     {userData.recruiterRequests?.map((request) => {
                         return (
-                          <InterviewRequestListItem 
+                          <InterviewRequestListItem
+                            key={request.id} 
                             candidate={request.candidate}
                             proposedTime={request.proposedTime}
                             requestId={request.id}
@@ -259,7 +261,8 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                     ) : null}
                     {userData.recruiterInterviews?.map((interview) => {
                       return (
-                        <InterviewListItem 
+                        <InterviewListItem
+                          key={interview.id} 
                           interviewToken={interview.hostToken}
                           candidate={interview.candidate}
                           scheduledTime={interview.scheduledTime}
