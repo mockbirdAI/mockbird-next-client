@@ -44,7 +44,7 @@ const CancelInterviewButton: React.FC<CancelInterviewButtonProps> = ({ interview
           description: 'There was an error cancelling the interview.',
         })
       }
-    }} variant="destructive">Cancel Interview</Button>
+    }} variant="destructive">Cancel</Button>
   );
 };
 
