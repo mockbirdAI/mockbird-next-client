@@ -5,6 +5,8 @@ import { Button } from "./ui/Button";
 import { useToast } from "./ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { UserRole } from "@prisma/client";
+import CancelInterviewRequestButton from "./CancelInterviewRequestButton";
 
 const acceptInterview = async (candidateId: number, recruiterId: number, proposedTime: Date, requestId: number) => {
   try {
@@ -63,33 +65,39 @@ export const InterviewRequestListItem = ({ candidate, proposedTime, requestId }:
         
         <div className="ml-auto font-medium">
           <div className='d-flex flex-col mt-3'>
-            <Button 
-              variant="default"
-              onClick={async () => {
-                await acceptInterview(candidate.id, Number(session?.user.id), proposedTime, requestId);
-                toast({
-                  title: 'Interview Request Accepted',
-                  description: 'You have accepted the interview request!',
-                });
-                router.refresh();
-              }}
-            >
-              Accept
-            </Button>
-            <Button 
-              variant="destructive"
-              className='ms-2'
-              onClick={async () => {
-                await declineInterview(requestId);
-                toast({
-                  title: 'Interview Request Declined',
-                  description: 'You have declined the interview request!',
-                });
-                router.refresh();
-              }}
-            >
-              Decline
-            </Button>
+            {session?.user.role == UserRole.RECRUITER ? (
+              <div>
+                <Button 
+                  variant="default"
+                  onClick={async () => {
+                    await acceptInterview(candidate.id, Number(session?.user.id), proposedTime, requestId);
+                    toast({
+                      title: 'Interview Request Accepted',
+                      description: 'You have accepted the interview request!',
+                    });
+                    router.refresh();
+                  }}
+                >
+                  Accept
+                </Button>
+                <Button 
+                  variant="destructive"
+                  className='ms-2'
+                  onClick={async () => {
+                    await declineInterview(requestId);
+                    toast({
+                      title: 'Interview Request Declined',
+                      description: 'You have declined the interview request!',
+                    });
+                    router.refresh();
+                  }}
+                >
+                  Decline
+                </Button>
+              </div>
+            ) : (
+              <CancelInterviewRequestButton requestId={requestId} />
+            )}
           </div>
         </div>
       </div>
