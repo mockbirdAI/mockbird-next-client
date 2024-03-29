@@ -5,6 +5,13 @@ import { Card, CardDescription, CardTitle } from "@/common/components/ui/Card";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import type { Metadata } from "next";
+
+// export const metadata: Metadata = {
+//   title: "StealthXI",
+//   description: "Empowering candidates and recruiters with innovative tools and support.",
+
+// };
 
 export default async function Home() {
   return (
