@@ -9,6 +9,8 @@ import { MobileNav } from "@/common/components/MobileNav";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import SignOutButton from "./SignOutButton";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
+import ClickableAvatar from "./ClickableAvatar";
 
 const Navbar = async () => {
   const session = await getServerSession(authOptions);
@@ -107,7 +109,8 @@ const Navbar = async () => {
             </div>
 
             {isUserSignedIn && (
-              <div className="bg-emerald-600 border-2 border-gray-700 shadow-lg rounded-full w-10 h-10"></div>
+              // <div className="bg-emerald-600 border-2 border-gray-700 shadow-lg rounded-full w-10 h-10"></div>
+              <ClickableAvatar imageUrl={""} altText={""} />
             )}
           </div>
         </div>
