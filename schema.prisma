@@ -35,7 +35,7 @@ enum PaymentStatus {
 }
 
 model User {
-  id                  Int                @id @default(autoincrement())
+id                  String                @id @default(uuid())
   email               String             @unique
   password            String
   firstName           String
@@ -53,7 +53,7 @@ model User {
 
 model Profile {
   id             Int      @id @default(autoincrement())
-  userId         Int      @unique
+  userId         String      @unique
   linkedinUrl    String?
   resumeUrl      String?
   bio            String?
@@ -76,7 +76,7 @@ model Company {
 
 model UserCompany {
   id        Int       @id @default(autoincrement())
-  userId    Int
+  userId    String
   companyId Int
   role      String
   startDate DateTime
@@ -91,8 +91,8 @@ model UserCompany {
 
 model Interview {
   id            Int               @id @default(autoincrement())
-  candidateId   Int
-  recruiterId   Int
+  candidateId   String
+  recruiterId   String
   scheduledTime DateTime
   duration      Int // Duration in minutes
   status        InterviewStatus
@@ -111,8 +111,8 @@ model Interview {
 
 model InterviewRequest {
   id           Int           @id @default(autoincrement())
-  candidateId  Int
-  recruiterId  Int
+  candidateId  String
+  recruiterId  String
   proposedTime DateTime
   purpose      String?
   status       RequestStatus

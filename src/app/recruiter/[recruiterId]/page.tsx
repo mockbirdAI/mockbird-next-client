@@ -8,7 +8,7 @@ import { authOptions } from '@/lib/auth';
 import CancelInterviewRequestButton from '@/common/components/CancelInterviewRequestButton';
 
 export interface RecruiterUser {
-  id: number;
+  id: string;
   email: string;
   password: string;
   firstName: string;
@@ -20,7 +20,7 @@ export interface RecruiterUser {
 
 export interface RecruiterProfile {
   id: number;
-  userId: number;
+  userId: string;
   linkedinUrl: string | null;
   resumeUrl: string | null;
   bio: string | null;
@@ -31,7 +31,7 @@ export interface RecruiterProfile {
 
 async function getRecruiterUser(id: string) {
   try {
-    const userIdTemp = Number(id);
+    const userIdTemp = id;
     const recruiters = await prisma.user.findUniqueOrThrow({
       where: {
         id: userIdTemp,
@@ -54,7 +54,7 @@ async function getRecruiterUser(id: string) {
 
 async function getRecruiterProfile(id: string) {
   try {
-    const userIdTemp = Number(id);
+    const userIdTemp = id;
     const recruiters = await prisma.profile.findUniqueOrThrow({
       where: {
         userId: userIdTemp,
@@ -75,8 +75,8 @@ const CandidateDashboard: React.FC<any> = async ({ params }: { params: { recruit
   let disableBookTime = false;
   let pendingRequest: InterviewRequest = {
     id: 0,
-    candidateId: 0,
-    recruiterId: 0,
+    candidateId: '0',
+    recruiterId: '0',
     proposedTime: new Date(),
     purpose: '',
     status: RequestStatus.PENDING,
@@ -87,7 +87,7 @@ const CandidateDashboard: React.FC<any> = async ({ params }: { params: { recruit
 
   if (recruiterUser?.recruiterRequests) {
     recruiterUser?.recruiterRequests.forEach((request) => {
-      if (request.candidateId === Number(session?.user.id)) {
+      if (request.candidateId === session?.user.id) {
         disableBookTime = true;
         pendingRequest = request;
       }

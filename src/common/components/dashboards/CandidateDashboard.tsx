@@ -38,7 +38,7 @@ async function getUserData() {
   const session = await getServerSession(authOptions);
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
-      id: Number(session?.user.id),
+      id: String(session?.user.id),
       role: UserRole.CANDIDATE
     },
     include: {

@@ -2,6 +2,7 @@ import { Button } from '@/common/components/ui/Button';
 import { $Enums, UserRole } from '@prisma/client';
 import React from 'react';
 import prisma from '@/lib/prisma';
+import Link from 'next/link';
 
 export interface User {
   id: number;
@@ -25,13 +26,12 @@ export interface UserProfile {
   updatedAt: Date;
 }
 
-async function getCandidate(id: string) {
+async function getUser(id: string) {
   try {
-    const userIdTemp = Number(id);
+    const userIdTemp = id;
     const user = await prisma.user.findUniqueOrThrow({
       where: {
         id: userIdTemp,
-        role: UserRole.CANDIDATE
       },
       include: {
         profile: true
@@ -43,11 +43,7 @@ async function getCandidate(id: string) {
   }
 }
 
-const CandidateDashboard: React.FC<any> = async ({ params }: { params: { userId: string } }) => {
-  console.log(params.userId)
-  const candidateUser = await getCandidate(params.userId);
-  const candidateProfile = candidateUser?.profile;
-
+const CandidateProfile: React.FC<any> = async ({ candidateUser, candidateProfile }: any) => {
   if (!candidateProfile || !candidateUser) {
     return <div className='h-screen'>404. Profile Not Found</div>
   }
@@ -56,10 +52,38 @@ const CandidateDashboard: React.FC<any> = async ({ params }: { params: { userId:
         <h2>PROFILE</h2>
         <h2>{candidateUser?.firstName} {candidateUser?.lastName}</h2>
         <h2>{candidateProfile?.bio}</h2>
-        <h2>{candidateProfile?.linkedinUrl}</h2>
+        <Link target='_blank' href={candidateProfile?.linkedinUrl}>{candidateProfile?.linkedinUrl}</Link>
 
     </div>
   );
 };
 
-export default CandidateDashboard;
+const RecruiterProfile: React.FC<any> = async ({ recruiterUser, recruiterProfile }: any) => {
+  if (!recruiterProfile || !recruiterUser) {
+    return <div className='h-screen'>404. Profile Not Found</div>
+  }
+  return (
+    <div className="h-screen flex flex-col">
+        <h2>PROFILE</h2>
+        <h2>{recruiterUser?.firstName} {recruiterUser?.lastName}</h2>
+        <h2>{recruiterProfile?.bio}</h2>
+        <Link target='_blank' href={recruiterProfile?.linkedinUrl}>{recruiterProfile?.linkedinUrl}</Link>
+    </div>
+  );
+};
+
+const Profile: React.FC<any> = async ({ params }: { params: { userId: string } }) => {
+  const user = await getUser(params.userId);
+  const profile = user?.profile;
+
+  if (user?.role == UserRole.CANDIDATE) {
+    return <CandidateProfile candidateUser={user} candidateProfile={profile} />
+  } else if (user?.role == UserRole.RECRUITER) {
+    return <RecruiterProfile recruiterUser={user} recruiterProfile={profile} />
+  } else {
+    return <div className='h-screen'>404. Profile Not Found</div>
+  }
+
+};
+
+export default Profile;

@@ -27,7 +27,7 @@ interface BookTimeModalProps {
   recruiterProfile: RecruiterProfile;
 }
 
-const createInterviewRequest = async (candidateId: number, recruiterId: number, proposedTime: Date | null, purpose: string) => {
+const createInterviewRequest = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string) => {
   try {
     const res = await fetch('/api/create-interview-request', {
       method: 'POST',
@@ -90,7 +90,7 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
         <DialogFooter>
           <Button
             onClick={async () => {
-              await createInterviewRequest(Number(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose);
+              await createInterviewRequest(String(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose);
               setOpen(false);
               toast({
                 title: "Interview",

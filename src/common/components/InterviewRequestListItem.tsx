@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import { UserRole } from "@prisma/client";
 import CancelInterviewRequestButton from "./CancelInterviewRequestButton";
 
-const acceptInterview = async (candidateId: number, recruiterId: number, proposedTime: Date, requestId: number) => {
+const acceptInterview = async (candidateId: string, recruiterId: string, proposedTime: Date, requestId: number) => {
   try {
     const res = await fetch('/api/accept-interview', {
       method: 'POST',
@@ -70,7 +70,7 @@ export const InterviewRequestListItem = ({ candidate, proposedTime, requestId }:
                 <Button 
                   variant="default"
                   onClick={async () => {
-                    await acceptInterview(candidate.id, Number(session?.user.id), proposedTime, requestId);
+                    await acceptInterview(candidate.id, String(session?.user.id), proposedTime, requestId);
                     toast({
                       title: 'Interview Request Accepted',
                       description: 'You have accepted the interview request!',

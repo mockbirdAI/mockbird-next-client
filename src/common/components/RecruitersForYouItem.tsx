@@ -5,7 +5,7 @@ import { Button } from "./ui/Button";
 import { useRouter } from "next/navigation";
 
 interface RecruitersForYouProps {
-  userId: number;
+  userId: string;
   profilePicture: string;
   firstName: string;
   lastName: string;
