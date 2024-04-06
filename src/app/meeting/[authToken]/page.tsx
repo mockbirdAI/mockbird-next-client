@@ -25,7 +25,12 @@ function Page({ params }: { params: { authToken: string } }) {
   // By default this component will cover the entire viewport.
   // To avoid that and to make it fill a parent container, pass the prop:
   // `mode="fill"` to the component.
-  return <DyteMeeting meeting={meeting!} />;
+  return (
+    <div className='h-screen'>
+      <DyteMeeting meeting={meeting!} />
+    </div>
+    
+  );
 }
 
 export default Page;

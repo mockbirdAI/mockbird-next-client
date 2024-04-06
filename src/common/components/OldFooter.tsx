@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="mx-auto w-full max-w-screen-xl p-6 md:py-8">
         <div className="sm:flex sm:items-center sm:justify-between">
           <Link href="/">
-            <span className="text-2xl font-semibold">StealthXI</span>
+            <span className="text-2xl font-semibold">Mockbird</span>
           </Link>
         </div>
         <hr className="my-2 text-muted-foreground sm:mx-auto " />
@@ -14,10 +14,10 @@ export default function Footer() {
           © {new Date().getFullYear()}{" "}
           <a
             target="_blank"
-            href="https://tryconvo.vercel.app/"
+            href="/"
             className="hover:underline"
           >
-            StealthXI
+            Mockbird
           </a>
           . All Rights Reserved.
         </span>

@@ -292,10 +292,10 @@ export default async function Home() {
             <div className="mb-6 px-6 lg:px-8">
               <div className="mx-auto max-w-2xl sm:text-center">
                 <h2 className="mt-2 text-4xl font-bold sm:text-5xl">
-                  Feedback
+                  Dive In
                 </h2>
                 <p className="mt-4 text-lg">
-                  What are people saying about StealthXI
+                  Get instant feedback and insights to help you improve your interview skills.
                 </p>
               </div>
             </div>
@@ -309,8 +309,8 @@ export default async function Home() {
                       width={2556}
                       height={1436}
                       quality={100}
-                      src="/tweet_collage.png"
-                      alt="Header image"
+                      src="/mock_interview.png"
+                      alt="mock interview"
                       className="rounded-md bg-white p-2 shadow-2xl ring-1 ring-gray-900/10 md:p-8"
                     />
                   </div>

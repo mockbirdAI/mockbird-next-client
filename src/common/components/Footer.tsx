@@ -13,7 +13,7 @@ const Footer = () => {
               <p>Join Our Mailing List</p>
               <div className="mt-1 flex">
                 <input type="email" placeholder="Your email" className="p-2 border border-gray-300 rounded-l-lg flex-1"/>
-                <button className="bg-white hover:bg-gray-200 text-purple-700 p-2 rounded-r-lg">Sign Up</button>
+                <button className="bg-white hover:bg-gray-200 text-sxpurple p-2 rounded-r-lg">Sign Up</button>
               </div>
             </div>
           </div>
@@ -25,20 +25,20 @@ const Footer = () => {
               {/* Replace # with your social media links */}
               <a href="#" className="hover:underline">Facebook</a>
               <a href="#" className="hover:underline">Twitter</a>
-              <a href="#" className="hover:underline">LinkedIn</a>
+              <a href="https://www.linkedin.com/company/mockbird/" className="hover:underline">LinkedIn</a>
             </div>
           </div>
 
           {/* Address and Email */}
           <div className="w-full md:w-1/3 px-4 text-right">
-            <p>123 Town Rd, City</p>
-            <p>contact@example.com</p>
+            {/* <p>123 Town Rd, City</p> */}
+            <p>contact@mockbird.ai</p>
           </div>
         </div>
 
         {/* Copyright */}
         <div className="pt-8 mt-8 border-t border-gray-200">
-          <p className="text-sm text-left">&copy; {new Date().getFullYear()} StealthXI. All rights reserved.</p>
+          <p className="text-sm text-left">&copy; {new Date().getFullYear()} Mockbird. All rights reserved.</p>
         </div>
       </div>
     </footer>
