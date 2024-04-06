@@ -23,7 +23,8 @@ module.exports = {
         background: "hsl(var(--background))",
         special: "hsl(var(--special))",
         foreground: "hsl(var(--foreground))",
-        sxpurple: "#4c40f9",
+        // sxpurple: "#2AAAE4",
+        sxpurple: "#3FA4FF",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

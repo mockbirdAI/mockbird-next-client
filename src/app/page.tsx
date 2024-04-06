@@ -20,7 +20,7 @@ export default async function Home() {
       <MaxWidthWrapper className="mt-10 flex flex-col items-center justify-center text-center sm:mt-12">
         <div className="mx-auto mb-4 flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-gray-200 bg-white px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300 hover:bg-white/50">
           <p className="text-sm font-semibold text-gray-700">
-            Try StealthXI for Free
+            Try Mockbird for Free
           </p>
         </div>
 
@@ -68,7 +68,7 @@ export default async function Home() {
               <div className="mt-8 flow-root sm:mt-16">
                 <div className="-m-2 w-fit rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10  lg:-m-4 lg:rounded-2xl lg:p-4">
                   <Image
-                    src="/dashboard-preview.png"
+                    src="/landing_splash.png"
                     alt="product preview"
                     width={955}
                     height={808}
@@ -139,8 +139,8 @@ export default async function Home() {
                     Step 2
                   </span>
                   <span className="text-xl font-semibold">
-                    Find and book time with a <span className="text-sxpurple">Recruiter</span> that fits your{" "}
-                    <span className="text-sxpurple">Needs</span>.
+                    Find and book time with a <span className="text-sxpurple">recruiter</span> that fits your{" "}
+                    <span className="text-sxpurple">needs</span>.
                   </span>
                 </div>
               </li>
@@ -182,8 +182,8 @@ export default async function Home() {
                   Access our comprehensive suite of preparation services and practice tools to excel in interviews.
                   </CardDescription>
                   <Image
-                    src="/coffee.webp"
-                    alt="cafe scenario"
+                    src="/notes.png"
+                    alt="prep pro"
                     width={128}
                     height={128}
                     quality={100}
@@ -195,8 +195,8 @@ export default async function Home() {
                   Connect with verified top-tier talent acquisition professionals and find the perfect fit for your needs.
                   </CardDescription>
                   <Image
-                    src="/taxi.webp"
-                    alt="cafe scenario"
+                    src="/mindmap.png"
+                    alt="talent connect"
                     width={128}
                     height={128}
                     quality={100}
@@ -209,8 +209,8 @@ export default async function Home() {
                   Receive valuable post-interview feedback and insights for continuous improvement in your interview skills.
                   </CardDescription>
                   <Image
-                    src="/schedule.webp"
-                    alt="cafe scenario"
+                    src="/chart.png"
+                    alt="data insights"
                     width={128}
                     height={128}
                     quality={100}
@@ -226,7 +226,7 @@ export default async function Home() {
           </div>
 
           {/* Powered By */}
-          <div>
+          {/* <div>
             <div className="mb-6 px-6 lg:px-8">
               <div className="mx-auto max-w-2xl sm:text-center">
                 <h2 className="mt-2 text-4xl font-bold sm:text-5xl">
@@ -285,7 +285,7 @@ export default async function Home() {
                 </Card>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Feedback */}
           <div>

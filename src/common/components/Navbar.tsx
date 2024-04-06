@@ -20,7 +20,7 @@ const Navbar = async () => {
   return (
     <nav
       className={cn(
-        "sticky h-14 inset-x-0 top-0 z-30 bg-gray-900 text-white border-b border-gray-700 backdrop-blur-lg transition-all"
+        "sticky h-14 inset-x-0 top-0 z-30 bg-white-400 text-black border-b border-gray-700 backdrop-blur-lg transition-all"
       )}
     >
       <MaxWidthWrapper>
@@ -30,14 +30,14 @@ const Navbar = async () => {
             className="flex z-40 justify-center items-center gap-1"
           >
             <Image
-              src="/logo.png"
-              alt="convo logo"
+              src="/mockbird_logo.svg"
+              alt="mockbird logo"
               width={50}
               height={50}
               quality={100}
               className="w-7 h-7"
             />
-            <span className="text-2xl font-semibold">StealthXI</span>
+            <span className="text-2xl font-semibold">Mockbird</span>
           </Link>
           <div className="flex gap-1 sm:gap-4 items-center">
             {!isUserSignedIn ? (
@@ -48,7 +48,7 @@ const Navbar = async () => {
                   className={buttonVariants({
                     variant: "outline",
                     size: "sm",
-                    className: "text-white border-white sm:hidden mr-3",
+                    className: "text-black border-gray-400 sm:hidden mr-3",
                   })}
                   href="/dashboard"
                 >
@@ -74,7 +74,7 @@ const Navbar = async () => {
                     className={buttonVariants({
                       variant: "ghost",
                       size: "sm",
-                      className: "text-white"
+                      className: "text-black"
                     })}
                     href="/sign-in"
                   >
@@ -97,7 +97,7 @@ const Navbar = async () => {
                     className={buttonVariants({
                       variant: "outline",
                       size: "sm",
-                      className: "text-white border-white"
+                      className: "text-black border-gray-400"
                     })}
                     href="/dashboard"
                   >

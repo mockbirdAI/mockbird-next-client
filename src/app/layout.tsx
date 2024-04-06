@@ -9,7 +9,7 @@ import Provider from "@/common/components/Provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SteathXI",
+  title: "Mockbird",
   description: "Ace your Next Interview",
 };
 
