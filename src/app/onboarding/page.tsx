@@ -279,8 +279,6 @@ const Onboarding: React.FC = () => {
                 )}
               </div>
                     
-              
-
               <div className='mb-5'>
                 <FormField
                   control={form.control}

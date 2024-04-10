@@ -99,6 +99,16 @@ const Navbar = async () => {
                       size: "sm",
                       className: "text-black border-gray-400"
                     })}
+                    href="/discover"
+                  >
+                    Discover
+                  </Link>
+                  <Link
+                    className={buttonVariants({
+                      variant: "outline",
+                      size: "sm",
+                      className: "text-black border-gray-400"
+                    })}
                     href="/dashboard"
                   >
                     Dashboard
