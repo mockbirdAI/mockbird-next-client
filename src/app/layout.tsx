@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Lato } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/common/components/Navbar";
 import Footer from "@/common/components/Footer";
@@ -7,6 +7,7 @@ import { Toaster } from "@/common/components/ui/toaster";
 import Provider from "@/common/components/Provider";
 
 const inter = Inter({ subsets: ["latin"] });
+const lato = Lato({ subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
   title: "Mockbird",
@@ -22,7 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Provider>
-          <main>
+          <main className={lato.className}>
             <Navbar />
               {children}
             <Footer />

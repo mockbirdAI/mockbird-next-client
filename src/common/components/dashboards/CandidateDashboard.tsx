@@ -20,6 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/common/components/ui
 import { InterviewRequestListItem } from '../InterviewRequestListItem';
 import { InterviewListItem } from '../InterviewListItem';
 import { RecruitersForYou } from '../RecruitersForYouItem';
+import { redirect } from 'next/navigation';
 
 interface SessionProps {
   session: any;
@@ -58,6 +59,7 @@ async function getUserData() {
           status: InterviewStatus.SCHEDULED
         }
       },
+      profile: true
     }
   })
   return userData || [];
@@ -66,6 +68,9 @@ async function getUserData() {
 const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
   const recruiters = await getRecruiters();
   const userData = await getUserData();
+  if (userData.profile === null) {
+    redirect('/onboarding')
+  }
   return (
     <div className='h-screen'>
       <ScrollArea className="h-full">
