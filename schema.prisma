@@ -1,13 +1,127 @@
-// schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model User {
+  id                  String             @id @default(uuid())
+  email               String             @unique
+  password            String
+  firstName           String
+  lastName            String
+  role                UserRole
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  candidateInterviews Interview[]        @relation("CandidateInterviews")
+  recruiterInterviews Interview[]        @relation("RecruiterInterviews")
+  candidateRequests   InterviewRequest[] @relation("CandidateRequests")
+  recruiterRequests   InterviewRequest[] @relation("RecruiterRequests")
+  profile             Profile?
+  UserCompany         UserCompany[]
+}
+
+model Profile {
+  id             Int      @id @default(autoincrement())
+  userId         String   @unique
+  linkedinUrl    String?
+  resumeUrl      String?
+  bio            String?
+  profilePicture String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  companyId      Int?
+  schoolId       Int?
+  company        Company? @relation(fields: [companyId], references: [id])
+  school         School?  @relation(fields: [schoolId], references: [id])
+  user           User     @relation(fields: [userId], references: [id])
+}
+
+model Company {
+  id          Int           @id @default(autoincrement())
+  name        String
+  industry    String?
+  size        String?
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Profile     Profile[]
+  users       UserCompany[]
+}
+
+model UserCompany {
+  id        Int       @id @default(autoincrement())
+  userId    String
+  companyId Int
+  role      String
+  startDate DateTime
+  endDate   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  company   Company   @relation(fields: [companyId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@unique([userId, companyId])
+}
+
+model School {
+  id        Int       @id @default(autoincrement())
+  name      String    
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Profile   Profile[]
+}
+
+model Interview {
+  id            Int               @id @default(autoincrement())
+  candidateId   String
+  recruiterId   String
+  scheduledTime DateTime
+  duration      Int
+  status        InterviewStatus
+  feedback      String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  requestId     Int?              @unique
+  hostToken     String?
+  meetingId     String?           @unique
+  userToken     String?
+  candidate     User              @relation("CandidateInterviews", fields: [candidateId], references: [id])
+  recruiter     User              @relation("RecruiterInterviews", fields: [recruiterId], references: [id])
+  request       InterviewRequest? @relation(fields: [requestId], references: [id])
+  payment       Payment?
+}
+
+model InterviewRequest {
+  id           Int           @id @default(autoincrement())
+  candidateId  String
+  recruiterId  String
+  proposedTime DateTime
+  status       RequestStatus
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  purpose      String?
+  Interview    Interview?
+  candidate    User          @relation("CandidateRequests", fields: [candidateId], references: [id])
+  recruiter    User          @relation("RecruiterRequests", fields: [recruiterId], references: [id])
+
+  @@index([candidateId])
+  @@index([recruiterId])
+}
+
+model Payment {
+  id              Int           @id @default(autoincrement())
+  interviewId     Int           @unique
+  amount          Float
+  status          PaymentStatus
+  transactionDate DateTime
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  interview       Interview     @relation(fields: [interviewId], references: [id])
 }
 
 enum UserRole {
@@ -32,107 +146,4 @@ enum PaymentStatus {
   PENDING
   COMPLETED
   FAILED
-}
-
-model User {
-id                  String                @id @default(uuid())
-  email               String             @unique
-  password            String
-  firstName           String
-  lastName            String
-  role                UserRole
-  profile             Profile?
-  UserCompany         UserCompany[]
-  candidateInterviews Interview[]        @relation("CandidateInterviews")
-  recruiterInterviews Interview[]        @relation("RecruiterInterviews")
-  candidateRequests   InterviewRequest[] @relation("CandidateRequests")
-  recruiterRequests   InterviewRequest[] @relation("RecruiterRequests")
-  createdAt           DateTime           @default(now())
-  updatedAt           DateTime           @updatedAt
-}
-
-model Profile {
-  id             Int      @id @default(autoincrement())
-  userId         String      @unique
-  linkedinUrl    String?
-  resumeUrl      String?
-  bio            String?
-  profilePicture String?
-  user           User     @relation(fields: [userId], references: [id])
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-}
-
-model Company {
-  id               Int                @id @default(autoincrement())
-  name             String
-  industry         String?
-  size             String?
-  description      String?
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  users            UserCompany[]
-}
-
-model UserCompany {
-  id        Int       @id @default(autoincrement())
-  userId    String
-  companyId Int
-  role      String
-  startDate DateTime
-  endDate   DateTime?
-  user      User      @relation(fields: [userId], references: [id])
-  company   Company   @relation(fields: [companyId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  @@unique([userId, companyId])
-}
-
-model Interview {
-  id            Int               @id @default(autoincrement())
-  candidateId   String
-  recruiterId   String
-  scheduledTime DateTime
-  duration      Int // Duration in minutes
-  status        InterviewStatus
-  feedback      String?
-  candidate     User              @relation(name: "CandidateInterviews", fields: [candidateId], references: [id])
-  recruiter     User              @relation(name: "RecruiterInterviews", fields: [recruiterId], references: [id])
-  payment       Payment? // Added this line: Optional one-to-one relation to Payment
-  request       InterviewRequest? @relation(fields: [requestId], references: [id])
-  requestId     Int?              @unique
-  meetingId     String?           @unique
-  hostToken     String?           
-  userToken     String?           
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-}
-
-model InterviewRequest {
-  id           Int           @id @default(autoincrement())
-  candidateId  String
-  recruiterId  String
-  proposedTime DateTime
-  purpose      String?
-  status       RequestStatus
-  candidate    User          @relation("CandidateRequests", fields: [candidateId], references: [id])
-  recruiter    User          @relation("RecruiterRequests", fields: [recruiterId], references: [id])
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  Interview    Interview?
-
-  @@index([candidateId])
-  @@index([recruiterId])
-}
-
-model Payment {
-  id              Int           @id @default(autoincrement())
-  interviewId     Int           @unique
-  amount          Float
-  status          PaymentStatus
-  transactionDate DateTime
-  interview       Interview     @relation(fields: [interviewId], references: [id])
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
 }

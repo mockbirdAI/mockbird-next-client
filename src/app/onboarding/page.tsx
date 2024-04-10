@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { toast } from '@/common/components/ui/use-toast';
+import prisma from '@/lib/prisma';
 
 import {
   Form,
@@ -18,9 +19,20 @@ import {
 } from "@/common/components/ui/Form"
 import { Input } from "@/common/components/ui/Input"
 import { PutBlobResult } from '@vercel/blob';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { TextArea } from '@/common/components/ui/TextArea';
 import { useRouter } from 'next/navigation';
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/common/components/ui/Select"
+import LoadingButton from '@/common/components/LoadingButton';
 
 const formSchema = z.object({
   linkedinUrl: z.string().min(2, {
@@ -29,6 +41,9 @@ const formSchema = z.object({
   bio: z.string().min(2, {
     message: "Bio must be at least 2 characters.",
   }),
+  role: z.string(),
+  school: z.string(),
+  company: z.string(),
   profilePicture: z.any(),
   resume: z.any(),
 })
@@ -41,6 +56,38 @@ const Onboarding: React.FC = () => {
   const [resume, setResume] = useState<File | undefined>(undefined);
 
   const router = useRouter();
+
+  const [schools, setSchools] = useState<any[] | undefined>(undefined);
+  const [companies, setCompanies] = useState<any[] | undefined>(undefined);
+
+
+  useEffect(() => {
+    async function getSchools() {
+      const fetchedSchools = await fetch("/api/get-school-data", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const schools = await fetchedSchools.json();
+      setSchools(schools.res)
+    }
+
+    async function getCompanies() {
+      const fetchedCompanies = await fetch("/api/get-company-data", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const companies = await fetchedCompanies.json();
+      setCompanies(companies.res)
+    }
+    
+    getSchools();
+    getCompanies();
+  }, []);
+  
 
   // Handler for profile picture change
   const handleProfilePictureChange = () => {
@@ -65,6 +112,9 @@ const Onboarding: React.FC = () => {
     defaultValues: {
       linkedinUrl: "",
       bio: "",
+      role: "",
+      school: "",
+      company: "",
       profilePicture: undefined,
       resume: undefined,
     },
@@ -73,6 +123,11 @@ const Onboarding: React.FC = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const formData = new FormData();
     formData.append('linkedinUrl', values.linkedinUrl);
+    formData.append('company', values.company);
+    formData.append('school', values.school);
+
+    const companyId = companies?.find((company) => company.name === values.company)?.id;
+    const schoolId = companies?.find((school) => school.name === values.school)?.id;
 
     const profilePictureUploadResponse = await fetch(
       `/api/onboarding/blob-upload?filename=pfp-${session?.user.id}${profilePicture?.name.split("."[1])}`,
@@ -95,7 +150,7 @@ const Onboarding: React.FC = () => {
     const resumeBlob = (await resumeUploadResumeResponse.json()) as PutBlobResult;
 
 
-    const apiRes = await addProfileData(String(session?.user.id), values.linkedinUrl, resumeBlob.url, values.bio, profilePictureBlob.url);
+    const apiRes = await addProfileData(String(session?.user.id), values.linkedinUrl, resumeBlob.url, values.bio, profilePictureBlob.url, companyId, schoolId);
 
     if (apiRes?.ok) {
       router.push('/dashboard');
@@ -114,7 +169,7 @@ const Onboarding: React.FC = () => {
     }
   }
   
-  const addProfileData = async (userId: string, linkedinUrl: string, resumeUrl: string, bio: string, profilePicture: string) => {
+  const addProfileData = async (userId: string, linkedinUrl: string, resumeUrl: string, bio: string, profilePicture: string, companyId: number, schoolId: number) => {
     try {
       const res = await fetch('/api/add-profile-data', {
         method: 'POST',
@@ -127,6 +182,8 @@ const Onboarding: React.FC = () => {
           resumeUrl,
           bio,
           profilePicture,
+          schoolId,
+          companyId
         })
       });
       return res;
@@ -142,6 +199,88 @@ const Onboarding: React.FC = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-100 h-full flex flex-col justify-between">
             <div className='flex flex-col'>
+              <div className='mb-5 flex flex-row justify-between'>
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem className='w-1/2 me-2'>
+                      <FormLabel>I am best described as a...</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select your role" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Student">Student</SelectItem>
+                          <SelectItem value="Industry">Industry Professional</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {form.watch("role") === "Student" && (
+                  <FormField
+                    control={form.control}
+                    name="school"
+                    render={({ field }) => (
+                      <FormItem className='w-1/2 ms-2'>
+                        <FormLabel>School/University</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a University" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {schools?.map((school) => {
+                              return (
+                                <SelectGroup key={school.id} title={school.name}>
+                                  <SelectItem value={school.name}>{school.name}</SelectItem>
+                                </SelectGroup>
+                              )
+                            }, [])}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+                {form.watch("role") === "Industry" && (
+                  <FormField
+                    control={form.control}
+                    name="company"
+                    render={({ field }) => (
+                      <FormItem className='w-1/2 ms-2'>
+                        <FormLabel>Company</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a Company" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {companies?.map((company) => {
+                              return (
+                                <SelectGroup key={company.id} title={company.name}>
+                                  <SelectItem value={company.name}>{company.name}</SelectItem>
+                                </SelectGroup>
+                              )
+                            }, [])}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+              </div>
+                    
+              
+
               <div className='mb-5'>
                 <FormField
                   control={form.control}
@@ -169,7 +308,7 @@ const Onboarding: React.FC = () => {
                     <FormItem>
                       <FormLabel>Bio</FormLabel>
                       <FormControl>
-                        <TextArea placeholder="Hi, I love cats..." {...field} />
+                        <TextArea placeholder="About me..." {...field} />
                       </FormControl>
                       <FormDescription>
                         Tell us a little blurb about yourself.
@@ -240,7 +379,7 @@ const Onboarding: React.FC = () => {
               
             </div>
             
-            <Button type="submit">Submit</Button>
+            <LoadingButton type="submit">Submit</LoadingButton>
           </form>
         </Form>
       </div>

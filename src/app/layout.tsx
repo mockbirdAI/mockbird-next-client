@@ -5,6 +5,8 @@ import Navbar from "@/common/components/Navbar";
 import Footer from "@/common/components/Footer";
 import { Toaster } from "@/common/components/ui/toaster";
 import Provider from "@/common/components/Provider";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 const inter = Inter({ subsets: ["latin"] });
 const lato = Lato({ subsets: ["latin"], weight: "400" });
@@ -25,7 +27,9 @@ export default function RootLayout({
         <Provider>
           <main className={lato.className}>
             <Navbar />
-              {children}
+              <Suspense fallback={<Loading />}>
+                {children}
+              </Suspense>
             <Footer />
             <Toaster />
           </main>

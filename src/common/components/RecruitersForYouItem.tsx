@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/common/components/ui/Avatar";
 import { Button } from "./ui/Button";
 import { useRouter } from "next/navigation";
+import LoadingButton from "./LoadingButton";
 
 interface RecruitersForYouProps {
   userId: string;
@@ -29,12 +30,12 @@ export const RecruitersForYou = ({ userId, profilePicture, firstName, lastName, 
         </div>
         
         <div className="ml-auto font-medium">
-          <Button 
+          <LoadingButton 
             variant="default"
             onClick={() => router.push(`/recruiter/${userId}`)}
           >
             View Profile
-          </Button>
+          </LoadingButton>
         </div>
       </div>
   )
