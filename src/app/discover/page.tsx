@@ -22,10 +22,6 @@ import { InterviewListItem } from '@/common/components/InterviewListItem';
 import { RecruitersForYou } from '@/common/components/RecruitersForYouItem';
 import { redirect } from 'next/navigation';
 
-interface SessionProps {
-  session: any;
-}
-
 async function getRecruiters() {
   const recruiters = await prisma.user.findMany({
     where: {
@@ -65,7 +61,7 @@ async function getUserData() {
   return userData || [];
 }
 
-const Discover: React.FC<SessionProps> = async ({ session }) => {
+const Discover: React.FC = async () => {
   const recruiters = await getRecruiters();
   const userData = await getUserData();
   if (userData.profile === null) {
