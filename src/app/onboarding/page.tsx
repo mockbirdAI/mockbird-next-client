@@ -33,6 +33,7 @@ import {
   SelectValue,
 } from "@/common/components/ui/Select"
 import LoadingButton from '@/common/components/LoadingButton';
+import { UserRole } from '@prisma/client';
 
 const formSchema = z.object({
   linkedinUrl: z.string().min(2, {
@@ -44,8 +45,8 @@ const formSchema = z.object({
   role: z.string(),
   school: z.string(),
   company: z.string(),
-  profilePicture: z.any(),
-  resume: z.any(),
+  profilePicture: z.any().optional(),
+  resume: z.any().optional(),
 })
 
 const Onboarding: React.FC = () => {
@@ -123,8 +124,25 @@ const Onboarding: React.FC = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const formData = new FormData();
     formData.append('linkedinUrl', values.linkedinUrl);
+    formData.append('role', values.role);
     formData.append('company', values.company);
     formData.append('school', values.school);
+
+    // if (values.role === "recruiter") {
+    //   await fetch(
+    //     `/api/update-user`,
+    //     {
+    //       method: 'POST',
+    //       body: JSON.stringify({
+    //         userId: session?.user.id,
+    //         role: UserRole.RECRUITER,
+    //       }),
+    //       headers: {
+    //         'Content-Type': 'application/json'
+    //       }
+    //     },
+    //   );
+    // }
 
     const companyId = companies?.find((company) => company.name === values.company)?.id;
     const schoolId = companies?.find((school) => school.name === values.school)?.id;
@@ -148,7 +166,6 @@ const Onboarding: React.FC = () => {
     );
 
     const resumeBlob = (await resumeUploadResumeResponse.json()) as PutBlobResult;
-
 
     const apiRes = await addProfileData(String(session?.user.id), values.linkedinUrl, resumeBlob.url, values.bio, profilePictureBlob.url, companyId, schoolId);
 
@@ -200,12 +217,12 @@ const Onboarding: React.FC = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-100 h-full flex flex-col justify-between">
             <div className='flex flex-col'>
               <div className='mb-5 flex flex-row justify-between'>
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="role"
                   render={({ field }) => (
                     <FormItem className='w-1/2 me-2'>
-                      <FormLabel>I am best described as a...</FormLabel>
+                      <FormLabel>I am signing up as a...</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -213,70 +230,68 @@ const Onboarding: React.FC = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Student">Student</SelectItem>
-                          <SelectItem value="Industry">Industry Professional</SelectItem>
+                          <SelectItem value="candidate">Candidate</SelectItem>
+                          <SelectItem value="recruiter">Recruiter</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                /> */}
+                <FormField
+                  control={form.control}
+                  name="school"
+                  render={({ field }) => (
+                    <FormItem className='w-full'>
+                      <FormLabel>School/University</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a University" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {schools?.map((school) => {
+                            return (
+                              <SelectGroup key={school.id} title={school.name}>
+                                <SelectItem value={school.name}>{school.name}</SelectItem>
+                              </SelectGroup>
+                            )
+                          }, [])}
                         </SelectContent>
                       </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                {form.watch("role") === "Student" && (
-                  <FormField
-                    control={form.control}
-                    name="school"
-                    render={({ field }) => (
-                      <FormItem className='w-1/2 ms-2'>
-                        <FormLabel>School/University</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a University" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {schools?.map((school) => {
-                              return (
-                                <SelectGroup key={school.id} title={school.name}>
-                                  <SelectItem value={school.name}>{school.name}</SelectItem>
-                                </SelectGroup>
-                              )
-                            }, [])}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-                {form.watch("role") === "Industry" && (
-                  <FormField
-                    control={form.control}
-                    name="company"
-                    render={({ field }) => (
-                      <FormItem className='w-1/2 ms-2'>
-                        <FormLabel>Company</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a Company" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {companies?.map((company) => {
-                              return (
-                                <SelectGroup key={company.id} title={company.name}>
-                                  <SelectItem value={company.name}>{company.name}</SelectItem>
-                                </SelectGroup>
-                              )
-                            }, [])}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
+              </div>
+              <div className='mb-5'>
+                <FormField
+                  control={form.control}
+                  name="company"
+                  render={({ field }) => (
+                    <FormItem className='w-full'>
+                      <FormLabel>Company</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a Company" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {companies?.map((company) => {
+                            return (
+                              <SelectGroup key={company.id} title={company.name}>
+                                <SelectItem value={company.name}>{company.name}</SelectItem>
+                              </SelectGroup>
+                            )
+                          }, [])}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
                     
               <div className='mb-5'>
@@ -333,7 +348,6 @@ const Onboarding: React.FC = () => {
                             accept="image/*"
                             ref={profilePictureRef}
                             onChange={handleProfilePictureChange}
-                            required
                           />
                         </label>
                       </FormControl>
@@ -362,7 +376,6 @@ const Onboarding: React.FC = () => {
                             accept=".doc,.docx,.pdf"
                             ref={resumeRef}
                             onChange={handleResumeChange}
-                            required
                           />
                         </label>
                       </FormControl>

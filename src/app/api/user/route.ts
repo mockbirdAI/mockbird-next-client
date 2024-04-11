@@ -15,9 +15,10 @@ const userSchema = z
       .string()
       .min(1, 'Password is required')
       .min(8, 'Password must have than 8 characters'),
-      confirmPassword: z.string().min(1, 'Password confirmation is required'),
+    confirmPassword: z.string().min(1, 'Password confirmation is required'),
+    role: z.string(),
   })
-  .refine((data) => String(data.password) === String(data.confirmPassword), {
+  .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
     message: 'Password do not match',
   });
@@ -25,7 +26,7 @@ const userSchema = z
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password, firstName, lastName } = userSchema.parse(body);
+    const { email, password, firstName, lastName, role } = userSchema.parse(body);
 
     // check if email already exists
     const existingUserByEmail = await prisma.user.findUnique({
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
         firstName, 
         lastName,
         password: hashedPassword,
-        role: UserRole.CANDIDATE, 
+        role: role as UserRole, 
       }
     });
 

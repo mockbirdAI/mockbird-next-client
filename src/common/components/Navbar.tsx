@@ -11,6 +11,7 @@ import { authOptions } from "@/lib/auth";
 import SignOutButton from "./SignOutButton";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 import ClickableAvatar from "./ClickableAvatar";
+import { UserRole } from "@prisma/client";
 
 const Navbar = async () => {
   const session = await getServerSession(authOptions);
@@ -93,7 +94,7 @@ const Navbar = async () => {
                 </>
               ) : (
                 <>
-                  <Link
+                  {session?.user.role === UserRole.CANDIDATE && <Link
                     className={buttonVariants({
                       variant: "outline",
                       size: "sm",
@@ -102,7 +103,7 @@ const Navbar = async () => {
                     href="/discover"
                   >
                     Discover
-                  </Link>
+                  </Link>}
                   <Link
                     className={buttonVariants({
                       variant: "outline",

@@ -20,6 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/common/components/ui
 import { InterviewRequestListItem } from '../InterviewRequestListItem';
 import { InterviewListItem } from '../InterviewListItem';
 import Calendar from '@/common/components/Calendar';
+import { redirect } from 'next/navigation';
 
 interface SessionProps {
   session: any;
@@ -49,6 +50,11 @@ async function getUserData() {
           status: InterviewStatus.SCHEDULED
         }
       },
+      profile: {
+        include: {
+          company: true
+        }
+      }
     }
   })
   return userData || [];
@@ -57,6 +63,10 @@ async function getUserData() {
 const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
   const userData = await getUserData();
   const calendarEvents: any = []
+
+  if (userData.profile === null) {
+    redirect('/onboarding')
+  }
 
   for (const interview of userData.recruiterInterviews) {
     calendarEvents.push({

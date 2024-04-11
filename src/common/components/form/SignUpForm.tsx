@@ -16,6 +16,8 @@ import { Button } from '@/common/components/ui/Button';
 import Link from 'next/link';
 import GoogleSignInButton from '@/common/components/GoogleSignInButton';
 import { useRouter } from 'next/navigation';
+import { UserRole } from '@prisma/client';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/Select';
 
 const FormSchema = z
   .object({
@@ -27,6 +29,7 @@ const FormSchema = z
       .min(1, 'Password is required')
       .min(8, 'Password must have than 8 characters'),
     confirmPassword: z.string().min(1, 'Password confirmation is required'),
+    role: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
@@ -43,6 +46,7 @@ const SignUpForm = () => {
       firstName: '',
       lastName: '',
       confirmPassword: '',
+      role: UserRole.CANDIDATE,
     },
   });
 
@@ -58,6 +62,7 @@ const SignUpForm = () => {
         confirmPassword: values.confirmPassword,
         firstName: values.firstName,
         lastName: values.lastName,
+        role: values.role,
       }),
     });
 
@@ -133,7 +138,7 @@ const SignUpForm = () => {
             name='confirmPassword'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
                   <Input
                     type='password'
@@ -141,6 +146,27 @@ const SignUpForm = () => {
                     {...field}
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem className='w-full me-2'>
+                <FormLabel>I am signing up as a...</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your role" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value={UserRole.CANDIDATE}>Candidate</SelectItem>
+                    <SelectItem value={UserRole.RECRUITER}>Recruiter</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
