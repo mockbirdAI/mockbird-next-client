@@ -41,7 +41,10 @@ export const InterviewListItem = ({ interviewToken, candidate, scheduledTime, in
               <CancelInterviewButton interviewId={interviewId} />
             </div>
             <div className="mx-1">
-              <Button onClick={() => router.push(`/meeting/${interviewToken}`)}>Join Meeting</Button>
+            {
+                Math.abs(new Date().getTime() - scheduledTime.getTime()) <= 1 * 60 * 60 * 1000 &&
+                <Button onClick={() => router.push(`/meeting/${interviewToken}`)}>Join Meeting</Button>
+              }
             </div>
           </div>
         </div>

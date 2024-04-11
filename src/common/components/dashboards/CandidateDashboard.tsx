@@ -21,6 +21,7 @@ import { InterviewRequestListItem } from '../InterviewRequestListItem';
 import { InterviewListItem } from '../InterviewListItem';
 import { RecruitersForYou } from '../RecruitersForYouItem';
 import { redirect } from 'next/navigation';
+import Calendar from '@/common/components/Calendar';
 
 interface SessionProps {
   session: any;
@@ -30,6 +31,13 @@ async function getRecruiters() {
   const recruiters = await prisma.user.findMany({
     where: {
       role: UserRole.RECRUITER
+    },
+    include: {
+      profile: {
+        include: {
+          company: true,
+        }
+      }
     }
   })
   return recruiters || [];
@@ -71,6 +79,20 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
   if (userData.profile === null) {
     redirect('/onboarding')
   }
+
+  const calendarEvents: any = []
+
+  for (const interview of userData.candidateInterviews) {
+    calendarEvents.push({
+      title: `Interview with ${interview.recruiter.firstName} ${interview.recruiter.lastName}`,
+      start: interview.scheduledTime,
+      end: new Date(interview.scheduledTime.getTime() + 60 * 60 * 1000),
+      allDay: false,
+    })
+  }
+
+  console.log(calendarEvents);
+
   return (
     <div className='h-screen'>
       <ScrollArea className="h-full">
@@ -86,6 +108,9 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="calendar">
+                Calendar
+              </TabsTrigger>
               <TabsTrigger value="requests">
                 Requests
               </TabsTrigger>
@@ -208,10 +233,11 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                         <RecruitersForYou 
                           key={recruiter.id}
                           userId={recruiter.id}
-                          profilePicture="" 
+                          profilePicture={recruiter.profile?.profilePicture}
                           firstName={recruiter.firstName} 
                           lastName={recruiter.lastName} 
                           role={recruiter.role} 
+                          company={recruiter.profile?.company?.name}
                         />
                       )
                     }, [])}
@@ -244,6 +270,21 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                   </CardContent>
                 </Card>
               </div>
+            </TabsContent>
+            <TabsContent value="calendar" className="space-y-4">
+              <Card className="col-span-4 md:col-span-3">
+                <CardHeader>
+                  <CardTitle>Calendar</CardTitle>
+                  <CardDescription>
+                    View your upcoming interviews and events.
+                  </CardDescription>  
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <Calendar events={calendarEvents} />
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
             <TabsContent value="requests" className="space-y-4">
               <Card className="col-span-4 md:col-span-3">

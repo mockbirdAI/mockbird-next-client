@@ -7,25 +7,26 @@ import LoadingButton from "./LoadingButton";
 
 interface RecruitersForYouProps {
   userId: string;
-  profilePicture: string;
+  profilePicture: string | undefined | null;
   firstName: string;
   lastName: string;
   role: string;
+  company: string | undefined;
 }
 
 
-export const RecruitersForYou = ({ userId, profilePicture, firstName, lastName, role }: RecruitersForYouProps) => {
+export const RecruitersForYou = ({ userId, profilePicture, firstName, lastName, role, company }: RecruitersForYouProps) => {
   const router = useRouter();
   return (
     <div className="flex my-3 mx-2 items-center">
         <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/01.png" alt="Avatar" />
+          <AvatarImage src={String(profilePicture)} alt="Avatar" />
           <AvatarFallback>{firstName.charAt(0)}{lastName.charAt(0)}</AvatarFallback>
         </Avatar>
         <div className="ml-4 space-y-1">
           <p className="text-sm font-medium leading-none">{firstName} {lastName}</p>
           <p className="text-sm text-muted-foreground">
-            {role}
+            {company ? company : role}
           </p>
         </div>
         

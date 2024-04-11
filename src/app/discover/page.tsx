@@ -3,23 +3,7 @@ import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { RequestStatus, UserRole, InterviewStatus } from '@prisma/client';
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/common/components/ui/Card";
-
-import { CalendarDateRangePicker } from "@/common/components/ui/DateRangePicker";
-import { Overview } from "@/common/components/Overview";
-import { Button } from "@/common/components/ui/Button";
 import { ScrollArea } from "@/common/components/ui/ScrollArea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/common/components/ui/Tabs";
-import { InterviewRequestListItem } from '@/common/components/InterviewRequestListItem';
-import { InterviewListItem } from '@/common/components/InterviewListItem';
-import { RecruitersForYou } from '@/common/components/RecruitersForYouItem';
 import { redirect } from 'next/navigation';
 
 async function getRecruiters() {

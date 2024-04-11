@@ -19,6 +19,7 @@ import { ScrollArea } from "@/common/components/ui/ScrollArea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/common/components/ui/Tabs";
 import { InterviewRequestListItem } from '../InterviewRequestListItem';
 import { InterviewListItem } from '../InterviewListItem';
+import Calendar from '@/common/components/Calendar';
 
 interface SessionProps {
   session: any;
@@ -53,8 +54,18 @@ async function getUserData() {
   return userData || [];
 }
 
-const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
+const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
   const userData = await getUserData();
+  const calendarEvents: any = []
+
+  for (const interview of userData.recruiterInterviews) {
+    calendarEvents.push({
+      title: `Interview with ${interview.candidate.firstName} ${interview.candidate.lastName}`,
+      start: interview.scheduledTime,
+      end: new Date(interview.scheduledTime.getTime() + 60 * 60 * 1000),
+      allDay: false,
+    })
+  }
   return (
     <div className="h-screen">
       <ScrollArea className="h-full">
@@ -71,6 +82,9 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="calendar">
+                Calendar
+              </TabsTrigger>
               <TabsTrigger value="requests">
                 Requests
               </TabsTrigger>
@@ -219,6 +233,21 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                 </Card>
               </div>
             </TabsContent>
+            <TabsContent value="calendar" className="space-y-4">
+              <Card className="col-span-4 md:col-span-3">
+                <CardHeader>
+                  <CardTitle>Calendar</CardTitle>
+                  <CardDescription>
+                    View your upcoming interviews and events.
+                  </CardDescription>  
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <Calendar events={calendarEvents} />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
             <TabsContent value="requests" className="space-y-4">
               <Card className="col-span-4 md:col-span-3">
                 <CardHeader>
@@ -281,4 +310,4 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
   );
 };
 
-export default CandidateDashboard;
+export default RecruiterDashboard;
