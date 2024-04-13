@@ -33,18 +33,34 @@ export default async function Home() {
         Empowering candidates and recruiters with innovative tools and support.
         </p>
 
-        <Link
-          className={cn(
-            buttonVariants({
-              size: "lg",
-              className: "mt-5",
-            }),
-            "text-lg",
-          )}
-          href={"/dashboard"}
-        >
-          Start Prepping Now
-        </Link>
+        {
+          process.env.NODE_ENV === "production" ? 
+          <Link
+            className={cn(
+              buttonVariants({
+                size: "lg",
+                className: "mt-5",
+              }),
+              "text-lg",
+            )}
+            href={"https://forms.gle/n9siDSWyFAxVmAh98"}
+          >
+            Join the Waitlist
+          </Link> 
+        : 
+          <Link
+            className={cn(
+              buttonVariants({
+                size: "lg",
+                className: "mt-5",
+              }),
+              "text-lg",
+            )}
+            href={"/dashboard"}
+          >
+            Start Prepping Now
+          </Link>
+        }
       </MaxWidthWrapper>
 
       {/* Value Prop */}

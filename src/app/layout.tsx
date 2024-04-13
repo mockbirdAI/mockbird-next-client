@@ -7,6 +7,8 @@ import { Toaster } from "@/common/components/ui/toaster";
 import Provider from "@/common/components/Provider";
 import { Suspense } from "react";
 import Loading from "./loading";
+import { redirect } from "next/navigation";
+import ProdNavbar from "@/common/components/ProdNavbar";
 
 const inter = Inter({ subsets: ["latin"] });
 const lato = Lato({ subsets: ["latin"], weight: "400" });
@@ -26,7 +28,10 @@ export default function RootLayout({
       <body>
         <Provider>
           <main className={lato.className}>
-            <Navbar />
+            {process.env.NODE_ENV === "production" ? (
+              <ProdNavbar />
+            ) : <Navbar /> }
+            
               <Suspense fallback={<Loading />}>
                 {children}
               </Suspense>
