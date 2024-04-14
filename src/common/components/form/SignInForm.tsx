@@ -16,6 +16,8 @@ import { Button } from '@/common/components/ui/Button';
 import Link from 'next/link';
 import GoogleSignInButton from '@/common/components/GoogleSignInButton';
 import { signIn } from 'next-auth/react';
+import LoadingButton from '@/common/components/LoadingButton';
+import { useState } from 'react';
 
 const FormSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email'),
@@ -35,12 +37,14 @@ const SignInForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    setSignInLoading(true);
     const signInData = await signIn('credentials', {
       email: values.email,
       password: values.password,
       redirect: true, 
       callbackUrl: '/dashboard'
     });
+    setSignInLoading(false);
     // if (!signInData || signInData?.error) {
     //   toast({
     //     title: "Sign in failed",
@@ -49,6 +53,8 @@ const SignInForm = () => {
     //   })
     // }
   };
+
+  const [signInLoading, setSignInLoading] = useState(false);
 
   return (
     <Form {...form}>
@@ -85,9 +91,9 @@ const SignInForm = () => {
             )}
           />
         </div>
-        <Button className='w-full mt-6' type='submit'>
+        <LoadingButton loading={signInLoading} className='w-full mt-6' type='submit'>
           Sign in
-        </Button>
+        </LoadingButton>
       </form>
       <div className='mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400'>
         or
