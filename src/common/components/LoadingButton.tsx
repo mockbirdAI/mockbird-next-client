@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, ButtonProps } from '@/common/components/ui/Button'; // Adjust the import path to where your Button component is
 import { Loader2 } from "lucide-react";
 
-const LoadingButton: React.FC<ButtonProps & { loading?: boolean }> = ({ children, loading, onClick, ...props }) => {
+const LoadingButton: React.FC<ButtonProps & { loading?: boolean }> = ({ children, loading, ...props }) => {
 
   const Spinner = () => {
     return (

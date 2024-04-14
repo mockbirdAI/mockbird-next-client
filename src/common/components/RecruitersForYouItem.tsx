@@ -4,6 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/common/components/ui/Avat
 import { Button } from "./ui/Button";
 import { useRouter } from "next/navigation";
 import LoadingButton from "./LoadingButton";
+import Loading from "@/app/loading";
+import { useState } from "react";
 
 interface RecruitersForYouProps {
   userId: string;
@@ -17,6 +19,7 @@ interface RecruitersForYouProps {
 
 export const RecruitersForYou = ({ userId, profilePicture, firstName, lastName, role, company }: RecruitersForYouProps) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   return (
     <div className="flex my-3 mx-2 items-center">
         <Avatar className="h-9 w-9">
@@ -33,7 +36,13 @@ export const RecruitersForYou = ({ userId, profilePicture, firstName, lastName, 
         <div className="ml-auto font-medium">
           <LoadingButton 
             variant="default"
-            onClick={() => router.push(`/recruiter/${userId}`)}
+            loading={loading}
+            onClick={() => {
+                setLoading(true)
+                router.push(`/recruiter/${userId}`)
+                setLoading(false);
+              }
+            }
           >
             View Profile
           </LoadingButton>
