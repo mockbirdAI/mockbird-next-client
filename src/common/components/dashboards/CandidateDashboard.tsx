@@ -303,7 +303,7 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                         return (
                           <InterviewRequestListItem
                             key={request.id} 
-                            candidate={request.recruiter}
+                            otherUser={request.recruiter}
                             proposedTime={request.proposedTime}
                             requestId={request.id}
                           />
@@ -330,7 +330,7 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                       return (
                         <InterviewListItem
                           key={interview.id} 
-                          interviewToken={interview.hostToken}
+                          interviewToken={interview.userToken}
                           candidate={interview.recruiter}
                           scheduledTime={interview.scheduledTime}
                           interviewId={interview.id}

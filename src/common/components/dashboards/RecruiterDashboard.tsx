@@ -275,7 +275,7 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
                         return (
                           <InterviewRequestListItem
                             key={request.id} 
-                            candidate={request.candidate}
+                            otherUser={request.candidate}
                             proposedTime={request.proposedTime}
                             requestId={request.id}
                           />

@@ -43,20 +43,23 @@ const declineInterview = async (requestId: number) => {
   }
 }
 
-export const InterviewRequestListItem = ({ candidate, proposedTime, requestId }: any) => {
+export const InterviewRequestListItem = ({ otherUser, proposedTime, requestId }: any) => {
   const router = useRouter();
   const { data: session } = useSession();
   const { toast } = useToast();
+  const candidateId = session?.user?.role === 'CANDIDATE' ? session.user.id : otherUser.id;
+  const recruiterId = session?.user?.role === 'RECRUITER' ? session.user.id : otherUser.id;
+  
   return (
     <div className="flex items-center">
         <Avatar className="h-9 w-9">
           <AvatarImage src="/avatars/01.png" alt="Avatar" />
-          <AvatarFallback>{candidate.firstName.charAt(0)}{candidate.lastName.charAt(0)}</AvatarFallback>
+          <AvatarFallback>{otherUser.firstName.charAt(0)}{otherUser.lastName.charAt(0)}</AvatarFallback>
         </Avatar>
         <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">{candidate.firstName} {candidate.lastName}</p>
+          <p className="text-sm font-medium leading-none">{otherUser.firstName} {otherUser.lastName}</p>
           <p className="text-sm text-muted-foreground">
-            {candidate.email}
+            {otherUser.email}
           </p>
           <p className="text-sm text-muted-foreground">
             {proposedTime.toDateString()} @ {proposedTime.toTimeString()}
@@ -70,7 +73,7 @@ export const InterviewRequestListItem = ({ candidate, proposedTime, requestId }:
                 <Button 
                   variant="default"
                   onClick={async () => {
-                    await acceptInterview(candidate.id, String(session?.user.id), proposedTime, requestId);
+                    await acceptInterview(candidateId, recruiterId, proposedTime, requestId);
                     toast({
                       title: 'Interview Request Accepted',
                       description: 'You have accepted the interview request!',
