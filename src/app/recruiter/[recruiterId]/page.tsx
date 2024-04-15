@@ -82,6 +82,7 @@ const CandidateDashboard: React.FC<any> = async ({ params }: { params: { recruit
     status: RequestStatus.PENDING,
     createdAt: new Date(),
     updatedAt: new Date(),
+    paymentId: '',
   
   };
 
