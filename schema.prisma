@@ -105,6 +105,7 @@ model InterviewRequest {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   purpose      String?
+  paymentId    String?       @unique
   Interview    Interview?
   candidate    User          @relation("CandidateRequests", fields: [candidateId], references: [id])
   recruiter    User          @relation("RecruiterRequests", fields: [recruiterId], references: [id])

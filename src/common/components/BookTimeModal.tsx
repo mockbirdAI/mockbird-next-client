@@ -33,7 +33,7 @@ const stripePromise = loadStripe(
 );
 
 // Inside your modal component or wherever the booking happens
-const handleBooking = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, price: number) => {
+const handleBooking = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, price: number, recruiterName: string) => {
   const response = await fetch('/api/create-checkout-session', {
     method: 'POST',
     headers: {
@@ -45,6 +45,7 @@ const handleBooking = async (candidateId: string, recruiterId: string, proposedT
       recruiterId: recruiterId,
       proposedTime: proposedTime,
       purpose: purpose,
+      recruiterName: recruiterName,
     }),
   });
 
@@ -126,7 +127,7 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
         <DialogFooter>
           <Button
             onClick={async () => {
-              await handleBooking(String(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose, 40);
+              await handleBooking(String(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose, 40, recruiterUser.firstName + " " + recruiterUser.lastName);
               // setOpen(false);
               // toast({
               //   title: "Interview",
