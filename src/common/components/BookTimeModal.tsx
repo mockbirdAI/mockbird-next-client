@@ -20,12 +20,48 @@ import { useToast } from "./ui/use-toast";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SelectTimeSlots } from "./SelectTimeSlot";
+import { loadStripe } from '@stripe/stripe-js';
 
 interface BookTimeModalProps {
   disabled?: boolean;
   recruiterUser: RecruiterUser;
   recruiterProfile: RecruiterProfile;
 }
+
+const stripePromise = loadStripe(
+  String(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+);
+
+// Inside your modal component or wherever the booking happens
+const handleBooking = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, price: number) => {
+  const response = await fetch('/api/create-checkout-session', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      price: Number(price),
+      candidateId: candidateId,
+      recruiterId: recruiterId,
+      proposedTime: proposedTime,
+      purpose: purpose,
+    }),
+  });
+
+  const { sessionId } = await response.json();
+
+  if (response.ok && sessionId) {
+    const stripe = await stripePromise;
+    if (stripe) {
+      await stripe.redirectToCheckout({ sessionId });
+    }
+  } else {
+    // Handle error here, e.g., show a message to the user
+    console.error('Failed to create Stripe session:', response.statusText);
+    console.error("Session ID: ", sessionId)
+  }
+};
+
 
 const createInterviewRequest = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string) => {
   try {
@@ -90,13 +126,13 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
         <DialogFooter>
           <Button
             onClick={async () => {
-              await createInterviewRequest(String(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose);
-              setOpen(false);
-              toast({
-                title: "Interview",
-                description: "Interview request sent!",
-              })
-              router.refresh();
+              await handleBooking(String(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose, 40);
+              // setOpen(false);
+              // toast({
+              //   title: "Interview",
+              //   description: "Interview request sent!",
+              // })
+              // router.refresh();
             }}
             type="submit"
           >

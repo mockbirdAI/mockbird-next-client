@@ -1,66 +1,90 @@
-import type { Stripe } from "stripe";
+// pages/api/webhooks.js
+import { headers } from "next/headers"
+import Stripe from 'stripe';
+import { NextResponse } from 'next/server';
+const stripe = new Stripe(String(process.env.STRIPE_SECRET_KEY));
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-import { NextResponse } from "next/server";
+export const config = {
+  api: {
+    bodyParser: false, 
+  },
+};
 
-import { stripe } from "@/lib/stripe";
-
-export async function POST(req: Request) {
-  let event: Stripe.Event;
-
+const createInterviewRequest = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string) => {
   try {
-    event = stripe.webhooks.constructEvent(
-      await (await req.blob()).text(),
-      req.headers.get("stripe-signature") as string,
-      process.env.STRIPE_WEBHOOK_SECRET as string,
-    );
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    // On error, log and return the error message.
-    if (err! instanceof Error) console.log(err);
-    console.log(`❌ Error message: ${errorMessage}`);
-    return NextResponse.json(
-      { message: `Webhook Error: ${errorMessage}` },
-      { status: 400 },
-    );
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/create-interview-request`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        candidateId,
+        recruiterId,
+        purpose,
+        proposedTime
+      })
+    });
+  } catch (error) {
+    console.error(error);
   }
+}
 
-  // Successfully constructed event.
-  console.log("✅ Success:", event.id);
-
-  const permittedEvents: string[] = [
-    "checkout.session.completed",
-    "payment_intent.succeeded",
-    "payment_intent.payment_failed",
-  ];
-
-  if (permittedEvents.includes(event.type)) {
-    let data;
+export async function POST(req: any, res: NextResponse) {
+    // const buf = await buffer(req);
+    const signature = headers().get("stripe-signature") as string
+    let event;
+    const body = await req.text()
 
     try {
-      switch (event.type) {
-        case "checkout.session.completed":
-          data = event.data.object as Stripe.Checkout.Session;
-          console.log(`💰 CheckoutSession status: ${data.payment_status}`);
-          break;
-        case "payment_intent.payment_failed":
-          data = event.data.object as Stripe.PaymentIntent;
-          console.log(`❌ Payment failed: ${data.last_payment_error?.message}`);
-          break;
-        case "payment_intent.succeeded":
-          data = event.data.object as Stripe.PaymentIntent;
-          console.log(`💰 PaymentIntent status: ${data.status}`);
-          break;
-        default:
-          throw new Error(`Unhandled event: ${event.type}`);
-      }
-    } catch (error) {
-      console.log(error);
-      return NextResponse.json(
-        { message: "Webhook handler failed" },
-        { status: 500 },
-      );
+      event = stripe.webhooks.constructEvent(body, signature, String(webhookSecret));
+    } catch (err: any) {
+      console.log(`❌ Error message: ${err.message}`);
+      return NextResponse.json(`Webhook Error: ${err.message}`);
     }
-  }
-  // Return a response to acknowledge receipt of the event.
-  return NextResponse.json({ message: "Received" }, { status: 200 });
-}
+
+    console.log('✅ Success:', event.id);
+    
+    // switch (event.type) {
+    //   case 'payment_intent.succeeded': {
+    //     const session = event.data.object;
+    //     const { candidateId, recruiterId, proposedTime, purpose } = session.metadata;
+  
+    //     // Here you can call your API to create an interview
+    //     await createInterviewRequest(candidateId, recruiterId, new Date(proposedTime), purpose);
+    //     break;
+    //   }
+    //   case 'payment_intent.payment_failed': {
+    //     const paymentIntent = event.data.object;
+    //     console.log(
+    //       `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`
+    //     );
+    //     break;
+    //   }
+    //   case 'charge.succeeded': {
+    //     const charge = event.data.object;
+    //     console.log(`Charge id: ${charge.id}`);
+    //     break;
+    //   }
+    //   default: {
+    //     console.warn(`Unhandled event type: ${event.type}`);
+    //     break;
+    //   }
+    // }
+
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      const { candidateId, recruiterId, proposedTime, purpose }: any = session.metadata;
+      console.log(session.metadata);
+
+      // Here you can call your API to create an interview
+      try {
+        console.log("CANDIDATE ID: ", candidateId);
+        await createInterviewRequest(candidateId, recruiterId, proposedTime, purpose);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    return NextResponse.json({ received: true });
+};
