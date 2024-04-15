@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
 
-      <Script strategy="lazyOnload" id="clarity-script">
+      <script type="text/javascript">
         {`
           (function(c,l,a,r,i,t,y){
             c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -36,7 +36,7 @@ export default function RootLayout({
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
           })(window, document, "clarity", "script", "lx54jv1870");
         `}
-      </Script>
+      </script>
 
       <body>
         <Provider>
