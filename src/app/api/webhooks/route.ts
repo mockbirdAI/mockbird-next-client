@@ -5,12 +5,6 @@ import { NextResponse } from 'next/server';
 const stripe = new Stripe(String(process.env.STRIPE_SECRET_KEY));
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-export const config = {
-  api: {
-    bodyParser: false, 
-  },
-};
-
 const createInterviewRequest = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string) => {
   try {
     const res = await fetch(`${process.env.NEXTAUTH_URL}/api/create-interview-request`, {
