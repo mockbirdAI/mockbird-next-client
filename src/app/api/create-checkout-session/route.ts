@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       }],
       mode: 'payment',
       // success_url: `${req.headers.get('origin')}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      success_url: `${req.headers.get('origin')}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${req.headers.get('origin')}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get('origin')}/payment-cancelled`,
       metadata: {
         candidateId,
