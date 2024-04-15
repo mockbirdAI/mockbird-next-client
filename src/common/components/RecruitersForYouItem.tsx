@@ -1,10 +1,8 @@
 'use client';
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/common/components/ui/Avatar";
-import { Button } from "./ui/Button";
 import { useRouter } from "next/navigation";
 import LoadingButton from "./LoadingButton";
-import Loading from "@/app/loading";
 import { useState } from "react";
 
 interface RecruitersForYouProps {
