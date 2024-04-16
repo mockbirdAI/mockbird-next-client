@@ -4,7 +4,7 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   // https://github.com/stripe/stripe-node#configuration
   apiVersion: "2023-10-16",
   appInfo: {
-    name: "StealthXI",
-    url: "https://stealthxi.com",
+    name: "Mockbird",
+    url: "https://www.mockbird.ai",
   },
 });
