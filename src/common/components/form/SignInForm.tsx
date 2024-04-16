@@ -54,6 +54,16 @@ const SignInForm = () => {
     // }
   };
 
+  const signInWithLinkedIn = async () => {
+    setSignInLoading(true);
+    try {
+      const signInData = await signIn('linkedin');
+    } catch (error) {
+      console.error(error);
+    }
+    setSignInLoading(false);
+  }
+
   const [signInLoading, setSignInLoading] = useState(false);
 
   return (
@@ -98,7 +108,7 @@ const SignInForm = () => {
       <div className='mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400'>
         or
       </div>
-      <GoogleSignInButton>Sign in with Google</GoogleSignInButton>
+      <Button className='w-full' onClick={() => signInWithLinkedIn()}>Sign in with LinkedIn</Button>
       <p className='text-center text-sm text-gray-600 mt-2'>
         If you don&apos;t have an account, please&nbsp;
         <Link className='text-blue-500 hover:underline' href='/sign-up'>

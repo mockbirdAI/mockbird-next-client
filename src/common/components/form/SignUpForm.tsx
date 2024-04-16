@@ -18,6 +18,7 @@ import GoogleSignInButton from '@/common/components/GoogleSignInButton';
 import { useRouter } from 'next/navigation';
 import { UserRole } from '@prisma/client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/Select';
+import { signIn } from 'next-auth/react';
 
 const FormSchema = z
   .object({
@@ -71,6 +72,10 @@ const SignUpForm = () => {
     } else {
       console.error('An error occurred. Please try again.');
     }
+  };
+
+  const signUpWithLinkedIn = async () => {
+    await signIn('linkedin');
   };
 
   return (
@@ -179,7 +184,7 @@ const SignUpForm = () => {
       <div className='mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400'>
         or
       </div>
-      <GoogleSignInButton>Sign up with Google</GoogleSignInButton>
+      <Button className='w-full' onClick={() => signUpWithLinkedIn()} >Sign up with LinkedIn</Button>
       <p className='text-center text-sm text-gray-600 mt-2'>
         If you already have an account, please&nbsp;
         <Link className='text-blue-500 hover:underline' href='/sign-in'>
