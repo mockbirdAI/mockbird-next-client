@@ -67,6 +67,17 @@ async function getRecruiterProfile(id: string) {
   }
 }
 
+export async function generateMetadata({ params }: { params: { recruiterId: string } }) {
+  const recruiterProfile = await getRecruiterProfile(params.recruiterId);
+  const recruiterUser = await getRecruiterUser(params.recruiterId);
+  return {
+    title: `${recruiterUser?.firstName} ${recruiterUser?.lastName}`,
+    description: recruiterProfile?.bio,
+    image: recruiterProfile?.profilePicture,
+    url: `https://mockbird.ai/recruiter/${params.recruiterId}`,
+  }
+}
+
 const CandidateDashboard: React.FC<any> = async ({ params }: { params: { recruiterId: string } }) => {
   const recruiterProfile = await getRecruiterProfile(params.recruiterId);
   const recruiterUser = await getRecruiterUser(params.recruiterId);

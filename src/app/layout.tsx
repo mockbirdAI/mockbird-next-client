@@ -16,8 +16,29 @@ const inter = Inter({ subsets: ["latin"] });
 const lato = Lato({ subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
-  title: "Mockbird",
-  description: "Ace your Next Interview",
+  title: {
+    template: '%s - Mockbird',
+    default: 'Mockbird',
+  },
+  openGraph: {
+    title: 'Mockbird',
+    description: 'Enabling candidates to practice and seek feedback from verified recruiters in industry.',
+    locale: 'en_US',
+    siteName: 'Mockbird',
+    type: 'website',
+    images: [
+      {
+        url: 'https://www.mockbird.ai/mockbird_logo.svg',
+        width: 500,
+        height: 500,
+        alt: 'mockbird logo',
+      },
+    ],
+  },
+  description: "Enabling candidates to practice and seek feedback from verified recruiters in industry.",
+  alternates: {
+    canonical: "https://www.mockbird.ai",
+  }
 };
 
 export default function RootLayout({
