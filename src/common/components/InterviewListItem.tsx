@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { User } from "@prisma/client";
 import CancelInterviewButton from "./CancelInterviewButton";
+import LoadingButton from "./LoadingButton";
+import { useState } from "react";
 
 interface InterviewCardProps {
   candidate: User;
@@ -17,6 +19,7 @@ interface InterviewCardProps {
 
 export const InterviewListItem = ({ interviewToken, candidate, scheduledTime, interviewId }: InterviewCardProps) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const { toast } = useToast();
   
@@ -44,7 +47,16 @@ export const InterviewListItem = ({ interviewToken, candidate, scheduledTime, in
             <div className="mx-1">
             {
                 Math.abs(new Date().getTime() - scheduledTime.getTime()) <= 1 * 60 * 60 * 1000 &&
-                <Button onClick={() => router.push(`/meeting/${interviewToken}`)}>Join Meeting</Button>
+                <LoadingButton 
+                  onClick={() => {
+                    setLoading(true);
+                    router.push(`/meeting/${interviewToken}`);
+                    setLoading(false)
+                  }}
+                  loading={loading}
+                >
+                  Join Meeting
+                </LoadingButton>
               }
             </div>
           </div>

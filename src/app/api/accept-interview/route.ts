@@ -13,8 +13,60 @@ export async function POST(request: any) {
   let dyteMeetingId;
   let hostToken;
   let userToken;
+  
 
   const meetingURL = 'https://api.dyte.io/v2/meetings';
+
+  const optionBody = {
+    "title": "string",
+    "preferred_region": "us-east-1",
+    "record_on_start": true,
+    "live_stream_on_start": false,
+    "recording_config": {
+      "max_seconds": 3600,
+      "file_name_prefix": String(candidateId + "-"),
+      "video_config": {
+        "codec": "H264",
+        "width": 1280,
+        "height": 720,
+        "watermark": {
+          "url": "https://mockbird.ai",
+          "size": {
+            "width": 1,
+            "height": 1
+          },
+          "position": "left top"
+        },
+        "export_file": true
+      },
+      "audio_config": {
+        "codec": "AAC",
+        "channel": "stereo",
+        "export_file": false
+      },
+      "storage_config": {
+        "type": "azure",
+        "access_key": process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY,
+        "secret": "string",
+        "bucket": "mockbirdmeetings",
+        "region": "us-east-1",
+        "path": "string",
+        "auth_method": "KEY",
+        "username": "string",
+        "password": "string",
+        "host": "string",
+        "port": 0,
+        "private_key": "string"
+      },
+      "dyte_bucket_config": {
+        "enabled": true
+      },
+      "live_streaming_config": {
+        "rtmp_url": "rtmp://a.rtmp.youtube.com/live2"
+      }
+    }
+  }
+
   const options = {
     method: 'POST',
     headers: {
@@ -22,11 +74,13 @@ export async function POST(request: any) {
       Accept: 'application/json',
       Authorization: `Basic ${dyteAuth}`
     },
-    body: '{"title":"string","preferred_region":"us-east-1","record_on_start":false,"live_stream_on_start":false,"recording_config":{"max_seconds":60,"file_name_prefix":"string","video_config":{"codec":"H264","width":1280,"height":720,"watermark":{"url":"https://mockbird.ai","size":{"width":1,"height":1},"position":"left top"},"export_file":true},"audio_config":{"codec":"AAC","channel":"stereo","export_file":true},"storage_config":{"type":"aws","access_key":"string","secret":"string","bucket":"string","region":"us-east-1","path":"string","auth_method":"KEY","username":"string","password":"string","host":"string","port":0,"private_key":"string"},"dyte_bucket_config":{"enabled":true},"live_streaming_config":{"rtmp_url":"rtmp://a.rtmp.youtube.com/live2"}}}'
+    body: JSON.stringify(optionBody)
   };
   
   try {
+    console.log(JSON.parse(options.body).recording_config.storage_config.access_key)
     const response = await fetch(meetingURL, options);
+    console.log(response)
     const data = await response.json();
     dyteMeetingId = data.data.id;
   } catch (error) {

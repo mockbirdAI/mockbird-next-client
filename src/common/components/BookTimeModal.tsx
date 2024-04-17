@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SelectTimeSlots } from "./SelectTimeSlot";
 import { loadStripe } from '@stripe/stripe-js';
+import LoadingButton from "./LoadingButton";
 
 interface BookTimeModalProps {
   disabled?: boolean;
@@ -88,6 +89,7 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
   const [open, setOpen] = useState(false);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null);
   const [purpose, setPurpose] = useState('');
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -125,8 +127,9 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
           </div>
         </div>
         <DialogFooter>
-          <Button
+          <LoadingButton
             onClick={async () => {
+              setLoading(true);
               await handleBooking(String(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose, 40, recruiterUser.firstName + " " + recruiterUser.lastName);
               // setOpen(false);
               // toast({
@@ -134,11 +137,13 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
               //   description: "Interview request sent!",
               // })
               // router.refresh();
+              setLoading(false);
             }}
+            loading={loading}
             type="submit"
           >
             Send Interview Request
-          </Button>
+          </LoadingButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

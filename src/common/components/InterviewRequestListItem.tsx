@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { UserRole } from "@prisma/client";
 import CancelInterviewRequestButton from "./CancelInterviewRequestButton";
+import LoadingButton from "./LoadingButton";
+import { useState } from "react";
 
 const acceptInterview = async (candidateId: string, recruiterId: string, proposedTime: Date, requestId: number) => {
   try {
@@ -45,6 +47,7 @@ const declineInterview = async (requestId: number) => {
 
 export const InterviewRequestListItem = ({ otherUser, proposedTime, requestId }: any) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const { toast } = useToast();
   const candidateId = session?.user?.role === 'CANDIDATE' ? session.user.id : otherUser.id;
@@ -70,33 +73,39 @@ export const InterviewRequestListItem = ({ otherUser, proposedTime, requestId }:
           <div className='d-flex flex-col mt-3'>
             {session?.user.role == UserRole.RECRUITER ? (
               <div>
-                <Button 
+                <LoadingButton 
                   variant="default"
                   onClick={async () => {
+                    setLoading(true);
                     await acceptInterview(candidateId, recruiterId, proposedTime, requestId);
                     toast({
                       title: 'Interview Request Accepted',
                       description: 'You have accepted the interview request!',
                     });
                     router.refresh();
+                    setLoading(false);
                   }}
+                  loading={loading}
                 >
                   Accept
-                </Button>
-                <Button 
+                </LoadingButton>
+                <LoadingButton 
                   variant="destructive"
                   className='ms-2'
                   onClick={async () => {
+                    setLoading(true)
                     await declineInterview(requestId);
                     toast({
                       title: 'Interview Request Declined',
                       description: 'You have declined the interview request!',
                     });
                     router.refresh();
+                    setLoading(false)
                   }}
+                  loading={loading}
                 >
                   Decline
-                </Button>
+                </LoadingButton>
               </div>
             ) : (
               <CancelInterviewRequestButton requestId={requestId} />

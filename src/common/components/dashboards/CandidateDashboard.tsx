@@ -174,7 +174,7 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">StealthXI Score</CardTitle>
+                    <CardTitle className="text-sm font-medium">Mockbird Score</CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"

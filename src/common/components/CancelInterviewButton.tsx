@@ -1,10 +1,11 @@
 'use client';
 
 // CancelRequestButton.client.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/common/components/ui/Button';
 import { useToast } from './ui/use-toast';
 import { useRouter } from 'next/navigation';
+import LoadingButton from './LoadingButton';
 
 interface CancelInterviewButtonProps {
   interviewId: number;
@@ -29,22 +30,30 @@ const cancelInterview = async (interviewId: number) => {
 const CancelInterviewButton: React.FC<CancelInterviewButtonProps> = ({ interviewId }) => {
   const { toast } = useToast();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   return (
-    <Button onClick={async () => {
-      try {
-        await cancelInterview(interviewId);
-        toast({
-          title: 'Interview Cancelled',
-          description: 'The interview has been cancelled.',
-        })
-        router.refresh();
-      } catch (error) {
-        toast({
-          title: 'Error',
-          description: 'There was an error cancelling the interview.',
-        })
-      }
-    }} variant="destructive">Cancel</Button>
+    <LoadingButton onClick={async () => {
+        setLoading(true);
+        try {
+          await cancelInterview(interviewId);
+          toast({
+            title: 'Interview Cancelled',
+            description: 'The interview has been cancelled.',
+          })
+          router.refresh();
+        } catch (error) {
+          toast({
+            title: 'Error',
+            description: 'There was an error cancelling the interview.',
+          })
+        }
+        setLoading(false);
+      }} 
+      variant="destructive"
+      loading={loading}
+    >
+      Cancel
+    </LoadingButton>
   );
 };
 
