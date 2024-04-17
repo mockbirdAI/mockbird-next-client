@@ -7,7 +7,7 @@ const stripe = new Stripe(String(process.env.STRIPE_SECRET_KEY));
 export async function POST(req: NextRequest) {
   const res = await req.json()
   try {
-    const { candidateId, recruiterId, proposedTime, price, purpose, recruiterName }: any = res;
+    const { candidateId, recruiterId, proposedTime, price, purpose, recruiterName, candidateEmail, recruiterEmail, candidateName }: any = res;
     // Create a Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -30,6 +30,10 @@ export async function POST(req: NextRequest) {
         recruiterId,
         proposedTime,
         purpose,
+        candidateEmail,
+        recruiterEmail,
+        candidateName,
+        recruiterName
       },
     });
     return NextResponse.json({ sessionId: session.id })

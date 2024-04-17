@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 const stripe = new Stripe(String(process.env.STRIPE_SECRET_KEY));
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-const createInterviewRequest = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, paymentId: string) => {
+const createInterviewRequest = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, paymentId: string, candidateEmail: string, recruiterEmail: string, candidateName: string, recruiterName: string) => {
   try {
     const res = await fetch(`${process.env.NEXTAUTH_URL}/api/create-interview-request`, {
       method: 'POST',
@@ -17,7 +17,11 @@ const createInterviewRequest = async (candidateId: string, recruiterId: string, 
         recruiterId,
         purpose,
         proposedTime,
-        paymentId
+        paymentId, 
+        candidateEmail,
+        recruiterEmail,
+        candidateName,
+        recruiterName
       })
     });
   } catch (error) {
@@ -69,12 +73,11 @@ export async function POST(req: any, res: NextResponse) {
 
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
-      const { candidateId, recruiterId, proposedTime, purpose }: any = session.metadata;
-      console.log(session.metadata);
+      const { candidateId, recruiterId, proposedTime, purpose, candidateEmail, recruiterEmail, candidateName, recruiterName }: any = session.metadata;
 
       // Here you can call your API to create an interview
       try {
-        await createInterviewRequest(candidateId, recruiterId, proposedTime, purpose, session.id);
+        await createInterviewRequest(candidateId, recruiterId, proposedTime, purpose, session.id, candidateEmail, recruiterEmail, candidateName, recruiterName);
       } catch (error) {
         console.error(error);
       }

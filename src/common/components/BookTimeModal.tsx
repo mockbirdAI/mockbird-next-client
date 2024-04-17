@@ -34,7 +34,7 @@ const stripePromise = loadStripe(
 );
 
 // Inside your modal component or wherever the booking happens
-const handleBooking = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, price: number, recruiterName: string) => {
+const handleBooking = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, price: number, recruiterName: string, candidateEmail: string, recruiterEmail: string, candidateName: string) => {
   const response = await fetch('/api/create-checkout-session', {
     method: 'POST',
     headers: {
@@ -46,7 +46,10 @@ const handleBooking = async (candidateId: string, recruiterId: string, proposedT
       recruiterId: recruiterId,
       proposedTime: proposedTime,
       purpose: purpose,
-      recruiterName: recruiterName,
+      candidateEmail: candidateEmail,
+      recruiterEmail: recruiterEmail,
+      candidateName: candidateName,
+      recruiterName: recruiterName
     }),
   });
 
@@ -65,24 +68,24 @@ const handleBooking = async (candidateId: string, recruiterId: string, proposedT
 };
 
 
-const createInterviewRequest = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string) => {
-  try {
-    const res = await fetch('/api/create-interview-request', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        candidateId,
-        recruiterId,
-        purpose,
-        proposedTime
-      })
-    });
-  } catch (error) {
-    console.error(error);
-  }
-}
+// const createInterviewRequest = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string) => {
+//   try {
+//     const res = await fetch('/api/create-interview-request', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify({
+//         candidateId,
+//         recruiterId,
+//         purpose,
+//         proposedTime
+//       })
+//     });
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
 
 export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: BookTimeModalProps) {
   const { data: session } = useSession();
@@ -130,7 +133,7 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
           <LoadingButton
             onClick={async () => {
               setLoading(true);
-              await handleBooking(String(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose, 40, recruiterUser.firstName + " " + recruiterUser.lastName);
+              await handleBooking(String(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose, 40, recruiterUser.firstName + " " + recruiterUser.lastName, String(session?.user.email), recruiterUser.email, String(`${session?.user.firstName} ${session?.user.lastName}`) || "");
               // setOpen(false);
               // toast({
               //   title: "Interview",
