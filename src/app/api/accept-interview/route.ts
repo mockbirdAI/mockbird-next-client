@@ -24,7 +24,7 @@ export async function POST(request: any) {
     "live_stream_on_start": false,
     "recording_config": {
       "max_seconds": 3600,
-      "file_name_prefix": String(candidateId + "-"),
+      "file_name_prefix": String(candidateId),
       "video_config": {
         "codec": "H264",
         "width": 1280,
