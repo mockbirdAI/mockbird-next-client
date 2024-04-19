@@ -77,7 +77,7 @@ model School {
 }
 
 model Interview {
-  id            Int               @id @default(autoincrement())
+  id            String            @id @default(uuid())
   candidateId   String
   recruiterId   String
   scheduledTime DateTime
@@ -90,6 +90,7 @@ model Interview {
   hostToken     String?
   meetingId     String?           @unique
   userToken     String?
+  downloadUrl   String?
   candidate     User              @relation("CandidateInterviews", fields: [candidateId], references: [id])
   recruiter     User              @relation("RecruiterInterviews", fields: [recruiterId], references: [id])
   request       InterviewRequest? @relation(fields: [requestId], references: [id])
@@ -116,7 +117,7 @@ model InterviewRequest {
 
 model Payment {
   id              Int           @id @default(autoincrement())
-  interviewId     Int           @unique
+  interviewId     String        @unique
   amount          Float
   status          PaymentStatus
   transactionDate DateTime

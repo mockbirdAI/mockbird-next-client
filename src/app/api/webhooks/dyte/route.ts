@@ -1,5 +1,6 @@
 import { verify } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -42,11 +43,34 @@ export async function POST(req: NextRequest, res: NextResponse) {
     // case 'meeting.started': {
 
     // }
-    // case 'meeting.ended': {
-
-    // }
+    case 'meeting.ended': {
+      try {
+        const updateInterviewStatus = await prisma.interview.update({
+          where: {
+            id: event.meeting.id
+          },
+          data: {
+            status: 'COMPLETED',
+          }
+        })
+      } catch (err) {
+        console.error(err);
+      }
+      
+    }
     case 'meeting.transcript': {
-      console.log(event.transcriptDownloadUrl)
+      try {
+        const updateDownloadUrl = await prisma.interview.update({
+          where: {
+            id: event.meeting.id
+          },
+          data: {
+            downloadUrl: event.transcriptDownloadUrl,
+          }
+        })
+      } catch (err) {
+        console.error(err);
+      }
     }
   }
   
