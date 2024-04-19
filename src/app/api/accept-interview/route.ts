@@ -123,7 +123,7 @@ export async function POST(request: any) {
 
   const result = await prisma.interview.create({
   data: {
-    id: dyteMeetingId,
+    id: String(dyteMeetingId),
     candidateId,
     recruiterId,
     scheduledTime: proposedTime,
