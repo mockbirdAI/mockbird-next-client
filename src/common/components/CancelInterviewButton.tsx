@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import LoadingButton from './LoadingButton';
 
 interface CancelInterviewButtonProps {
-  interviewId: number;
+  interviewId: string;
 }
 
 const cancelInterview = async (interviewId: number) => {

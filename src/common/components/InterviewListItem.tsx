@@ -14,7 +14,7 @@ interface InterviewCardProps {
   candidate: User;
   interviewToken: string | null;
   scheduledTime: Date;
-  interviewId: number;
+  interviewId: string;
 }
 
 export const InterviewListItem = ({ interviewToken, candidate, scheduledTime, interviewId }: InterviewCardProps) => {
