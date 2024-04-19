@@ -12,10 +12,10 @@ interface InterviewCardProps {
   candidate: User;
   interviewToken: string | null;
   scheduledTime: Date;
-  interviewId: number;
+  interviewId: string;
 }
 
-const cancelInterview = async (interviewId: number) => {
+const cancelInterview = async (interviewId: string) => {
   try {
     const res = await fetch('/api/create-interview', {
       method: 'POST',

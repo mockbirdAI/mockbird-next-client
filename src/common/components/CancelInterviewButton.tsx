@@ -11,7 +11,7 @@ interface CancelInterviewButtonProps {
   interviewId: string;
 }
 
-const cancelInterview = async (interviewId: number) => {
+const cancelInterview = async (interviewId: string) => {
   try {
     const res = await fetch('/api/cancel-interview', {
       method: 'POST',
