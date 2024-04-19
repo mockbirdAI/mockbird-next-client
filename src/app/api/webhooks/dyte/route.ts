@@ -47,7 +47,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       try {
         const updateInterviewStatus = await prisma.interview.update({
           where: {
-            id: event.meeting.id
+            id: body_json.meeting.id
           },
           data: {
             status: 'COMPLETED',
@@ -62,10 +62,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
       try {
         const updateDownloadUrl = await prisma.interview.update({
           where: {
-            id: event.meeting.id
+            id: body_json.meeting.id
           },
           data: {
-            downloadUrl: event.transcriptDownloadUrl,
+            downloadUrl: body_json.transcriptDownloadUrl,
           }
         })
       } catch (err) {
