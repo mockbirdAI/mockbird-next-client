@@ -32,7 +32,7 @@ const Footer = () => {
           {/* Address and Email */}
           <div className="w-full md:w-1/3 px-4 text-right">
             {/* <p>123 Town Rd, City</p> */}
-            <p>contact@mockbird.ai</p>
+            <p>ricky@mockbird.ai</p>
           </div>
         </div>
 

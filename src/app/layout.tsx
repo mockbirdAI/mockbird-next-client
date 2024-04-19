@@ -52,9 +52,9 @@ export default function RootLayout({
       <body>
         <Provider>
           <main className={lato.className}>
-            {process.env.NODE_ENV === "production" ? (
-              <ProdNavbar />
-            ) : <Navbar /> }
+            {process.env.NODE_ENV != "production" ? (
+              <Navbar />
+            ) : null }
             
               <Suspense fallback={<Loading />}>
                 {children}

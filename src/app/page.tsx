@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
+import ProdNavbar from "@/common/components/ProdNavbar";
 
 // export const metadata: Metadata = {
 //   title: "StealthXI",
@@ -16,6 +17,9 @@ import type { Metadata } from "next";
 export default async function Home() {
   return (
     <>
+      {process.env.NODE_ENV === "production" ? (
+        <ProdNavbar />
+      ) : null }
       {/* Hero */}
       <MaxWidthWrapper className="mt-10 flex flex-col items-center justify-center text-center sm:mt-12">
         {/* <div className="mx-auto mb-4 flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-gray-200 bg-white px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300 hover:bg-white/50">
