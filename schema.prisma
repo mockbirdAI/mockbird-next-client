@@ -17,28 +17,27 @@ model User {
   role                UserRole
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
+  profileId           Int?
   candidateInterviews Interview[]        @relation("CandidateInterviews")
   recruiterInterviews Interview[]        @relation("RecruiterInterviews")
   candidateRequests   InterviewRequest[] @relation("CandidateRequests")
   recruiterRequests   InterviewRequest[] @relation("RecruiterRequests")
   profile             Profile?
-  UserCompany         UserCompany[]
 }
 
 model Profile {
-  id             Int      @id @default(autoincrement())
-  userId         String   @unique
+  userId         String        @unique
   linkedinUrl    String?
   resumeUrl      String?
   bio            String?
   profilePicture String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  companyId      Int?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   schoolId       Int?
-  company        Company? @relation(fields: [companyId], references: [id])
-  school         School?  @relation(fields: [schoolId], references: [id])
-  user           User     @relation(fields: [userId], references: [id])
+  id             Int           @id @default(autoincrement())
+  school         School?       @relation(fields: [schoolId], references: [id])
+  user           User          @relation(fields: [userId], references: [id])
+  UserCompany    UserCompany[]
 }
 
 model Company {
@@ -49,7 +48,6 @@ model Company {
   description String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  Profile     Profile[]
   users       UserCompany[]
 }
 
@@ -63,7 +61,7 @@ model UserCompany {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   company   Company   @relation(fields: [companyId], references: [id])
-  user      User      @relation(fields: [userId], references: [id])
+  profile   Profile   @relation(fields: [userId], references: [userId])
 
   @@unique([userId, companyId])
 }
@@ -77,7 +75,6 @@ model School {
 }
 
 model Interview {
-  id            String            @id @default(uuid())
   candidateId   String
   recruiterId   String
   scheduledTime DateTime
@@ -90,6 +87,7 @@ model Interview {
   hostToken     String?
   meetingId     String?           @unique
   userToken     String?
+  id            String            @id @default(uuid())
   downloadUrl   String?
   candidate     User              @relation("CandidateInterviews", fields: [candidateId], references: [id])
   recruiter     User              @relation("RecruiterInterviews", fields: [recruiterId], references: [id])
@@ -117,12 +115,12 @@ model InterviewRequest {
 
 model Payment {
   id              Int           @id @default(autoincrement())
-  interviewId     String        @unique
   amount          Float
   status          PaymentStatus
   transactionDate DateTime
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+  interviewId     String        @unique
   interview       Interview     @relation(fields: [interviewId], references: [id])
 }
 

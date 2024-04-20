@@ -1,33 +1,11 @@
 import { Button } from '@/common/components/ui/Button';
-import { $Enums, InterviewRequest, RequestStatus, UserRole } from '@prisma/client';
+import { $Enums, InterviewRequest, RequestStatus, UserRole, User, Profile } from '@prisma/client';
 import React from 'react';
 import prisma from '@/lib/prisma';
 import BookTimeModal from '@/common/components/BookTimeModal';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import CancelInterviewRequestButton from '@/common/components/CancelInterviewRequestButton';
-
-export interface RecruiterUser {
-  id: string;
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  role: $Enums.UserRole;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface RecruiterProfile {
-  id: number;
-  userId: string;
-  linkedinUrl: string | null;
-  resumeUrl: string | null;
-  bio: string | null;
-  profilePicture: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 async function getRecruiterUser(id: string) {
   try {

@@ -52,7 +52,11 @@ async function getUserData() {
       },
       profile: {
         include: {
-          company: true
+          UserCompany: {
+            include: {
+              company: true
+            }
+          }
         }
       }
     }

@@ -35,7 +35,11 @@ async function getRecruiters() {
     include: {
       profile: {
         include: {
-          company: true,
+          UserCompany: {
+            include: {
+              company: true
+            }
+          },
         }
       }
     }
@@ -237,7 +241,7 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                           firstName={recruiter.firstName} 
                           lastName={recruiter.lastName} 
                           role={recruiter.role} 
-                          company={recruiter.profile?.company?.name}
+                          company={recruiter.profile?.UserCompany[0]?.company?.name}
                         />
                       )
                     }, [])}

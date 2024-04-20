@@ -1,6 +1,4 @@
 'use client';
-
-import { RecruiterProfile, RecruiterUser } from "@/app/recruiter/[recruiterId]/page";
 import { Button } from "@/common/components/ui/Button"
 import {
   Dialog,
@@ -22,11 +20,12 @@ import { useRouter } from "next/navigation";
 import { SelectTimeSlots } from "./SelectTimeSlot";
 import { loadStripe } from '@stripe/stripe-js';
 import LoadingButton from "./LoadingButton";
+import { Profile, User } from "@prisma/client";
 
 interface BookTimeModalProps {
   disabled?: boolean;
-  recruiterUser: RecruiterUser;
-  recruiterProfile: RecruiterProfile;
+  recruiterUser: User;
+  recruiterProfile: Profile;
 }
 
 const stripePromise = loadStripe(

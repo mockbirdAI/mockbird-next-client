@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@/common/components/ui/Button';
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 import { toast } from '@/common/components/ui/use-toast';
 import prisma from '@/lib/prisma';
@@ -33,7 +33,20 @@ import {
   SelectValue,
 } from "@/common/components/ui/Select"
 import LoadingButton from '@/common/components/LoadingButton';
-import { UserRole } from '@prisma/client';
+import { UserCompany } from '@prisma/client';
+
+const experienceSchema = z.object({
+  roleTitle: z.string().min(1, {
+    message: "Role title is required.",
+  }),
+  companyId: z.string().min(1, {
+    message: "Company is required.",
+  }),
+  startDate: z.string().min(1, {
+    message: "Start date is required.",
+  }), // You might want to use a date format validation here
+  endDate: z.string().min(1).optional(), // Optional if current job
+});
 
 const formSchema = z.object({
   linkedinUrl: z.string().min(2, {
@@ -43,6 +56,7 @@ const formSchema = z.object({
     message: "Bio must be at least 2 characters.",
   }),
   role: z.string(),
+  experiences: z.array(experienceSchema),
   school: z.string(),
   company: z.string(),
   profilePicture: z.any().optional(),
@@ -60,6 +74,7 @@ const Onboarding: React.FC = () => {
 
   const [schools, setSchools] = useState<any[] | undefined>(undefined);
   const [companies, setCompanies] = useState<any[] | undefined>(undefined);
+  const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
@@ -114,6 +129,7 @@ const Onboarding: React.FC = () => {
       linkedinUrl: "",
       bio: "",
       role: "",
+      experiences: [],
       school: "",
       company: "",
       profilePicture: undefined,
@@ -122,6 +138,7 @@ const Onboarding: React.FC = () => {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
     const formData = new FormData();
     formData.append('linkedinUrl', values.linkedinUrl);
     formData.append('role', values.role);
@@ -167,7 +184,7 @@ const Onboarding: React.FC = () => {
 
     const resumeBlob = (await resumeUploadResumeResponse.json()) as PutBlobResult;
 
-    const apiRes = await addProfileData(String(session?.user.id), values.linkedinUrl, resumeBlob.url, values.bio, profilePictureBlob.url, companyId, schoolId);
+    const apiRes = await addProfileData(String(session?.user.id), values.linkedinUrl, resumeBlob.url, values.bio, profilePictureBlob.url, companyId, schoolId, values.experiences);
 
     if (apiRes?.ok) {
       router.push('/dashboard');
@@ -184,9 +201,10 @@ const Onboarding: React.FC = () => {
         variant: 'destructive'
       });
     }
+    setLoading(false);
   }
   
-  const addProfileData = async (userId: string, linkedinUrl: string, resumeUrl: string, bio: string, profilePicture: string, companyId: number, schoolId: number) => {
+  const addProfileData = async (userId: string, linkedinUrl: string, resumeUrl: string, bio: string, profilePicture: string, companyId: number, schoolId: number, experiences: any[]) => {
     try {
       const res = await fetch('/api/add-profile-data', {
         method: 'POST',
@@ -200,7 +218,8 @@ const Onboarding: React.FC = () => {
           bio,
           profilePicture,
           schoolId,
-          companyId
+          companyId,
+          experiences
         })
       });
       return res;
@@ -209,35 +228,19 @@ const Onboarding: React.FC = () => {
     }
   }
 
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "experiences",
+  });
+
   return (
-    <div className='h-screen flex flex-col items-center my-8'>
+    <div className='flex flex-col items-center my-8'>
       <h1 className='mb-4 text-large'>Tell us about you</h1>
       <div className='w-1/2 h-5/6 p-5 border'>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-100 h-full flex flex-col justify-between">
             <div className='flex flex-col'>
               <div className='mb-5 flex flex-row justify-between'>
-                {/* <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem className='w-1/2 me-2'>
-                      <FormLabel>I am signing up as a...</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select your role" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="candidate">Candidate</SelectItem>
-                          <SelectItem value="recruiter">Recruiter</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                /> */}
                 <FormField
                   control={form.control}
                   name="school"
@@ -271,7 +274,7 @@ const Onboarding: React.FC = () => {
                   name="company"
                   render={({ field }) => (
                     <FormItem className='w-full'>
-                      <FormLabel>Company</FormLabel>
+                      <FormLabel>Current Company</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -288,6 +291,50 @@ const Onboarding: React.FC = () => {
                           }, [])}
                         </SelectContent>
                       </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className='mb-5'>
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Experiences</FormLabel>
+                        <FormControl>
+                          <div className='flex flex-col w-full'>
+                            {fields.map((field, index) => (
+                              <div className='flex-col' key={field.id}>
+                                <div className='flex flex-row w-full'>
+                                  <Input className='me-1' {...form.register(`experiences.${index}.roleTitle`)} placeholder="Role Title" />
+                                  <Input className='ms-1' {...form.register(`experiences.${index}.companyId`)} placeholder="Company" />
+                                </div>
+                                
+                                <div className='flex flex-row w-full mt-2'>
+                                  <div className='w-full me-1'>
+                                    <FormDescription>Start Date</FormDescription>
+                                    <Input {...form.register(`experiences.${index}.startDate`)} placeholder="Start Date" type="date" />
+                                  </div>
+                                  <div className='w-full ms-1'>
+                                    <FormDescription>End Date</FormDescription>
+                                    <Input {...form.register(`experiences.${index}.endDate`)} placeholder="End Date" type="date" />
+                                  </div>
+                                </div>
+
+                                <div className='mb-2 flex justify-end'>
+                                  <Button variant="destructive" type="button" onClick={() => remove(index)}>x</Button>
+                                </div>
+                              </div>
+                            ))}
+                            
+                            <Button variant="outline" type="button" onClick={() => append({ roleTitle: "", companyId: "", startDate: "", endDate: "" })}>
+                              Add Experience
+                            </Button>  
+                          </div>                    
+                        </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -390,7 +437,7 @@ const Onboarding: React.FC = () => {
               
             </div>
             
-            <LoadingButton type="submit">Submit</LoadingButton>
+            <LoadingButton loading={loading} type="submit">Submit</LoadingButton>
           </form>
         </Form>
       </div>
