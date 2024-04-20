@@ -23,17 +23,22 @@ import { getSession, useSession } from 'next-auth/react';
 import { TextArea } from '@/common/components/ui/TextArea';
 import { useRouter } from 'next/navigation';
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/common/components/ui/Select"
 import LoadingButton from '@/common/components/LoadingButton';
-import { UserCompany } from '@prisma/client';
+import { cn } from '@/lib/utils';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/common/components/ui/Popover"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandList,
+  CommandItem,
+} from "@/common/components/ui/Command"
+import { ChevronsUpDown, Check } from 'lucide-react';
 
 const experienceSchema = z.object({
   roleTitle: z.string().min(1, {
@@ -45,7 +50,7 @@ const experienceSchema = z.object({
   startDate: z.string().min(1, {
     message: "Start date is required.",
   }), // You might want to use a date format validation here
-  endDate: z.string().min(1).optional(), // Optional if current job
+  endDate: z.string().optional(), // Optional if current job
 });
 
 const formSchema = z.object({
@@ -56,7 +61,7 @@ const formSchema = z.object({
     message: "Bio must be at least 2 characters.",
   }),
   role: z.string(),
-  experiences: z.array(experienceSchema),
+  experiences: z.array(experienceSchema).optional(),
   school: z.string(),
   company: z.string(),
   profilePicture: z.any().optional(),
@@ -139,8 +144,9 @@ const Onboarding: React.FC = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
+    const fullLinkedInUrl = `https://www.linkedin.com/in/${values.linkedinUrl}`;
     const formData = new FormData();
-    formData.append('linkedinUrl', values.linkedinUrl);
+    formData.append('linkedinUrl', fullLinkedInUrl);
     formData.append('role', values.role);
     formData.append('company', values.company);
     formData.append('school', values.school);
@@ -162,29 +168,44 @@ const Onboarding: React.FC = () => {
     // }
 
     const companyId = companies?.find((company) => company.name === values.company)?.id;
-    const schoolId = companies?.find((school) => school.name === values.school)?.id;
+    const schoolId = schools?.find((school) => school.name === values.school)?.id;
 
-    const profilePictureUploadResponse = await fetch(
-      `/api/onboarding/blob-upload?filename=pfp-${session?.user.id}${profilePicture?.name.split("."[1])}`,
-      {
-        method: 'POST',
-        body: profilePicture,
-      },
-    );
+    const experiencesFormatted = values.experiences ? values.experiences?.map((experience) => {
+      return {
+        roleTitle: experience.roleTitle,
+        companyId: companies?.find((company) => company.name === experience.companyId)?.id,
+        startDate: experience.startDate,
+        endDate: experience.endDate ? experience.endDate : null,
+      };
+    }) : [];
 
-    const profilePictureBlob = (await profilePictureUploadResponse.json()) as PutBlobResult;
+    let profilePictureBlobUrl = "";
 
-    const resumeUploadResumeResponse = await fetch(
-      `/api/onboarding/blob-upload?filename=resume-${session?.user.id}${resume?.name.split("."[1])}`,
-      {
-        method: 'POST',
-        body: resume,
-      },
-    );
+    if (profilePicture) {
+      const profilePictureUploadResponse = await fetch(
+        `/api/onboarding/blob-upload?filename=pfp-${session?.user.id}${profilePicture?.name.split("."[1])}`,
+        {
+          method: 'POST',
+          body: profilePicture,
+        },
+      );
+      profilePictureBlobUrl = ((await profilePictureUploadResponse.json()) as PutBlobResult).url;
+    }
 
-    const resumeBlob = (await resumeUploadResumeResponse.json()) as PutBlobResult;
+    let resumeBlobUrl = "";
+    if (resume) {
+      const resumeUploadResumeResponse = await fetch(
+        `/api/onboarding/blob-upload?filename=resume-${session?.user.id}${resume?.name.split("."[1])}`,
+        {
+          method: 'POST',
+          body: resume,
+        },
+      );
+  
+      resumeBlobUrl = ((await resumeUploadResumeResponse.json()) as PutBlobResult).url;
+    }
 
-    const apiRes = await addProfileData(String(session?.user.id), values.linkedinUrl, resumeBlob.url, values.bio, profilePictureBlob.url, companyId, schoolId, values.experiences);
+    const apiRes = await addProfileData(String(session?.user.id), fullLinkedInUrl, resumeBlobUrl, values.bio, profilePictureBlobUrl, companyId, schoolId, experiencesFormatted);
 
     if (apiRes?.ok) {
       router.push('/dashboard');
@@ -219,7 +240,7 @@ const Onboarding: React.FC = () => {
           profilePicture,
           schoolId,
           companyId,
-          experiences
+          experiences,
         })
       });
       return res;
@@ -233,6 +254,10 @@ const Onboarding: React.FC = () => {
     name: "experiences",
   });
 
+  useEffect(() => {
+    console.log(companies);
+  })
+
   return (
     <div className='flex flex-col items-center my-8'>
       <h1 className='mb-4 text-large'>Tell us about you</h1>
@@ -245,52 +270,58 @@ const Onboarding: React.FC = () => {
                   control={form.control}
                   name="school"
                   render={({ field }) => (
-                    <FormItem className='w-full'>
-                      <FormLabel>School/University</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a University" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {schools?.map((school) => {
-                            return (
-                              <SelectGroup key={school.id} title={school.name}>
-                                <SelectItem value={school.name}>{school.name}</SelectItem>
-                              </SelectGroup>
-                            )
-                          }, [])}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className='mb-5'>
-                <FormField
-                  control={form.control}
-                  name="company"
-                  render={({ field }) => (
-                    <FormItem className='w-full'>
-                      <FormLabel>Current Company</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a Company" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {companies?.map((company) => {
-                            return (
-                              <SelectGroup key={company.id} title={company.name}>
-                                <SelectItem value={company.name}>{company.name}</SelectItem>
-                              </SelectGroup>
-                            )
-                          }, [])}
-                        </SelectContent>
-                      </Select>
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className='mb-1'>School/University</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-full justify-between",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? schools?.find(
+                                    (schools) => schools.name === field.value
+                                  )?.name
+                                : "Select a University"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0">
+                          <Command>
+                            <CommandInput placeholder="Search schools..." />
+                            <CommandEmpty>No school found.</CommandEmpty>
+                            <CommandGroup>
+                              <CommandList>
+                                {schools?.map((school) => (
+                                  <CommandItem
+                                    value={school.name}
+                                    key={school.id}
+                                    onSelect={() => {
+                                      form.setValue("school", school.name)
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        school.name === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    {school.name}
+                                  </CommandItem>
+                                ))}
+                              </CommandList>
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -310,7 +341,67 @@ const Onboarding: React.FC = () => {
                               <div className='flex-col' key={field.id}>
                                 <div className='flex flex-row w-full'>
                                   <Input className='me-1' {...form.register(`experiences.${index}.roleTitle`)} placeholder="Role Title" />
-                                  <Input className='ms-1' {...form.register(`experiences.${index}.companyId`)} placeholder="Company" />
+                                  {/* <Input className='ms-1' {...form.register(`experiences.${index}.companyId`)} placeholder="Company" /> */}
+                                  <FormField
+                                    control={form.control}
+                                    name={`experiences.${index}.companyId`}
+                                    render={({ field }) => (
+                                      <FormItem className="flex flex-col w-full">
+                                        <Popover>
+                                          <PopoverTrigger asChild>
+                                            <FormControl>
+                                              <Button
+                                                variant="outline"
+                                                role="combobox"
+                                                className={cn(
+                                                  "w-full justify-between",
+                                                  !field.value && "text-muted-foreground"
+                                                )}
+                                              >
+                                                {field.value
+                                                  ? companies?.find(
+                                                      (company) => company.name === field.value
+                                                    )?.name
+                                                  : "Select company"}
+                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                              </Button>
+                                            </FormControl>
+                                          </PopoverTrigger>
+                                          <PopoverContent className="w-full p-0">
+                                            <Command>
+                                              <CommandInput placeholder="Search companies..." />
+                                              <CommandEmpty>No companies found.</CommandEmpty>
+                                              <CommandGroup>
+                                                <CommandList>
+                                                  {companies?.map((company) => (
+                                                    <CommandItem
+                                                      value={company.name}
+                                                      key={company.id}
+                                                      onSelect={() => {
+                                                        form.setValue(`experiences.${index}.companyId`, company.name);
+                                                      }}
+                                                    >
+                                                      <Check
+                                                        className={cn(
+                                                          "mr-2 h-4 w-4",
+                                                          company.name === field.value
+                                                            ? "opacity-100"
+                                                            : "opacity-0"
+                                                        )}
+                                                      />
+                                                      {company.name}
+                                                    </CommandItem>
+                                                  ))}
+                                                </CommandList>
+                                              </CommandGroup>
+                                            </Command>
+                                          </PopoverContent>
+                                        </Popover>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+
                                 </div>
                                 
                                 <div className='flex flex-row w-full mt-2'>
@@ -348,8 +439,17 @@ const Onboarding: React.FC = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>LinkedIn URL</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://www.linkedin.com/in/" {...field} />
+                      <FormControl className="flex items-center">
+                        <div>
+                          <span className="bg-gray-100 p-2 text-gray-600 select-none">https://www.linkedin.com/in/</span>
+                          <Input
+                            {...field}
+                            placeholder=""
+                            style={{ flex: 1 }}
+                            className="flex-1"
+                          />
+                        </div>
+                        
                       </FormControl>
                       <FormDescription>
                         This will be shown on your profile.

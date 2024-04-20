@@ -5,6 +5,32 @@ export async function POST(request: any) {
   const res = await request.json()
   console.log(res)
   const {userId, linkedinUrl, resumeUrl, bio, profilePicture, schoolId, companyId, experiences } = res;
+
+  function sortExperiences(a: any, b: any) {
+    const dateA = a.endDate ? new Date(a.endDate).getTime() : null;
+    const dateB = b.endDate ? new Date(b.endDate).getTime() : null;
+
+    if (dateA && dateB) {
+      return dateB - dateA; 
+    }
+
+    if (!dateA && !dateB) {
+      const startA = new Date(a.startDate).getTime();
+      const startB = new Date(b.startDate).getTime();
+      return startB - startA; 
+    }
+
+    if (!dateA) {
+      return -1;
+    }
+    if (!dateB) {
+      return 1;
+    }
+  }
+
+  experiences.sort(sortExperiences);
+
+
   const result = await prisma.profile.upsert({
     where: {
       userId: userId,
@@ -25,7 +51,7 @@ export async function POST(request: any) {
               companyId: Number(experience.companyId),
               role: experience.roleTitle,
               startDate: new Date(experience.startDate),
-              endDate: new Date(experience.endDate),
+              endDate: experience.endDate ? new Date(experience.endDate) : null,
             }
           })
         }
