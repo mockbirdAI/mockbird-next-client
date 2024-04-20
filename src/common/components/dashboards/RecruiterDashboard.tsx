@@ -38,17 +38,11 @@ async function getUserData() {
         include: {
           candidate: true,
         },
-        where: {
-          status: RequestStatus.PENDING
-        }
       },
       recruiterInterviews: {
         include: {
           candidate: true
         },
-        where: {
-          status: InterviewStatus.SCHEDULED
-        }
       },
       profile: {
         include: {
@@ -72,9 +66,12 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
     redirect('/onboarding')
   }
 
+  const pendingRequests = userData.recruiterRequests.filter((request) => request.status === RequestStatus.PENDING)
+  const pendingInterviews = userData.recruiterInterviews.filter((interview) => interview.status === InterviewStatus.SCHEDULED)
+
   for (const interview of userData.recruiterInterviews) {
     calendarEvents.push({
-      title: `Interview with ${interview.candidate.firstName} ${interview.candidate.lastName}`,
+      title: `Interview with ${interview.candidate.firstName} ${interview.candidate.lastName} ${"(" + interview.status.toLocaleLowerCase() + ")"}`,
       start: interview.scheduledTime,
       end: new Date(interview.scheduledTime.getTime() + 60 * 60 * 1000),
       allDay: false,
@@ -223,15 +220,15 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
                   <CardHeader>
                     <CardTitle>Upcoming Interviews</CardTitle>
                     <CardDescription>
-                      You have {userData.recruiterInterviews.length} interview{userData.recruiterInterviews.length == 1 ? "" : "s"} upcoming.
+                      You have {pendingInterviews.length} interview{pendingInterviews.length == 1 ? "" : "s"} upcoming.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-8">
-                      {userData.recruiterInterviews.length === 0 ? (
+                      {pendingInterviews.length === 0 ? (
                         <p>No upcoming interviews at the moment.</p>
                       ) : null}
-                      {userData.recruiterInterviews?.map((interview) => {
+                      {pendingInterviews?.map((interview) => {
                         return (
                           <InterviewListItem
                             key={interview.id} 
@@ -267,15 +264,15 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
                 <CardHeader>
                   <CardTitle>Pending Interview Requests</CardTitle>
                   <CardDescription>
-                    You have {userData.recruiterRequests.length} interview request{userData.recruiterRequests.length == 1 ? "" : "s"} pending.
+                    You have {pendingRequests.length} interview request {pendingRequests.length == 1 ? "" : "s"} pending.
                   </CardDescription>  
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-8">
-                    {userData.recruiterRequests.length === 0 ? (
+                    {pendingRequests.length === 0 ? (
                       <p>No interview requests at the moment.</p>
                     ) : null}
-                    {userData.recruiterRequests?.map((request) => {
+                    {pendingRequests?.map((request) => {
                         return (
                           <InterviewRequestListItem
                             key={request.id} 
@@ -294,15 +291,15 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
                 <CardHeader>
                   <CardTitle>Upcoming Interviews</CardTitle>
                   <CardDescription>
-                    You have {userData.recruiterInterviews.length} interview{userData.recruiterInterviews.length == 1 ? "" : "s"} upcoming.
+                    You have {pendingInterviews.length} interview{pendingInterviews.length == 1 ? "" : "s"} upcoming.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-8">
-                    {userData.recruiterInterviews.length === 0 ? (
+                    {pendingInterviews.length === 0 ? (
                       <p>No upcoming interviews at the moment.</p>
                     ) : null}
-                    {userData.recruiterInterviews?.map((interview) => {
+                    {pendingInterviews?.map((interview) => {
                       return (
                         <InterviewListItem
                           key={interview.id} 

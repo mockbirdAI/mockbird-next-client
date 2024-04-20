@@ -14,7 +14,7 @@ const Calendar = ({ events }: any) => {
       <FullCalendar
         plugins={[dayGridPlugin]}
         initialView='dayGridMonth'
-        weekends={false}
+        weekends={true}
         events={events}
         eventContent={renderEventContent}
         eventClick={handleEventClick}
