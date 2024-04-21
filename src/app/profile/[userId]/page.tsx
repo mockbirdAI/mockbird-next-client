@@ -7,11 +7,10 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/common/components/ui/Avat
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
-async function getUser() {
+async function getUser(userId: string) {
   try {
-    const session = await getServerSession(authOptions);
     const user = await prisma.user.findUniqueOrThrow({
-      where: { id: session?.user.id },
+      where: { id: userId },
       include: { 
         profile: { 
           include: { 
@@ -34,8 +33,8 @@ async function getUser() {
   }
 }
 
-const Profile: React.FC<any> = async () => {
-  const user = await getUser();
+const Profile = async ({ params }: { params: { userId: string } }) => {
+  const user = await getUser(params.userId);
   if (!user || !user.profile) {
     return <div className='h-screen flex justify-center items-center'>404. Profile Not Found</div>
   }
