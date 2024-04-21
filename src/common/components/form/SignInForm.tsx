@@ -39,7 +39,7 @@ const SignInForm = () => {
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     setSignInLoading(true);
     const signInData = await signIn('credentials', {
-      email: values.email,
+      email: values.email.toLowerCase(),
       password: values.password,
       redirect: true, 
       callbackUrl: '/dashboard'

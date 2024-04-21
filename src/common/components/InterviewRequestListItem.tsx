@@ -10,7 +10,7 @@ import CancelInterviewRequestButton from "./CancelInterviewRequestButton";
 import LoadingButton from "./LoadingButton";
 import { useState } from "react";
 
-const acceptInterview = async (candidateId: string, recruiterId: string, proposedTime: Date, requestId: number) => {
+const acceptInterview = async (candidateId: string, recruiterId: string, proposedTime: Date, requestId: number, candidateEmail: string, candidateName: string, recruiterName: string, dateString: string) => {
   try {
     const res = await fetch('/api/accept-interview', {
       method: 'POST',
@@ -21,7 +21,11 @@ const acceptInterview = async (candidateId: string, recruiterId: string, propose
         candidateId,
         recruiterId,
         proposedTime,
-        requestId
+        requestId,
+        candidateEmail,
+        candidateName,
+        recruiterName,
+        dateString,
       })
     });
   } catch (error) {
@@ -50,8 +54,10 @@ export const InterviewRequestListItem = ({ otherUser, proposedTime, requestId }:
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const { toast } = useToast();
-  const candidateId = session?.user?.role === 'CANDIDATE' ? session.user.id : otherUser.id;
-  const recruiterId = session?.user?.role === 'RECRUITER' ? session.user.id : otherUser.id;
+  
+  const recruiter = session?.user?.role === 'RECRUITER' ? session.user : otherUser;
+  const candidate = session?.user?.role === 'CANDIDATE' ? session.user : otherUser;
+
   
   return (
     <div className="flex items-center">
@@ -77,7 +83,7 @@ export const InterviewRequestListItem = ({ otherUser, proposedTime, requestId }:
                   variant="default"
                   onClick={async () => {
                     setLoading(true);
-                    await acceptInterview(candidateId, recruiterId, proposedTime, requestId);
+                    await acceptInterview(candidate.id, String(session?.user.id), proposedTime, requestId, candidate.email, candidate.firstName + candidate.lastName, `${String(session?.user.firstName)} ${String(session?.user.lastName)}`, proposedTime.toDateString());
                     toast({
                       title: 'Interview Request Accepted',
                       description: 'You have accepted the interview request!',

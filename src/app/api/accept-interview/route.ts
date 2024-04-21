@@ -1,11 +1,82 @@
 import prisma from "@/lib/prisma";
 import { InterviewStatus, RequestStatus } from "@prisma/client";
 import { NextResponse } from "next/server"
+import { EmailClient, KnownEmailSendStatus } from "@azure/communication-email";
+
+const sendAcceptedInterviewEmail = async (emailClient: EmailClient, candidateEmail: string, candidateName: string, recruiterName: string, proposedTime: string) => {
+  const POLLER_WAIT_TIME = 10
+
+  const message = {
+    senderAddress: "DoNotReply@mockbird.ai",
+    recipients: {
+      to: [{ address: candidateEmail }],
+    },
+    content: {
+      subject: `Mockbird - Interview Accepted with ${recruiterName}`,
+      plainText: `Your interview request has been accepted with ${recruiterName} for ${proposedTime}. Please see the details in the attached email.`,
+      html: `
+        <html>
+          <body style="font-family: Arial, sans-serif; color: #333;">
+            <div style="margin: auto; max-width: 600px; padding: 20px; border: 1px solid #ccc; border-radius: 10px;">
+              <h1 style="color: #0056b3; text-align: center;">Interview Scheduled</h1>
+              <p style="font-size: 16px; line-height: 1.5;">
+                Hi ${candidateName},
+              </p>
+              <p style="font-size: 16px; line-height: 1.5;">
+                Your interview request with <strong>${candidateName}</strong> has been accepted.
+              </p>
+              <div style="background-color: #f8f8f8; padding: 15px; margin: 20px 0; border-left: 5px solid #0056b3;">
+                <p style="margin: 0; font-size: 16px;"><strong>Recruiter:</strong> ${recruiterName}</p>
+                <p style="margin: 0; font-size: 16px;"><strong>Time:</strong> ${proposedTime}</p>
+              </div>
+              <p style="font-size: 16px; line-height: 1.5;">
+                Please join at the scheduled start time on Mockbird.
+              </p>
+              <p style="font-size: 16px; line-height: 1.5;">
+                Best regards,<br>
+                The Mockbird Team
+              </p>
+            </div>
+          </body>
+        </html>
+      `,
+    }
+  }
+
+
+  try {
+    const poller = await emailClient.beginSend(message);
+    if (!poller.getOperationState().isStarted) {
+      throw "Poller was not started."
+    }
+    
+    let timeElasped = 0;
+
+    while (!poller.isDone) {
+      poller.poll()
+      console.log("Email send polling in progress")
+
+      await new Promise(resolve => setTimeout(resolve, POLLER_WAIT_TIME * 1000));
+      timeElasped += 10;
+
+      if (timeElasped > 18 * POLLER_WAIT_TIME) {
+        throw "Polling timed out";
+      }
+    }
+
+    if (poller.getResult()?.status === KnownEmailSendStatus.Succeeded) {
+      console.log(`Successfully sent the email (operation id: ${poller.getResult()?.id})`);
+    } else {
+      throw poller.getResult()?.error;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 export async function POST(request: any) {
   const res = await request.json()
-  const {candidateId, recruiterId, proposedTime, requestId } = res;
-
+  const {candidateId, recruiterId, proposedTime, requestId, candidateEmail, candidateName, recruiterName, dateString  } = res;
   // DYTE
 
   const dyteAuth = btoa(`${process.env.DYTE_ORG_ID}:${process.env.DYTE_API_KEY}`)
@@ -143,6 +214,16 @@ export async function POST(request: any) {
     status: RequestStatus.ACCEPTED
   }
   })
+
+  const connectionString = process.env.AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING;
+  const emailClient = new EmailClient(String(connectionString));
+
+  try {
+    const response = await sendAcceptedInterviewEmail(emailClient, candidateEmail, candidateName, recruiterName, dateString);
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
 
   return NextResponse.json({result, updateRequest})
 }

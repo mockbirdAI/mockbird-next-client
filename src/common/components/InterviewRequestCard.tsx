@@ -13,7 +13,7 @@ interface InterviewRequestCardProps {
   requestId: number;
 }
 
-const acceptInterview = async (candidateId: string, recruiterId: string, proposedTime: Date, requestId: number) => {
+const acceptInterview = async (candidateId: string, recruiterId: string, proposedTime: Date, requestId: number, candidateEmail: string, candidateName: string, recruiterName: string, dateString: string) => {
   try {
     const res = await fetch('/api/accept-interview', {
       method: 'POST',
@@ -24,7 +24,11 @@ const acceptInterview = async (candidateId: string, recruiterId: string, propose
         candidateId,
         recruiterId,
         proposedTime,
-        requestId
+        requestId,
+        candidateEmail,
+        candidateName,
+        recruiterName,
+        dateString,
       })
     });
   } catch (error) {
@@ -61,7 +65,7 @@ const InterviewRequestCard: React.FC<InterviewRequestCardProps> = ({ candidate, 
         <Button 
           variant="default"
           onClick={async () => {
-            await acceptInterview(candidate.id, String(session?.user.id), proposedTime, requestId);
+            await acceptInterview(candidate.id, String(session?.user.id), proposedTime, requestId, candidate.email, candidate.firstName + candidate.lastName, `${String(session?.user.firstName)} ${String(session?.user.lastName)}`, proposedTime.toDateString());
             toast({
               title: 'Interview Request Accepted',
               description: 'You have accepted the interview request!',
