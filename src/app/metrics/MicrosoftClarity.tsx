@@ -3,6 +3,8 @@
 import Script from "next/script"
 
 const MicrosoftClarity = () => {
+    if (!process.env.NEXT_PUBLIC_MICROSOFT_CLARITY) return null
+    if (process.env.NODE_ENV !== 'production') return null
     return (
         <Script
             id="microsoft-clarity-init"
