@@ -264,7 +264,7 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
                 <CardHeader>
                   <CardTitle>Pending Interview Requests</CardTitle>
                   <CardDescription>
-                    You have {pendingRequests.length} interview request {pendingRequests.length == 1 ? "" : "s"} pending.
+                    You have {pendingRequests.length} interview request{pendingRequests.length == 1 ? "" : "s"} pending.
                   </CardDescription>  
                 </CardHeader>
                 <CardContent>
