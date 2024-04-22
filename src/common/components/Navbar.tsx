@@ -31,7 +31,7 @@ const Navbar = async () => {
             className="flex z-40 justify-center items-center gap-1"
           >
             <Image
-              src="/mockbirdtrans.png"
+              src="/mockbird_temp_logo.svg"
               alt="mockbird logo"
               width={50}
               height={50}

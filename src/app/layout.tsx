@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://www.mockbird.ai/mockbirdtrans.png',
+        url: 'https://www.mockbird.ai/mockbird_temp_logo.svg',
         width: 500,
         height: 500,
         alt: 'mockbird logo',
