@@ -36,6 +36,7 @@ export const metadata: Metadata = {
     ],
   },
   description: "Enabling candidates to practice and seek feedback from verified recruiters in industry.",
+  keywords: ["Mockbird", "mockbird", "mockbird.ai", "mockingbird", "mockingbird.ai", "mock bird", "Mock Bird", "mockbird interview"],
   alternates: {
     canonical: "https://www.mockbird.ai",
   }
