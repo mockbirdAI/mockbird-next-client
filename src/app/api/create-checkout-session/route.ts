@@ -11,6 +11,9 @@ export async function POST(req: NextRequest) {
     // Create a Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
+      payment_intent_data: {
+        capture_method: 'manual',
+      },
       line_items: [{
         price_data: {
           currency: 'usd',
@@ -36,6 +39,7 @@ export async function POST(req: NextRequest) {
         recruiterName
       },
     });
+
     return NextResponse.json({ sessionId: session.id })
   } catch (err: any) {
     console.error(err.message)

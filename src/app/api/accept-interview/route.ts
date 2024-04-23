@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { InterviewStatus, RequestStatus } from "@prisma/client";
 import { NextResponse } from "next/server"
 import { EmailClient, KnownEmailSendStatus } from "@azure/communication-email";
+import Stripe from 'stripe';
 
 const sendAcceptedInterviewEmail = async (emailClient: EmailClient, candidateEmail: string, candidateName: string, recruiterName: string, proposedTime: string) => {
   const POLLER_WAIT_TIME = 10
@@ -76,7 +77,7 @@ const sendAcceptedInterviewEmail = async (emailClient: EmailClient, candidateEma
 
 export async function POST(request: any) {
   const res = await request.json()
-  const {candidateId, recruiterId, proposedTime, requestId, candidateEmail, candidateName, recruiterName, dateString  } = res;
+  const {candidateId, recruiterId, proposedTime, requestId, candidateEmail, candidateName, recruiterName, dateString } = res;
   // DYTE
 
   const dyteAuth = btoa(`${process.env.DYTE_ORG_ID}:${process.env.DYTE_API_KEY}`)
@@ -84,6 +85,30 @@ export async function POST(request: any) {
   let dyteMeetingId;
   let hostToken;
   let userToken;
+
+  try {
+    const interviewReq = await prisma.interviewRequest.findUniqueOrThrow({
+      where: {
+        id: requestId,
+      },
+      select: {
+        paymentId: true
+      }
+    });
+
+    if (interviewReq.paymentId) {
+      const stripe = new Stripe(String(process.env.STRIPE_SECRET_KEY));
+      try {
+        const paymentInt = await stripe.paymentIntents.capture(interviewReq.paymentId);
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    }
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
   
 
   const meetingURL = 'https://api.dyte.io/v2/meetings';

@@ -33,62 +33,62 @@ const stripePromise = loadStripe(
 );
 
 // Inside your modal component or wherever the booking happens
-// const handleBooking = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, price: number, recruiterName: string, candidateEmail: string, recruiterEmail: string, candidateName: string) => {
-//   const response = await fetch('/api/create-checkout-session', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({
-//       price: Number(price),
-//       candidateId: candidateId,
-//       recruiterId: recruiterId,
-//       proposedTime: proposedTime,
-//       purpose: purpose,
-//       candidateEmail: candidateEmail,
-//       recruiterEmail: recruiterEmail,
-//       candidateName: candidateName,
-//       recruiterName: recruiterName
-//     }),
-//   });
+const handleBooking = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, price: number, recruiterName: string, candidateEmail: string, recruiterEmail: string, candidateName: string) => {
+  const response = await fetch('/api/create-checkout-session', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      price: Number(price),
+      candidateId: candidateId,
+      recruiterId: recruiterId,
+      proposedTime: proposedTime,
+      purpose: purpose,
+      candidateEmail: candidateEmail,
+      recruiterEmail: recruiterEmail,
+      candidateName: candidateName,
+      recruiterName: recruiterName
+    }),
+  });
 
-//   const { sessionId } = await response.json();
+  const { sessionId } = await response.json();
 
-//   if (response.ok && sessionId) {
-//     const stripe = await stripePromise;
-//     if (stripe) {
-//       await stripe.redirectToCheckout({ sessionId });
-//     }
-//   } else {
-//     // Handle error here, e.g., show a message to the user
-//     console.error('Failed to create Stripe session:', response.statusText);
-//     console.error("Session ID: ", sessionId)
-//   }
-// };
-
-const handleBookingWithoutStripe = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, price: number, recruiterName: string, candidateEmail: string, recruiterEmail: string, candidateName: string) => {
-    try {
-      const res = await fetch(`/api/create-interview-request`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          candidateId,
-          recruiterId,
-          purpose,
-          proposedTime,
-          paymentId: null, 
-          candidateEmail,
-          recruiterEmail,
-          candidateName,
-          recruiterName
-        })
-      });
-    } catch (error) {
-      console.error(error);
+  if (response.ok && sessionId) {
+    const stripe = await stripePromise;
+    if (stripe) {
+      await stripe.redirectToCheckout({ sessionId });
     }
+  } else {
+    // Handle error here, e.g., show a message to the user
+    console.error('Failed to create Stripe session:', response.statusText);
+    console.error("Session ID: ", sessionId)
+  }
 };
+
+// const handleBookingWithoutStripe = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, price: number, recruiterName: string, candidateEmail: string, recruiterEmail: string, candidateName: string) => {
+//     try {
+//       const res = await fetch(`/api/create-interview-request`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//           candidateId,
+//           recruiterId,
+//           purpose,
+//           proposedTime,
+//           paymentId: null, 
+//           candidateEmail,
+//           recruiterEmail,
+//           candidateName,
+//           recruiterName
+//         })
+//       });
+//     } catch (error) {
+//       console.error(error);
+//     }
+// };
 
 
 export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: BookTimeModalProps) {
@@ -137,7 +137,7 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
           <LoadingButton
             onClick={async () => {
               setLoading(true);
-              await handleBookingWithoutStripe(String(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose, 40, recruiterUser.firstName + " " + recruiterUser.lastName, String(session?.user.email), recruiterUser.email, String(`${session?.user.firstName} ${session?.user.lastName}`) || "");
+              await handleBooking(String(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose, 40, recruiterUser.firstName + " " + recruiterUser.lastName, String(session?.user.email), recruiterUser.email, String(`${session?.user.firstName} ${session?.user.lastName}`) || "");
               setOpen(false);
               toast({
                 title: "Interview",

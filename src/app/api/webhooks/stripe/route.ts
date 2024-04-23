@@ -77,7 +77,7 @@ export async function POST(req: any, res: NextResponse) {
 
       // Here you can call your API to create an interview
       try {
-        await createInterviewRequest(candidateId, recruiterId, proposedTime, purpose, session.id, candidateEmail, recruiterEmail, candidateName, recruiterName);
+        await createInterviewRequest(candidateId, recruiterId, proposedTime, purpose, String(session.payment_intent), candidateEmail, recruiterEmail, candidateName, recruiterName);
       } catch (error) {
         console.error(error);
       }
