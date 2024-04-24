@@ -1,5 +1,23 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Docker
+
+Build your container: docker build -t nextjs-docker .
+Run your container: docker run -p 8080:8080 nextjs-docker
+
+Deploy:
+<!-- docker build . -f Dockerfile -t mockbird.azurecr.io/mockbird -->
+
+az acr build --image <SAVE_PATH_ON_CONTAINER_REGISTRY> --registry <YOUR_CONTAINER_REGISTRY> --file Dockerfile . 
+
+
+docker push mockbird.azurecr.io/mockbird
+
+Run:
+docker run --name mockbird -p 8080:8080 mockbird.azurecr.io/mockbird
+
+
+
 ## Getting Started
 
 First, run the development server:
