@@ -13,17 +13,17 @@ export async function POST(request: any) {
         id: requestId,
       },
       select: {
-        paymentId: true
+        paymentId: true,
+        stripeSessionId: true
       }
     });
 
     if (interviewReq.paymentId) {
       const stripe = new Stripe(String(process.env.STRIPE_SECRET_KEY));
       try {
-        const paymentInt = await stripe.paymentIntents.cancel(interviewReq.paymentId);
+        const paymentInt = await stripe.checkout.sessions.expire(interviewReq.stripeSessionId);
       } catch (err) {
         console.error(err);
-        throw err;
       }
     }
 

@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
-  relationMode = "prisma"
+  provider     = "postgresql"
+  url          = env("POSTGRES_PRISMA_URL")
+  relationMode = "foreignKeys"
 }
 
 model User {
@@ -23,6 +23,7 @@ model User {
   candidateRequests   InterviewRequest[] @relation("CandidateRequests")
   recruiterRequests   InterviewRequest[] @relation("RecruiterRequests")
   profile             Profile?
+  userFinances        UserFinances?
 }
 
 model Profile {
@@ -66,6 +67,13 @@ model UserCompany {
   @@unique([userId, companyId])
 }
 
+model UserFinances {
+  userId       String @id
+  user         User   @relation(fields: [userId], references: [id])
+  pending      Float  @default(0.00)
+  withdrawable Float  @default(0.00)
+}
+
 model School {
   id        Int       @id @default(autoincrement())
   name      String
@@ -104,7 +112,8 @@ model InterviewRequest {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   purpose      String?
-  paymentId    String?       @unique
+  paymentId    String       @unique
+  stripeSessionId String   
   Interview    Interview?
   candidate    User          @relation("CandidateRequests", fields: [candidateId], references: [id])
   recruiter    User          @relation("RecruiterRequests", fields: [recruiterId], references: [id])
@@ -115,9 +124,11 @@ model InterviewRequest {
 
 model Payment {
   id              Int           @id @default(autoincrement())
+  paymentIntentId String
+  payerId         String
+  payeeId         String
   amount          Float
   status          PaymentStatus
-  transactionDate DateTime
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   interviewId     String        @unique

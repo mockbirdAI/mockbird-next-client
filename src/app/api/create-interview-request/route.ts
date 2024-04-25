@@ -83,7 +83,8 @@ export async function POST(request: any) {
     recruiterId, 
     proposedTime, 
     purpose, 
-    paymentId, 
+    paymentId,
+    stripeSessionId,
     recruiterEmail, 
     candidateEmail, 
     candidateName,
@@ -96,7 +97,8 @@ export async function POST(request: any) {
       proposedTime,
       purpose,
       status: RequestStatus.PENDING,
-      paymentId
+      paymentId,
+      stripeSessionId
     }
   })
 

@@ -72,7 +72,7 @@ const CandidateDashboard: React.FC<any> = async ({ params }: { params: { recruit
     createdAt: new Date(),
     updatedAt: new Date(),
     paymentId: '',
-  
+    stripeSessionId: '',
   };
 
   if (recruiterUser?.recruiterRequests) {

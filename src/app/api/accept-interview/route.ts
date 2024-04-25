@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { InterviewStatus, RequestStatus } from "@prisma/client";
+import { InterviewStatus, PaymentStatus, RequestStatus } from "@prisma/client";
 import { NextResponse } from "next/server"
 import { EmailClient, KnownEmailSendStatus } from "@azure/communication-email";
 import Stripe from 'stripe';
@@ -80,6 +80,8 @@ export async function POST(request: any) {
   const {candidateId, recruiterId, proposedTime, requestId, candidateEmail, candidateName, recruiterName, dateString } = res;
   // DYTE
 
+  let paymentInt;
+
   const dyteAuth = btoa(`${process.env.DYTE_ORG_ID}:${process.env.DYTE_API_KEY}`)
 
   let dyteMeetingId;
@@ -96,10 +98,11 @@ export async function POST(request: any) {
       }
     });
 
+
     if (interviewReq.paymentId) {
       const stripe = new Stripe(String(process.env.STRIPE_SECRET_KEY));
       try {
-        const paymentInt = await stripe.paymentIntents.capture(interviewReq.paymentId);
+        paymentInt = await stripe.paymentIntents.capture(interviewReq.paymentId);
       } catch (err) {
         console.error(err);
         throw err;
@@ -217,27 +220,44 @@ export async function POST(request: any) {
 
   // END DYTE
 
-  const result = await prisma.interview.create({
-  data: {
-    id: String(dyteMeetingId),
-    candidateId,
-    recruiterId,
-    scheduledTime: proposedTime,
-    duration: 60,
-    status: InterviewStatus.SCHEDULED,
-    requestId,
-    hostToken: hostToken,
-    userToken: userToken
-  }
+  const interviewObject = await prisma.interview.create({
+    data: {
+      id: String(dyteMeetingId),
+      candidateId,
+      recruiterId,
+      scheduledTime: proposedTime,
+      duration: 60,
+      status: InterviewStatus.SCHEDULED,
+      requestId,
+      hostToken: hostToken,
+      userToken: userToken
+    }
   })
 
-  const updateRequest = await prisma.interviewRequest.update({
-  where: {
-    id: requestId,
-  },
-  data: {
-    status: RequestStatus.ACCEPTED
+  if (paymentInt) {
+    try {
+      const paymentObject = await prisma.payment.create({
+        data: {
+          paymentIntentId: paymentInt.id,
+          payerId: candidateId,
+          payeeId: recruiterId,
+          amount: paymentInt.amount,
+          status: PaymentStatus.COMPLETED,
+          interviewId: interviewObject.id
+        }
+      })
+    } catch (err) {
+      throw err;
+    }
   }
+
+  const updateRequest = await prisma.interviewRequest.update({
+    where: {
+      id: requestId,
+    },
+    data: {
+      status: RequestStatus.ACCEPTED
+    }
   })
 
   const connectionString = process.env.AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING;
@@ -250,5 +270,5 @@ export async function POST(request: any) {
     console.error(error);
   }
 
-  return NextResponse.json({result, updateRequest})
+  return NextResponse.json({interviewObject, updateRequest})
 }
