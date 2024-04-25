@@ -8,7 +8,12 @@ Run your container: docker run -p 8080:8080 nextjs-docker
 Deploy:
 docker build --platform=linux/amd64 . -f Dockerfile -t mockbird.azurecr.io/mockbird
 
-az acr build --image <SAVE_PATH_ON_CONTAINER_REGISTRY> --registry <YOUR_CONTAINER_REGISTRY> --file Dockerfile . 
+az acr build --file Dockerfile --registry mockbird --image mockbird .
+
+az webapp config container set --name mockbird \
+    --resource-group mockbird_prod \
+    --docker-custom-image-name mockbird.azurecr.io/mockbird:latest
+
 
 
 docker push mockbird.azurecr.io/mockbird
