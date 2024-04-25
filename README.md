@@ -2,24 +2,14 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Docker
 
-Build your container: docker build -t nextjs-docker .
-Run your container: docker run -p 8080:8080 nextjs-docker
-
-Deploy:
+Build:
 docker build --platform=linux/amd64 . -f Dockerfile -t mockbird.azurecr.io/mockbird
 
-az acr build --file Dockerfile --registry mockbird --image mockbird .
-
-az webapp config container set --name mockbird \
-    --resource-group mockbird_prod \
-    --docker-custom-image-name mockbird.azurecr.io/mockbird:latest
-
-
-
-docker push mockbird.azurecr.io/mockbird
-
 Run:
-docker run --name mockbird -p 8080:8080 mockbird.azurecr.io/mockbird
+docker run --name mockbird -p 3000:3000 mockbird.azurecr.io/mockbird
+
+Deploy:
+docker push mockbird.azurecr.io/mockbird
 
 
 
