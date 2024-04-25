@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@azure/communication-email": "^1.0.0",
+    "@azure/storage-blob": "^12.17.0",
     "@dytesdk/react-ui-kit": "^1.66.1",
     "@dytesdk/react-web-core": "^1.36.4",
     "@fullcalendar/daygrid": "^6.1.11",

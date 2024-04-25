@@ -144,9 +144,8 @@ const Onboarding: React.FC = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    const fullLinkedInUrl = `https://www.linkedin.com/in/${values.linkedinUrl}`;
     const formData = new FormData();
-    formData.append('linkedinUrl', fullLinkedInUrl);
+    formData.append('linkedinUrl', values.linkedinUrl);
     formData.append('role', values.role);
     formData.append('company', values.company);
     formData.append('school', values.school);
@@ -183,7 +182,7 @@ const Onboarding: React.FC = () => {
 
     if (profilePicture) {
       const profilePictureUploadResponse = await fetch(
-        `/api/onboarding/blob-upload?filename=pfp-${session?.user.id}${profilePicture?.name.split("."[1])}`,
+        `/api/onboarding/upload-profile-picture?filename=${session?.user.id}.${profilePicture?.name.split(".")[1]}`,
         {
           method: 'POST',
           body: profilePicture,
@@ -195,7 +194,7 @@ const Onboarding: React.FC = () => {
     let resumeBlobUrl = "";
     if (resume) {
       const resumeUploadResumeResponse = await fetch(
-        `/api/onboarding/blob-upload?filename=resume-${session?.user.id}${resume?.name.split("."[1])}`,
+        `/api/onboarding/upload-resume?filename=${session?.user.id}.${resume?.name.split(".")[1]}`,
         {
           method: 'POST',
           body: resume,
@@ -205,7 +204,7 @@ const Onboarding: React.FC = () => {
       resumeBlobUrl = ((await resumeUploadResumeResponse.json()) as PutBlobResult).url;
     }
 
-    const apiRes = await addProfileData(String(session?.user.id), fullLinkedInUrl, resumeBlobUrl, values.bio, profilePictureBlobUrl, companyId, schoolId, experiencesFormatted);
+    const apiRes = await addProfileData(String(session?.user.id), values.linkedinUrl, resumeBlobUrl, values.bio, profilePictureBlobUrl, companyId, schoolId, experiencesFormatted);
 
     if (apiRes?.ok) {
       router.push('/dashboard');
@@ -441,10 +440,9 @@ const Onboarding: React.FC = () => {
                       <FormLabel>LinkedIn URL</FormLabel>
                       <FormControl className="flex items-center">
                         <div>
-                          <span className="bg-gray-100 p-2 text-gray-600 select-none">https://www.linkedin.com/in/</span>
                           <Input
                             {...field}
-                            placeholder=""
+                            placeholder="https://www.linkedin.com/in/"
                             style={{ flex: 1 }}
                             className="flex-1"
                           />
