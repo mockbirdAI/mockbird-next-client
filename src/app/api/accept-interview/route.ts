@@ -24,7 +24,7 @@ const sendAcceptedInterviewEmail = async (emailClient: EmailClient, candidateEma
                 Hi ${candidateName},
               </p>
               <p style="font-size: 16px; line-height: 1.5;">
-                Your interview request with <strong>${candidateName}</strong> has been accepted.
+                Your interview request with <strong>${recruiterName}</strong> has been accepted.
               </p>
               <div style="background-color: #f8f8f8; padding: 15px; margin: 20px 0; border-left: 5px solid #0056b3;">
                 <p style="margin: 0; font-size: 16px;"><strong>Recruiter:</strong> ${recruiterName}</p>
