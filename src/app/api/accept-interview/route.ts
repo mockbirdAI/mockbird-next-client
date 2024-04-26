@@ -105,12 +105,10 @@ export async function POST(request: any) {
         paymentInt = await stripe.paymentIntents.capture(interviewReq.paymentId);
       } catch (err) {
         console.error(err);
-        throw err;
       }
     }
   } catch (err) {
     console.error(err);
-    throw err;
   }
   
 
