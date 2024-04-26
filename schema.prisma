@@ -113,7 +113,7 @@ model InterviewRequest {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   purpose         String?
-  paymentId       String        @unique
+  paymentId       String?       
   stripeSessionId String
   Interview       Interview?
   candidate       User          @relation("CandidateRequests", fields: [candidateId], references: [id])
