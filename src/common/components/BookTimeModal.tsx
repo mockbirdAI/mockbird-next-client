@@ -9,6 +9,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/common/components/ui/Dialog"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/common/components/ui/Select"
 import { Input } from "@/common/components/ui/Input"
 import { Label } from "@/common/components/ui/Label"
 import { TextArea } from "@/common/components/ui/TextArea";
@@ -31,6 +40,45 @@ interface BookTimeModalProps {
 const stripePromise = loadStripe(
   String(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 );
+
+const services = [
+  {
+    service: "Coffee Chat",
+    duration: 900,
+    price: 0
+  },
+  {
+    service: "Resume Review",
+    duration: 900,
+    price: 0
+  },
+  {
+    service: "Behavioral Mock Interview",
+    duration: 3600,
+    price: 2000,
+  },
+  {
+    service: "Technical Mock Interview",
+    duration: 3600,
+    price: 3000
+  }
+]
+
+function formatDuration(seconds: number) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+
+  if (hours > 0) {
+    return hours === 1 ? "1 hour" : `${hours} hours`;
+  } else if (minutes > 0) {
+    return minutes === 1 ? "1 min" : `${minutes} min`;
+  }
+  return `${seconds} seconds`; // Handle cases where duration is less than a minute
+}
+
+function formatPrice(price: number) {
+  return price / 100;
+}
 
 // Inside your modal component or wherever the booking happens
 const handleBooking = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, price: number, recruiterName: string, candidateEmail: string, recruiterEmail: string, candidateName: string) => {
@@ -66,30 +114,31 @@ const handleBooking = async (candidateId: string, recruiterId: string, proposedT
   }
 };
 
-// const handleBookingWithoutStripe = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, price: number, recruiterName: string, candidateEmail: string, recruiterEmail: string, candidateName: string) => {
-//     try {
-//       const res = await fetch(`/api/create-interview-request`, {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//           candidateId,
-//           recruiterId,
-//           purpose,
-//           proposedTime,
-//           paymentId: null, 
-//           candidateEmail,
-//           recruiterEmail,
-//           candidateName,
-//           recruiterName
-//         })
-//       });
-//     } catch (error) {
-//       console.error(error);
-//     }
-// };
 
+const handleBookingWithoutStripe = async (candidateId: string, recruiterId: string, proposedTime: Date | null, purpose: string, paymentId: string, stripeSessionId: string, candidateEmail: string, recruiterEmail: string, candidateName: string, recruiterName: string) => {
+  try {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/create-interview-request`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        candidateId,
+        recruiterId,
+        purpose,
+        proposedTime,
+        paymentId, 
+        candidateEmail,
+        recruiterEmail,
+        candidateName,
+        recruiterName,
+        stripeSessionId
+      })
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: BookTimeModalProps) {
   const { data: session } = useSession();
@@ -99,6 +148,10 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+
+  const [selectedService, setSelectedService] = useState("");
+  const [selectedServiceDuration, setSelectedServiceDuration] = useState(0);
+  const [selectedServicePrice, setSelectedServicePrice] = useState(0);
 
   const currentTime = new Date().getTime();
   const futureAvailability = recruiterUser.availability.filter((date: string | number | Date) => new Date(date).getTime() > currentTime);
@@ -125,6 +178,39 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
             </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Service
+            </Label>
+            <div className="col-span-3">
+              <Select 
+                onValueChange={(e) => {
+                  const serviceObject = services.find((service) => service.service === e);
+                  console.log(serviceObject);
+                  if (serviceObject) {
+                    setSelectedService(serviceObject.service)
+                    setSelectedServiceDuration(serviceObject.duration);
+                    setSelectedServicePrice(serviceObject.price);
+                  }
+                }} 
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a Service" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {
+                      services.map((service) => (
+                        <SelectItem key={service.service} value={service.service}>
+                          {`${service.service} - ${formatDuration(service.duration)} - $${formatPrice(service.price)}`}
+                        </SelectItem>
+                      ))
+                    }
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="purpose" className="text-right">
               Request
             </Label>
@@ -140,7 +226,7 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
           <LoadingButton
             onClick={async () => {
               setLoading(true);
-              await handleBooking(String(session?.user.id), recruiterUser.id, selectedTimeSlot, purpose, 40, recruiterUser.firstName + " " + recruiterUser.lastName, String(session?.user.email), recruiterUser.email, String(`${session?.user.firstName} ${session?.user.lastName}`) || "");
+              await handleBooking(String(session?.user.id), recruiterUser.id, selectedTimeSlot, selectedService + " - " + purpose, Number(selectedServicePrice), recruiterUser.firstName + " " + recruiterUser.lastName, String(session?.user.email), recruiterUser.email, String(`${session?.user.firstName} ${session?.user.lastName}`) || "");
               setOpen(false);
               toast({
                 title: "Interview",

@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
           product_data: {
             name: `Booking Time with ${recruiterName}`,
           },
-          unit_amount: 50,  // Convert dollars to cents
+          unit_amount: price,  // Convert dollars to cents
         },
         quantity: 1,
       }],
