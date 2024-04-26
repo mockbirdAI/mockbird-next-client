@@ -1,13 +1,23 @@
 import React from 'react';
-import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { RequestStatus, UserRole, InterviewStatus } from '@prisma/client';
 import { ScrollArea } from "@/common/components/ui/ScrollArea";
-import { redirect } from 'next/navigation';
-import { useState } from 'react';
-import { useSession } from 'next-auth/react';
-import AvailabilityCalendar from '@/common/components/AvailabilityCalendar';
+import Availability from '@/common/components/Availability'
+import prisma from '@/lib/prisma';
+
+async function getUser(userId: string) {
+  try {
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { availability: true }
+    });
+    return user;
+  } catch (error) {
+    console.error("Failed to fetch user", error);
+    return null;
+  }
+}
 
 const Discover: React.FC = async () => {
   const session = await getServerSession(authOptions)
@@ -18,6 +28,7 @@ const Discover: React.FC = async () => {
       </div>
     )
   }
+  const userInfo = await getUser(String(session?.user.id));
 
   return (
     <div className='h-screen'>
@@ -33,7 +44,7 @@ const Discover: React.FC = async () => {
           </div>
 
           <div>
-            <AvailabilityCalendar />
+            <Availability schedule={userInfo?.availability || []} />
           </div>
           
         </div>

@@ -18,6 +18,7 @@ model User {
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
   profileId           Int?
+  availability        DateTime[]         @default(dbgenerated("(ARRAY[]::timestamp without time zone[])::timestamp(3) without time zone[]"))
   candidateInterviews Interview[]        @relation("CandidateInterviews")
   recruiterInterviews Interview[]        @relation("RecruiterInterviews")
   candidateRequests   InterviewRequest[] @relation("CandidateRequests")
@@ -69,9 +70,9 @@ model UserCompany {
 
 model UserFinances {
   userId       String @id
-  user         User   @relation(fields: [userId], references: [id])
   pending      Float  @default(0.00)
   withdrawable Float  @default(0.00)
+  user         User   @relation(fields: [userId], references: [id])
 }
 
 model School {
@@ -104,19 +105,19 @@ model Interview {
 }
 
 model InterviewRequest {
-  id           Int           @id @default(autoincrement())
-  candidateId  String
-  recruiterId  String
-  proposedTime DateTime
-  status       RequestStatus
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  purpose      String?
-  paymentId    String       @unique
-  stripeSessionId String   
-  Interview    Interview?
-  candidate    User          @relation("CandidateRequests", fields: [candidateId], references: [id])
-  recruiter    User          @relation("RecruiterRequests", fields: [recruiterId], references: [id])
+  id              Int           @id @default(autoincrement())
+  candidateId     String
+  recruiterId     String
+  proposedTime    DateTime
+  status          RequestStatus
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  purpose         String?
+  paymentId       String        @unique
+  stripeSessionId String
+  Interview       Interview?
+  candidate       User          @relation("CandidateRequests", fields: [candidateId], references: [id])
+  recruiter       User          @relation("RecruiterRequests", fields: [recruiterId], references: [id])
 
   @@index([candidateId])
   @@index([recruiterId])
@@ -124,14 +125,14 @@ model InterviewRequest {
 
 model Payment {
   id              Int           @id @default(autoincrement())
-  paymentIntentId String
-  payerId         String
-  payeeId         String
   amount          Float
   status          PaymentStatus
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   interviewId     String        @unique
+  payeeId         String
+  payerId         String
+  paymentIntentId String
   interview       Interview     @relation(fields: [interviewId], references: [id])
 }
 

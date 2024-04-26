@@ -77,7 +77,6 @@ const sendInterviewRequestEmail = async (emailClient: EmailClient, recruiterEmai
 
 export async function POST(request: any) {
   const res = await request.json()
-  console.log(res);
   const { 
     candidateId, 
     recruiterId, 
@@ -101,6 +100,29 @@ export async function POST(request: any) {
       stripeSessionId
     }
   })
+
+  const proposedISOString = new Date(proposedTime).toISOString();
+
+  const recruiter = await prisma.user.findUnique({
+    where: {
+      id: recruiterId
+    },
+    select: {
+      availability: true
+    }
+  });
+  
+  if (recruiter) {
+    const updatedAvailability = recruiter.availability.filter(date => date.toISOString() !== proposedISOString);
+    const removeTimeSlot = await prisma.user.update({
+      where: {
+        id: recruiterId
+      },
+      data: {
+        availability: updatedAvailability
+      }
+    });
+  }
 
   const dateString = new Date(proposedTime).toDateString();
 

@@ -100,6 +100,9 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
   const { toast } = useToast();
   const router = useRouter();
 
+  const currentTime = new Date().getTime();
+  const futureAvailability = recruiterUser.availability.filter((date: string | number | Date) => new Date(date).getTime() > currentTime);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -118,7 +121,7 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
               When
             </Label>
             <div className="col-span-3">
-              <SelectTimeSlots onChange={(e: Date) => setSelectedTimeSlot(e)} timeslots={[new Date()]} />
+              <SelectTimeSlots onChange={(e: Date) => setSelectedTimeSlot(e)} timeslots={futureAvailability} />
             </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
