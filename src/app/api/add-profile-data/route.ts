@@ -4,7 +4,7 @@ import { NextResponse } from "next/server"
 export async function POST(request: any) {
   const res = await request.json()
   console.log(res)
-  const {userId, linkedinUrl, resumeUrl, bio, profilePicture, schoolId, companyId, experiences } = res;
+  const {userId, linkedinUrl, resumeUrl, bio, profilePicture, schools, companyId, experiences } = res;
 
   function sortExperiences(a: any, b: any) {
     const dateA = a.endDate ? new Date(a.endDate).getTime() : null;
@@ -40,7 +40,22 @@ export async function POST(request: any) {
       resumeUrl,
       bio,
       profilePicture,
-      schoolId,
+      UserSchool: {
+        deleteMany: {
+          userId: userId
+        },
+        createMany: {
+          data: schools.map((school: any) => {
+            return {
+              schoolId: Number(school.schoolId),
+              degree: school.degree,
+              major: school.major,
+              startDate: new Date(school.startDate),
+              endDate: school.endDate ? new Date(school.endDate) : null,
+            }
+          })
+        }
+      },
       UserCompany: {
         deleteMany: {
           userId: userId
@@ -63,7 +78,19 @@ export async function POST(request: any) {
       resumeUrl,
       bio,
       profilePicture,
-      schoolId,
+      UserSchool: {
+        createMany: {
+          data: schools.map((school: any) => {
+            return {
+              schoolId: Number(school.schoolId),
+              degree: school.degree,
+              major: school.major,
+              startDate: new Date(school.startDate),
+              endDate: school.endDate ? new Date(school.endDate) : null,
+            }
+          })
+        }
+      },
       UserCompany: {
         createMany: {
           data: experiences.map((experience: any) => {

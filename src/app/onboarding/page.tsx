@@ -53,6 +53,22 @@ const experienceSchema = z.object({
   endDate: z.string().optional(), // Optional if current job
 });
 
+const schoolSchema = z.object({
+  degree: z.string().min(1, {
+    message: "Degree is required.",
+  }),
+  major: z.string().min(1, {
+    message: "Major is required.",
+  }),
+  schoolId: z.string().min(1, {
+    message: "Company is required.",
+  }),
+  startDate: z.string().min(1, {
+    message: "Start date is required.",
+  }), // You might want to use a date format validation here
+  endDate: z.string().optional(), // Optional if current job
+});
+
 const formSchema = z.object({
   linkedinUrl: z.string().min(2, {
     message: "LinkedIn URL must be at least 2 characters.",
@@ -62,7 +78,7 @@ const formSchema = z.object({
   }),
   role: z.string(),
   experiences: z.array(experienceSchema).optional(),
-  school: z.string(),
+  userSchools: z.array(schoolSchema).optional(),
   company: z.string(),
   profilePicture: z.any().optional(),
   resume: z.any().optional(),
@@ -135,7 +151,7 @@ const Onboarding: React.FC = () => {
       bio: "",
       role: "",
       experiences: [],
-      school: "",
+      userSchools: [],
       company: "",
       profilePicture: undefined,
       resume: undefined,
@@ -148,26 +164,9 @@ const Onboarding: React.FC = () => {
     formData.append('linkedinUrl', values.linkedinUrl);
     formData.append('role', values.role);
     formData.append('company', values.company);
-    formData.append('school', values.school);
-
-    // if (values.role === "recruiter") {
-    //   await fetch(
-    //     `/api/update-user`,
-    //     {
-    //       method: 'POST',
-    //       body: JSON.stringify({
-    //         userId: session?.user.id,
-    //         role: UserRole.RECRUITER,
-    //       }),
-    //       headers: {
-    //         'Content-Type': 'application/json'
-    //       }
-    //     },
-    //   );
-    // }
 
     const companyId = companies?.find((company) => company.name === values.company)?.id;
-    const schoolId = schools?.find((school) => school.name === values.school)?.id;
+    const schoolId = schools?.find((school) => school.name === values.userSchools)?.id;
 
     const experiencesFormatted = values.experiences ? values.experiences?.map((experience) => {
       return {
@@ -177,6 +176,17 @@ const Onboarding: React.FC = () => {
         endDate: experience.endDate ? experience.endDate : null,
       };
     }) : [];
+
+    const schoolsFormatted = values.userSchools ? values.userSchools?.map((school) => {
+      return {
+        degree: school.degree,
+        major: school.major,
+        schoolId: schools?.find((entr) => entr.name === school.schoolId)?.id,
+        startDate: school.startDate,
+        endDate: school.endDate ? school.endDate : null,
+      };
+    }) : [];
+
 
     let profilePictureBlobUrl = "";
 
@@ -191,6 +201,8 @@ const Onboarding: React.FC = () => {
       profilePictureBlobUrl = ((await profilePictureUploadResponse.json()) as PutBlobResult).url;
     }
 
+    
+
     let resumeBlobUrl = "";
     if (resume) {
       const resumeUploadResumeResponse = await fetch(
@@ -200,11 +212,10 @@ const Onboarding: React.FC = () => {
           body: resume,
         },
       );
-  
       resumeBlobUrl = ((await resumeUploadResumeResponse.json()) as PutBlobResult).url;
     }
 
-    const apiRes = await addProfileData(String(session?.user.id), values.linkedinUrl, resumeBlobUrl, values.bio, profilePictureBlobUrl, companyId, schoolId, experiencesFormatted);
+    const apiRes = await addProfileData(String(session?.user.id), values.linkedinUrl, resumeBlobUrl, values.bio, profilePictureBlobUrl, companyId, schoolsFormatted, experiencesFormatted);
 
     if (apiRes?.ok) {
       router.push('/dashboard');
@@ -224,7 +235,8 @@ const Onboarding: React.FC = () => {
     setLoading(false);
   }
   
-  const addProfileData = async (userId: string, linkedinUrl: string, resumeUrl: string, bio: string, profilePicture: string, companyId: number, schoolId: number, experiences: any[]) => {
+  const addProfileData = async (userId: string, linkedinUrl: string, resumeUrl: string, bio: string, profilePicture: string, companyId: number, schools: any[], experiences: any[]) => {
+    console.log(schools);
     try {
       const res = await fetch('/api/add-profile-data', {
         method: 'POST',
@@ -237,7 +249,7 @@ const Onboarding: React.FC = () => {
           resumeUrl,
           bio,
           profilePicture,
-          schoolId,
+          schools,
           companyId,
           experiences,
         })
@@ -248,13 +260,18 @@ const Onboarding: React.FC = () => {
     }
   }
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields: userSchoolsFields, append: appendUserSchool, remove: removeUserSchool } = useFieldArray({
+    control: form.control,
+    name: "userSchools",
+  });
+
+  const { fields: experiencesFields, append: appendExperience, remove: removeExperience } = useFieldArray({
     control: form.control,
     name: "experiences",
   });
 
   useEffect(() => {
-    console.log(companies);
+    console.log(form.getValues());
   })
 
   return (
@@ -264,63 +281,114 @@ const Onboarding: React.FC = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-100 h-full flex flex-col justify-between">
             <div className='flex flex-col'>
-              <div className='mb-5 flex flex-row justify-between'>
+              <div className='mb-5'>
                 <FormField
                   control={form.control}
-                  name="school"
+                  name="userSchools"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <FormLabel className='mb-1'>School/University</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              className={cn(
-                                "w-full justify-between",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value
-                                ? schools?.find(
-                                    (schools) => schools.name === field.value
-                                  )?.name
-                                : "Select a University"}
-                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full p-0">
-                          <Command>
-                            <CommandInput placeholder="Search schools..." />
-                            <CommandEmpty>No school found.</CommandEmpty>
-                            <CommandGroup>
-                              <CommandList>
-                                {schools?.map((school) => (
-                                  <CommandItem
-                                    value={school.name}
-                                    key={school.id}
-                                    onSelect={() => {
-                                      form.setValue("school", school.name)
-                                    }}
-                                  >
-                                    <Check
-                                      className={cn(
-                                        "mr-2 h-4 w-4",
-                                        school.name === field.value
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                    {school.name}
-                                  </CommandItem>
-                                ))}
-                              </CommandList>
-                            </CommandGroup>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
+                    <FormItem>
+                      <FormLabel>School/University</FormLabel>
+                        <FormControl>
+                          <div className='flex flex-col w-full'>
+                            {userSchoolsFields.map((field, index) => (
+                              <div className='flex-col' key={field.id}>
+                                <div className='flex flex-row w-full'>
+                                  {/* <Input className='ms-1' {...form.register(`experiences.${index}.companyId`)} placeholder="Company" /> */}
+                                  <FormField
+                                    control={form.control}
+                                    name={`userSchools.${index}.schoolId`}
+                                    render={({ field }) => (
+                                      <FormItem className="flex flex-col w-full">
+                                        <Popover>
+                                          <PopoverTrigger asChild>
+                                            <FormControl>
+                                              <Button
+                                                variant="outline"
+                                                role="combobox"
+                                                className={cn(
+                                                  "w-full justify-between",
+                                                  !field.value && "text-muted-foreground"
+                                                )}
+                                              >
+                                                {field.value
+                                                  ? schools?.find(
+                                                      (school) => school.name === field.value
+                                                    )?.name
+                                                  : "Select school"}
+                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                              </Button>
+                                            </FormControl>
+                                          </PopoverTrigger>
+                                          <PopoverContent className="w-full p-0">
+                                            <Command>
+                                              <CommandInput placeholder="Search school..." />
+                                              <CommandEmpty>No schools found.</CommandEmpty>
+                                              <CommandGroup>
+                                                <CommandList>
+                                                  {schools?.map((school) => (
+                                                    <CommandItem
+                                                      value={school.name}
+                                                      key={school.id}
+                                                      onSelect={() => {
+                                                        form.setValue(`userSchools.${index}.schoolId`, school.name);
+                                                      }}
+                                                    >
+                                                      <Check
+                                                        className={cn(
+                                                          "mr-2 h-4 w-4",
+                                                          school.name === field.value
+                                                            ? "opacity-100"
+                                                            : "opacity-0"
+                                                        )}
+                                                      />
+                                                      {school.name}
+                                                    </CommandItem>
+                                                  ))}
+                                                </CommandList>
+                                              </CommandGroup>
+                                            </Command>
+                                          </PopoverContent>
+                                        </Popover>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+
+                                </div>
+
+                                <div className='flex flex-row w-full mt-2'>
+                                  <div className='w-full me-1'>
+                                    <FormDescription>Degree</FormDescription>
+                                    <Input className='me-1' {...form.register(`userSchools.${index}.degree`)} placeholder="Bachelor's" />
+                                  </div>
+                                  <div className='w-full ms-1'>
+                                    <FormDescription>Major</FormDescription>
+                                    <Input className='me-1' {...form.register(`userSchools.${index}.major`)} placeholder="Concentration" />
+                                  </div>
+                                </div>
+                                
+                                <div className='flex flex-row w-full mt-2'>
+                                  <div className='w-full me-1'>
+                                    <FormDescription>Start Date</FormDescription>
+                                    <Input {...form.register(`userSchools.${index}.startDate`)} placeholder="Start Date" type="date" />
+                                  </div>
+                                  <div className='w-full ms-1'>
+                                    <FormDescription>End Date</FormDescription>
+                                    <Input {...form.register(`userSchools.${index}.endDate`)} placeholder="End Date" type="date" />
+                                  </div>
+                                </div>
+
+                                <div className='mb-2 flex justify-end'>
+                                  <Button variant="destructive" type="button" onClick={() => removeUserSchool(index)}>x</Button>
+                                </div>
+                              </div>
+                            ))}
+                            
+                            <Button variant="outline" type="button" onClick={() => appendUserSchool({ major: "", degree: "", schoolId: "", startDate: "", endDate: "" })}>
+                              Add School
+                            </Button>  
+                          </div>                    
+                        </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -336,7 +404,7 @@ const Onboarding: React.FC = () => {
                       <FormLabel>Experiences</FormLabel>
                         <FormControl>
                           <div className='flex flex-col w-full'>
-                            {fields.map((field, index) => (
+                            {experiencesFields.map((field, index) => (
                               <div className='flex-col' key={field.id}>
                                 <div className='flex flex-row w-full'>
                                   <Input className='me-1' {...form.register(`experiences.${index}.roleTitle`)} placeholder="Role Title" />
@@ -415,12 +483,12 @@ const Onboarding: React.FC = () => {
                                 </div>
 
                                 <div className='mb-2 flex justify-end'>
-                                  <Button variant="destructive" type="button" onClick={() => remove(index)}>x</Button>
+                                  <Button variant="destructive" type="button" onClick={() => removeExperience(index)}>x</Button>
                                 </div>
                               </div>
                             ))}
                             
-                            <Button variant="outline" type="button" onClick={() => append({ roleTitle: "", companyId: "", startDate: "", endDate: "" })}>
+                            <Button variant="outline" type="button" onClick={() => appendExperience({ roleTitle: "", companyId: "", startDate: "", endDate: "" })}>
                               Add Experience
                             </Button>  
                           </div>                    

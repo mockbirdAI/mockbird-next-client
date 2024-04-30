@@ -25,7 +25,7 @@ import prisma from "@/lib/prisma";
 import { useSession } from "next-auth/react";
 import { useToast } from "./ui/use-toast";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { SelectTimeSlots } from "./SelectTimeSlot";
 import { loadStripe } from '@stripe/stripe-js';
 import LoadingButton from "./LoadingButton";
@@ -35,34 +35,12 @@ interface BookTimeModalProps {
   disabled?: boolean;
   recruiterUser: User;
   recruiterProfile: Profile;
+  services: any[];
 }
 
 const stripePromise = loadStripe(
   String(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 );
-
-const services = [
-  {
-    service: "Coffee Chat",
-    duration: 900,
-    price: 0
-  },
-  {
-    service: "Resume Review",
-    duration: 900,
-    price: 0
-  },
-  {
-    service: "Behavioral Mock Interview",
-    duration: 3600,
-    price: 2000,
-  },
-  {
-    service: "Technical Mock Interview",
-    duration: 3600,
-    price: 3000
-  }
-]
 
 function formatDuration(seconds: number) {
   const hours = Math.floor(seconds / 3600);
@@ -140,7 +118,7 @@ const handleBookingWithoutStripe = async (candidateId: string, recruiterId: stri
   }
 }
 
-export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: BookTimeModalProps) {
+export function BookTimeModal({ disabled, recruiterUser, recruiterProfile, services }: BookTimeModalProps) {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null);
@@ -156,10 +134,16 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile }: Boo
   const currentTime = new Date().getTime();
   const futureAvailability = recruiterUser.availability.filter((date: string | number | Date) => new Date(date).getTime() > currentTime);
 
+  const validateAuth = () => {
+    if (!session?.user) {
+      router.push('/sign-in')
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button disabled={disabled} variant="outline">{disabled ? "Pending..." : "Book Time"}</Button>
+        <Button onClick={validateAuth} disabled={disabled} variant="default">{disabled ? "Pending..." : "Book Time"}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

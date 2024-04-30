@@ -21,7 +21,7 @@ async function getUser(userId: string) {
                 } 
               },
             },
-            school: true
+            UserSchool: true
           } 
         } 
       }
@@ -58,11 +58,16 @@ const Profile = async ({ params }: { params: { userId: string } }) => {
 
       <div className="w-full max-w-4xl mt-8">
         <h2 className="text-xl font-semibold">Education</h2>
-        {user.profile.schoolId ? (
+        {user.profile.UserSchool.length ? (
           <div className="mt-4">
-            <h3 className="text-lg font-semibold">{user.profile.school?.name}</h3>
+            {user.profile.UserSchool.map((school) => (
+              <div key={school.id} className="mb-6 p-4 border border-gray-300 rounded-lg">
+                <h3 className="text-lg font-semibold">{school.degree} in {school.major}</h3>
+                <p className="text-gray-600">{formatDate(school.startDate)} - {school.endDate != null ? formatDate(school.endDate) : "Current"}</p>
+              </div>
+            ))}
           </div>
-        ) : <p>No education listed.</p>}
+        ) : <p>No experiences listed.</p>}
       </div>
 
       <div className="w-full max-w-4xl mt-8">

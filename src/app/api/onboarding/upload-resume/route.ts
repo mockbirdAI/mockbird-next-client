@@ -1,6 +1,7 @@
 import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
 import { BlobServiceClient } from '@azure/storage-blob';
+import { url } from 'inspector';
 
 export async function POST(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
@@ -28,7 +29,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     await blockBlobClient.upload(buffer, Number(streamLength));
     
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, url: blockBlobClient.url });
   } catch (error) {
     console.error(error);
     throw error

@@ -5,24 +5,6 @@ import { ScrollArea } from "@/common/components/ui/ScrollArea";
 import { UserRole } from '@prisma/client';
 import prisma from '@/lib/prisma';
 
-async function getRecruiters(school: string) {
-  try {
-    const recruiters = await prisma.user.findMany({
-      where: {
-        role: UserRole.RECRUITER,
-        profile: {
-          school: {
-            name: school
-          }
-        }
-      }
-    });
-
-    return recruiters || [];
-  } catch (err) {
-    console.error(err);
-  }
-}
 
 
 const Discover = async () => {
@@ -33,9 +15,8 @@ const Discover = async () => {
   };
 
   const handleSearch = async () => {
-    const recruiters = await getRecruiters(school);
     // Display recruiters or handle the data as needed
-    console.log(recruiters); // For demonstration, log to console
+    console.log(""); // For demonstration, log to console
   };
 
   return (
