@@ -240,7 +240,7 @@ export async function POST(request: any) {
           payerId: candidateId,
           payeeId: recruiterId,
           amount: paymentInt.amount,
-          status: PaymentStatus.COMPLETED,
+          status: PaymentStatus.PENDING,
           interviewId: interviewObject.id
         }
       })

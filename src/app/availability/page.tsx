@@ -10,7 +10,7 @@ async function getUser(userId: string) {
   try {
     const user = await prisma.user.findUniqueOrThrow({
       where: { id: userId },
-      select: { availability: true }
+      select: { availability: true, services: true }
     });
     return user;
   } catch (error) {
@@ -44,7 +44,7 @@ const Discover: React.FC = async () => {
           </div>
 
           <div>
-            <Availability schedule={userInfo?.availability || []} />
+            <Availability schedule={userInfo?.availability || []} services={userInfo?.services || []} />
           </div>
           
         </div>

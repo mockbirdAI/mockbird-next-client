@@ -141,7 +141,7 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { recruiterId:
 
   return (
     <div className="flex flex-col items-center pt-10 px-6" style={{ minHeight: 'h-screen' }}>
-      <div className="flex flex-row w-full max-w-4xl">
+      <div className="flex flex-row w-full max-w-4xl rounded-xl p-5" style={{ backgroundColor: '#F6F6F6'  }}>
         <div className='me-10'>
           <div className="w-40 h-40">
             <Avatar className="h-full w-full border-2 border-gray-300 rounded-full overflow-hidden">
@@ -165,13 +165,17 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { recruiterId:
               <Link href={String(recruiterUser.profile.linkedinUrl)} target='_blank' className="text-blue-600 hover:underline">{<FaLinkedin />}</Link>
             </div>
           </div>
-          <div className='mt-2'>
-            <BookTimeModal disabled={disableBookTime} recruiterUser={recruiterUser} recruiterProfile={recruiterUser.profile} services={recruiterUser.services || services} />
-          </div>
+          {
+            session?.user.role === UserRole.CANDIDATE &&
+            <div className='mt-5'>
+              <BookTimeModal disabled={disableBookTime} recruiterUser={recruiterUser} recruiterProfile={recruiterUser.profile} services={recruiterUser.services || services} />
+            </div>
+          }
+          
         </div>
 
-        <div>
-          {disableBookTime && pendingRequest &&(
+        <div className='flex ms-10'>
+          {disableBookTime && pendingRequest && (
             <div className='border p-5'>
               <h1>Request Info:</h1>
               <div>
@@ -200,10 +204,14 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { recruiterId:
         <div className='w-1/3 me-10'>
           <div className='mt-8'>
             <div className="mb-6 p-4 border border-gray-300 rounded-lg">
-              <h3 className="text-lg font-semibold">Currently working with...</h3>
-              <div className="mt-4 border border-gray-300 rounded-lg p-4">
-                <p className="text-gray-600">{recruiterUser.profile.UserCompany[0].company.name}</p>
-              </div>
+              <h3 className="text-lg font-semibold mb-4">Currently offering...</h3>
+                {
+                  recruiterUser.services.map((service: any) => (
+                    <div className="mt-2 border border-gray-300 rounded-lg p-4">
+                      <p className="text-gray-600">{service?.service}</p>
+                    </div>
+                  ))
+                }
             </div>
           </div>
         </div>

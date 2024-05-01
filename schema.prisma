@@ -189,4 +189,5 @@ enum PaymentStatus {
   PENDING
   COMPLETED
   FAILED
+  WITHDRAWN
 }

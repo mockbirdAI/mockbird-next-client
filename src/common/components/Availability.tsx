@@ -8,9 +8,49 @@ import { toast } from '@/common/components/ui/use-toast';
 import ServicesMultiSelect from '@/common/components/ServicesMultiSelect';
 
 
-const Availability = ({ schedule }: any) => {
+const Availability = ({ schedule, services }: any) => {
   const { data: session } = useSession();
   const [currSchedule, setCurrSchedule] = useState(schedule || []);
+
+  const defaultServices = [
+    {
+      id: 1,
+      service: "Coffee Chat",
+      duration: 900,
+      price: 0
+    },
+    {
+      id: 2,
+      service: "Resume Review",
+      duration: 900,
+      price: 0
+    },
+    {
+      id: 3,
+      service: "Behavioral Mock Interview",
+      duration: 3600,
+      price: 2000,
+    },
+    {
+      id: 4,
+      service: "Technical Mock Interview",
+      duration: 3600,
+      price: 3000
+    }
+  ]
+
+  const assignIdsToServices = (incomingServices: any) => {
+    let maxId = defaultServices.reduce((max, service) => Math.max(max, service.id), 0);
+    return incomingServices.map((service: any) => {
+      if (service.id === undefined) {
+        maxId += 1;
+        return { ...service, id: maxId };
+      }
+      return service;
+    });
+  };
+
+  const [currServices, setCurrServices] = useState(services.length > 0 ? assignIdsToServices(services) : defaultServices)
 
   function handleChange(newSchedule: any) {
     setCurrSchedule(newSchedule)
@@ -39,32 +79,6 @@ const Availability = ({ schedule }: any) => {
     }
   }
 
-  const services = [
-    {
-      id: 1,
-      service: "Coffee Chat",
-      duration: 900,
-      price: 0
-    },
-    {
-      id: 2,
-      service: "Resume Review",
-      duration: 900,
-      price: 0
-    },
-    {
-      id: 3,
-      service: "Behavioral Mock Interview",
-      duration: 3600,
-      price: 2000,
-    },
-    {
-      id: 4,
-      service: "Technical Mock Interview",
-      duration: 3600,
-      price: 3000
-    }
-  ]
 
   return (
     <div className='flex justify-center'>
@@ -89,7 +103,7 @@ const Availability = ({ schedule }: any) => {
         <div className='flex justify-center'>
           Services
         </div>
-        <ServicesMultiSelect services={services} />
+        <ServicesMultiSelect services={currServices} />
       </div>
       
     </div>

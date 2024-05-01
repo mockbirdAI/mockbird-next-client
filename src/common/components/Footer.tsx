@@ -1,4 +1,6 @@
 import React from 'react';
+import Image from 'next/image';
+import { Button } from './ui/Button';
 
 const Footer = () => {
   return (
@@ -8,14 +10,21 @@ const Footer = () => {
         <div className="flex flex-wrap">
           {/* Stay in the Know */}
           <div className="w-full md:w-1/3 px-4 mb-6 md:mb-0">
-            <h2 className="text-xl font-semibold">Stay in the Know</h2>
-            <div className="mt-4">
-              <p>Join Our Mailing List</p>
-              <div className="mt-1 flex">
-                <input type="email" placeholder="Your email" className="p-2 border border-gray-300 rounded-l-lg flex-1"/>
-                <button className="bg-white hover:bg-gray-200 text-sxpurple p-2 rounded-r-lg">Sign Up</button>
-              </div>
+            <div className='flex flex-row mb-4'>
+              <Image
+                src="/mockbird_temp_logo.svg"
+                alt="mockbird logo"
+                width={50}
+                height={50}
+                quality={100}
+                className="w-7 h-7"
+              />
+              <h2 className="ms-2 text-2xl font-semibold">Mockbird</h2>
+
             </div>
+            
+            <h2 className="text font-thin mb-3">Book with recruiters now & get the practice for your next interview.</h2>
+            <Button size="lg" variant='default'>Join as a Recruiter</Button>
           </div>
 
           {/* Social Media Links */}
@@ -32,6 +41,7 @@ const Footer = () => {
           {/* Address and Email */}
           <div className="w-full md:w-1/3 px-4 text-right">
             {/* <p>123 Town Rd, City</p> */}
+            <h3 className="text-xl font-semibold">Contact Us:</h3>
             <p>ricky@mockbird.ai</p>
           </div>
         </div>

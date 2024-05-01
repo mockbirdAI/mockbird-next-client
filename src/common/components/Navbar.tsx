@@ -96,7 +96,7 @@ const Navbar = async () => {
                 <>
                   {session?.user.role === UserRole.CANDIDATE && <Link
                     className={buttonVariants({
-                      variant: "outline",
+                      variant: "ghost",
                       size: "sm",
                       className: "text-black border-gray-400"
                     })}
@@ -104,9 +104,29 @@ const Navbar = async () => {
                   >
                     Discover
                   </Link>}
+                  {session?.user.role === UserRole.RECRUITER && <Link
+                    className={buttonVariants({
+                      variant: "ghost",
+                      size: "sm",
+                      className: "text-black border-gray-400"
+                    })}
+                    href="/availability"
+                  >
+                    Availability
+                  </Link>}
+                  {session?.user.role === UserRole.RECRUITER && <Link
+                    className={buttonVariants({
+                      variant: "ghost",
+                      size: "sm",
+                      className: "text-black border-gray-400"
+                    })}
+                    href="/balance"
+                  >
+                    Balance
+                  </Link>}
                   <Link
                     className={buttonVariants({
-                      variant: "outline",
+                      variant: "ghost",
                       size: "sm",
                       className: "text-black border-gray-400"
                     })}

@@ -2,7 +2,7 @@ import React from 'react';
 import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { RequestStatus, UserRole, InterviewStatus } from '@prisma/client';
+import { RequestStatus, UserRole, InterviewStatus, PaymentStatus } from '@prisma/client';
 
 import {
   Card,
@@ -13,7 +13,7 @@ import {
 } from "@/common/components/ui/Card";
 
 import { CalendarDateRangePicker } from "@/common/components/ui/DateRangePicker";
-import { Overview } from "@/common/components/Overview";
+import Overview from "@/common/components/Overview";
 import { Button } from "@/common/components/ui/Button";
 import { ScrollArea } from "@/common/components/ui/ScrollArea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/common/components/ui/Tabs";
@@ -58,8 +58,26 @@ async function getUserData() {
   return userData || [];
 }
 
+async function getBalance() {
+  const session = await getServerSession(authOptions);
+  const payments = await prisma.payment.findMany({
+    where: {
+      payeeId: String(session?.user.id),
+    },
+    select: {
+      amount: true,
+      status: true,
+      createdAt: true,
+    }
+  })
+
+  return payments;
+}
+
 const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
   const userData = await getUserData();
+  const balances = await getBalance();
+  console.log(balances);
   const calendarEvents: any = []
 
   if (userData.profile === null) {
@@ -68,6 +86,29 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
 
   const pendingRequests = userData.recruiterRequests.filter((request) => request.status === RequestStatus.PENDING)
   const pendingInterviews = userData.recruiterInterviews.filter((interview) => interview.status === InterviewStatus.SCHEDULED)
+
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
+
+  const pendingPayments = balances.filter((payment) => {
+    return payment.status === PaymentStatus.PENDING
+  })
+
+  const completedPayments = balances.filter((payment) => {
+    return payment.status === PaymentStatus.COMPLETED
+  })
+
+  const totalPending = pendingPayments.reduce((acc, payment) => {
+    return acc + payment.amount / 100;
+  }, 0);
+
+  const totalCompleted = completedPayments.reduce((acc, payment) => {
+    return acc + payment.amount / 100;
+  }, 0);
+
+  const formattedTotalRevenue = currencyFormatter.format(totalCompleted + totalPending);
 
   for (const interview of userData.recruiterInterviews) {
     calendarEvents.push({
@@ -124,7 +165,7 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">$0.00</div>
+                    <div className="text-2xl font-bold">{formattedTotalRevenue}</div>
                     <p className="text-xs text-muted-foreground">
                       +0.0% from last month
                     </p>
@@ -213,7 +254,7 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
                     <CardTitle>Overview</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
-                    <Overview />
+                    <Overview payments={balances} />
                   </CardContent>
                 </Card>
                 <Card className="col-span-4 md:col-span-3">
