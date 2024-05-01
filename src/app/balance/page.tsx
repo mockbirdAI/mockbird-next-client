@@ -23,6 +23,14 @@ async function getBalance() {
 }
 
 const Balance = async () => {
+  const session = await getServerSession(authOptions);
+  if (session && session?.user.role !== UserRole.RECRUITER) {
+    return (
+      <div className='h-screen flex justify-center items-center'>
+        <h1 className='text-3xl font-bold'>You are not authorized to view this page</h1>
+      </div>
+    )
+  }
   const balances = await getBalance();
 
   const currencyFormatter = new Intl.NumberFormat('en-US', {

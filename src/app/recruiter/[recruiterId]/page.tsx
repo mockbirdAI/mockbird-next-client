@@ -207,7 +207,7 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { recruiterId:
               <h3 className="text-lg font-semibold mb-4">Currently offering...</h3>
                 {
                   recruiterUser.services.map((service: any) => (
-                    <div className="mt-2 border border-gray-300 rounded-lg p-4">
+                    <div key={service.id} className="mt-2 border border-gray-300 rounded-lg p-4">
                       <p className="text-gray-600">{service?.service}</p>
                     </div>
                   ))
