@@ -80,6 +80,7 @@ const formSchema = z.object({
   experiences: z.array(experienceSchema).optional(),
   userSchools: z.array(schoolSchema).optional(),
   company: z.string(),
+  currentLocation: z.string().optional(),
   profilePicture: z.any().optional(),
   resume: z.any().optional(),
 })
@@ -152,6 +153,7 @@ const Onboarding: React.FC = () => {
       role: "",
       experiences: [],
       userSchools: [],
+      currentLocation: "",
       company: "",
       profilePicture: undefined,
       resume: undefined,
@@ -164,6 +166,7 @@ const Onboarding: React.FC = () => {
     formData.append('linkedinUrl', values.linkedinUrl);
     formData.append('role', values.role);
     formData.append('company', values.company);
+    formData.append('company', String(values.currentLocation));
 
     const companyId = companies?.find((company) => company.name === values.company)?.id;
     const schoolId = schools?.find((school) => school.name === values.userSchools)?.id;
@@ -215,7 +218,7 @@ const Onboarding: React.FC = () => {
       resumeBlobUrl = ((await resumeUploadResumeResponse.json()) as PutBlobResult).url;
     }
 
-    const apiRes = await addProfileData(String(session?.user.id), values.linkedinUrl, resumeBlobUrl, values.bio, profilePictureBlobUrl, companyId, schoolsFormatted, experiencesFormatted);
+    const apiRes = await addProfileData(String(session?.user.id), values.linkedinUrl, resumeBlobUrl, values.bio, profilePictureBlobUrl, companyId, schoolsFormatted, experiencesFormatted, String(values.currentLocation));
 
     if (apiRes?.ok) {
       router.push('/dashboard');
@@ -235,7 +238,7 @@ const Onboarding: React.FC = () => {
     setLoading(false);
   }
   
-  const addProfileData = async (userId: string, linkedinUrl: string, resumeUrl: string, bio: string, profilePicture: string, companyId: number, schools: any[], experiences: any[]) => {
+  const addProfileData = async (userId: string, linkedinUrl: string, resumeUrl: string, bio: string, profilePicture: string, companyId: number, schools: any[], experiences: any[], currentLocation: string) => {
     console.log(schools);
     try {
       const res = await fetch('/api/add-profile-data', {
@@ -250,6 +253,7 @@ const Onboarding: React.FC = () => {
           bio,
           profilePicture,
           schools,
+          currentLocation,
           companyId,
           experiences,
         })
@@ -493,6 +497,30 @@ const Onboarding: React.FC = () => {
                             </Button>  
                           </div>                    
                         </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className='mb-5'>
+                <FormField
+                  control={form.control}
+                  name="currentLocation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Current Location</FormLabel>
+                      <FormControl className="flex items-center">
+                        <div>
+                          <Input
+                            {...field}
+                            placeholder="ex. Seattle, WA, USA"
+                            style={{ flex: 1 }}
+                            className="flex-1"
+                          />
+                        </div>
+                        
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}

@@ -32,7 +32,7 @@ export function SelectTimeSlots({ timeslots, onChange }: TimeSlotsProps) {
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Date/Times</SelectLabel>
+          <SelectLabel>{timeslots.length > 0 ? "Date/Times" : "No Availability"}</SelectLabel>
           {timeslots.map((timeslot, index) => (
             <SelectItem key={index} value={timeslot.toLocaleString()}>
               {timeslot.toLocaleString()}

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server"
 export async function POST(request: any) {
   const res = await request.json()
   console.log(res)
-  const {userId, linkedinUrl, resumeUrl, bio, profilePicture, schools, companyId, experiences } = res;
+  const {userId, linkedinUrl, resumeUrl, bio, profilePicture, schools, companyId, experiences, currentLocation } = res;
 
   function sortExperiences(a: any, b: any) {
     const dateA = a.endDate ? new Date(a.endDate).getTime() : null;
@@ -70,7 +70,8 @@ export async function POST(request: any) {
             }
           })
         }
-      }
+      },
+      currentLocation
     },
     create: {
       userId: userId,
@@ -103,6 +104,7 @@ export async function POST(request: any) {
           })
         }
       },
+      currentLocation
     }
   })
 

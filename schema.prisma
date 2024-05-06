@@ -38,6 +38,7 @@ model Profile {
   updatedAt       DateTime      @updatedAt
   schoolId        Int?
   id              Int           @id @default(autoincrement())
+  currentLocation String?       
   UserSchool      UserSchool[]
   user            User          @relation(fields: [userId], references: [id])
   receivedReviews Review[]      @relation("ReceivedReviews")

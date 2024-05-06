@@ -160,7 +160,7 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { recruiterId:
               <FaLocationDot />
             </div>
             
-            <div className='ms-1'>Seattle, WA, USA</div>
+            <div className='ms-1'>{recruiterUser.profile.currentLocation || "USA"}</div>
             <div className='flex flex-col justify-center ms-3'>
               <Link href={String(recruiterUser.profile.linkedinUrl)} target='_blank' className="text-blue-600 hover:underline">{<FaLinkedin />}</Link>
             </div>
