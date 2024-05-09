@@ -21,7 +21,11 @@ export const RecruitersForYou = ({ userId, profilePicture, firstName, lastName, 
   return (
     <div className="flex my-3 mx-2 items-center">
         <Avatar className="h-9 w-9">
-          <AvatarImage src={String(profilePicture)} alt="Avatar" />
+          <AvatarImage 
+            src={String(profilePicture)} 
+            alt={`${firstName} ${lastName}'s profile picture`} 
+            className="object-cover"
+          />          
           <AvatarFallback>{firstName.charAt(0)}{lastName.charAt(0)}</AvatarFallback>
         </Avatar>
         <div className="ml-4 space-y-1">

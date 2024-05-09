@@ -1,48 +1,34 @@
-'use client'
-
-import React, { useState } from 'react';
-import { ScrollArea } from "@/common/components/ui/ScrollArea";
-import { UserRole } from '@prisma/client';
+import React, { useEffect, useState } from 'react';
 import prisma from '@/lib/prisma';
+import DiscoverPage from '../../common/components/DiscoverPage';
+
+async function getSchools() {
+  try {
+    const schools = await prisma.school.findMany({});
+    return schools;
+  } catch (error) {
+    console.error("Failed to fetch schools", error);
+    return null;
+  }
+}
+
+async function getCompanies() {
+  try {
+    const companies = await prisma.company.findMany({});
+    return companies;
+  } catch (error) {
+    console.error("Failed to fetch companies", error);
+    return null;
+  }
+}
 
 
-
-const Discover = async () => {
-  const [school, setSchool] = useState('');
-
-  const handleSchoolChange = (e: any) => {
-    setSchool(e.target.value);
-  };
-
-  const handleSearch = async () => {
-    // Display recruiters or handle the data as needed
-    console.log(""); // For demonstration, log to console
-  };
+const Discover: React.FC<any> = async () => {
+  const schools = await getSchools();
+  const companies = await getCompanies();
 
   return (
-    <div className='h-screen'>
-      <ScrollArea className="h-full">
-        <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold tracking-tight">Discover</h2>
-            <button onClick={handleSearch}>Search</button>
-          </div>
-          <div>
-            <label>School:
-              <select name="school" onChange={handleSchoolChange} value={school}>
-                <option value="">Select School</option>
-                <option value="University of Washington">University of Washington</option>
-                <option value="Washington State University">Washington State University</option>
-                <option value="MIT">MIT</option>
-              </select>
-            </label>
-          </div>
-
-          {/* Here you would render the list of recruiters based on the search */}
-
-        </div>
-      </ScrollArea>
-    </div>
+    <DiscoverPage schools={schools} companies={companies} />
   );
 };
 

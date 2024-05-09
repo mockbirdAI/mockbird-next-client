@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       },
       items: [{
         recipient_type: "EMAIL",
-        amount: { value: "9.87", currency: "USD" },
+        amount: { value: "0.50", currency: "USD" },
         note: "Thanks for your patronage!",
         sender_item_id: "201403140001",
         receiver: "mrrickyliao@gmail.com",

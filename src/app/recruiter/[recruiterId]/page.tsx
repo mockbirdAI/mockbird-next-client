@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/common/components/ui/Avat
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaCalendar, FaLinkedin, FaLocationDot } from "react-icons/fa6";
+import EditNameModal from '../components/EditNameModal';
 
 async function getRecruiterUser(id: string) {
   try {
