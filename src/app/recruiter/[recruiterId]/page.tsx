@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/common/components/ui/Avat
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaCalendar, FaLinkedin, FaLocationDot } from "react-icons/fa6";
-import EditNameModal from '../components/EditNameModal';
+import EditProfileModal from '../components/EditProfileModal';
 
 async function getRecruiterUser(id: string) {
   try {
@@ -30,11 +30,27 @@ async function getRecruiterUser(id: string) {
         profile: {
           include: {
             UserCompany: {
+              orderBy: [
+                {
+                  endDate: 'desc'
+                }, 
+                {
+                  startDate: 'desc'
+                }
+              ],
               include: {
                 company: true
               }
             },
             UserSchool: {
+              orderBy: [
+                {
+                  endDate: 'desc'
+                },
+                {
+                  startDate: 'desc'
+                }
+              ],
               include: {
                 school: true
               }
@@ -152,8 +168,6 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { recruiterId:
           </div>
         </div>
         
-        
-        
         <div className='flex flex-col justify-center'>
           <h1 className="text-3xl font-semibold">{recruiterUser.firstName} {recruiterUser.lastName}</h1>
           <div className='flex flex-row mt-2'>
@@ -174,21 +188,13 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { recruiterId:
           }
           
         </div>
-
-        <div className='flex ms-10'>
-          {disableBookTime && pendingRequest && (
-            <div className='border p-5'>
-              <h1>Request Info:</h1>
-              <div>
-                <p>Status: {pendingRequest?.status}</p>
-                <p>Date: {pendingRequest?.proposedTime.toDateString()}</p>
-                <p>Time: {pendingRequest?.proposedTime.toTimeString()}</p>
-                <p>Purpose: {pendingRequest.purpose ? pendingRequest?.purpose : "N/A"}</p>
-                <CancelInterviewRequestButton requestId={pendingRequest.id} />
-              </div>
+        {
+          session?.user.id === params.recruiterId && (
+            <div className='flex flex-1 justify-end'>
+              <EditProfileModal recruiterUser={recruiterUser} />
             </div>
-          )}
-        </div>
+          )
+        }
       </div>
 
       <div className='flex flex-row w-full max-w-4xl mt-8'>

@@ -2,6 +2,7 @@
 
 import { Button } from "@/common/components/ui/Button"
 import { Input } from "@/common/components/ui/Input"
+import { toast } from "@/common/components/ui/use-toast"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -21,6 +22,11 @@ export default function SetPaypalEmail() {
           }),
         });
         router.refresh()
+        toast({
+          title: "Success",
+          description: "Paypal payout email set successfully.",
+          variant: 'default'
+        });
       } catch (error){
         console.error(error)
       }

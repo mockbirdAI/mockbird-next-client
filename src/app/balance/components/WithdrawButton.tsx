@@ -1,10 +1,13 @@
 'use client'
 
-import { Button } from "@/common/components/ui/Button"
+import LoadingButton from "@/common/components/LoadingButton";
+import { toast } from "@/common/components/ui/use-toast";
 import { useRouter } from "next/navigation"
+import { useState } from "react";
 
-export default function WithdrawButton() {
+export default function WithdrawButton({ disabled }: any) {
     const router = useRouter()
+    const [disable, setDisable] = useState(disabled ? disabled : false);
     
     const handleClick = async () => {
       try {
@@ -15,12 +18,22 @@ export default function WithdrawButton() {
           }
         });
         router.refresh()
+        toast({
+          title: "Success",
+          description: "Payout sent successfully",
+          variant: 'default'
+        });
       } catch (error){
         console.error(error)
       }
     }
 
     return (
-        <Button onClick={handleClick}>Withdraw</Button>
+        <LoadingButton
+          onClick={handleClick}
+          disabled={disable}
+        >
+          Withdraw
+        </LoadingButton>
     )
 }

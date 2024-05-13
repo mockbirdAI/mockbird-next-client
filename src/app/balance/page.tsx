@@ -43,6 +43,13 @@ async function getUser(userId: string) {
     where: {
       id: userId,
     },
+    include: {
+      withdraws: {
+        orderBy: {
+          createdAt: 'desc',
+        }
+      }
+    }
   })
 
   return user;
@@ -86,14 +93,24 @@ const Balance = async () => {
 
   const interviewData = balances.map((balance) => ({
     interviewId: balance.interview.id,
-    candidateName: balance.interview.candidate.firstName + balance.interview.candidate.lastName,
+    candidateName: balance.interview.candidate.firstName + ' ' + balance.interview.candidate.lastName,
     time: balance.interview.scheduledTime.toDateString(),
     amount: balance.amount
   }));
+
+  const latestWithdraw = user.withdraws.length > 0 ? user.withdraws[0] : null;
+  let isWithinThreeDays = false;
+  if (latestWithdraw) {
+    const today = new Date();
+    const withdrawalDate = new Date(latestWithdraw.createdAt);
+    const diffTime = Math.abs(today.getTime() - withdrawalDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    isWithinThreeDays = diffDays <= 3;
+  }
   
   return (
     <div className='h-screen'>
-      <ScrollArea className="h-full">
+      <ScrollArea className="h-full max-w-4xl">
         <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
           <div>
             PayPal Email: {user.payoutEmail ? user.payoutEmail : (
@@ -107,21 +124,56 @@ const Balance = async () => {
             <p>Pending: {formattedPending}</p>
           </div>
           <div>
-            <WithdrawButton />
+            <WithdrawButton disabled={totalCompleted <= 0 || isWithinThreeDays} />
+          </div>
+          <div>
+            {isWithinThreeDays && <text>You have made a withdrawal within the last 3 days on {latestWithdraw?.createdAt.toDateString()}. Please wait 72 hours before next withdrawal.</text>}
+          </div>
+          <div>
+            <p>Withdrawal History</p>
+            <table className="table-auto w-full border-collapse border border-gray-200">
+              <thead>
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2">Date</th>
+                  <th className="border border-gray-300 px-4 py-2">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {user.withdraws.map((withdrawal) => (
+                  <tr key={withdrawal.id}>
+                    <td className="border border-gray-300 px-4 py-2">{new Date(withdrawal.createdAt).toDateString()}</td>
+                    <td className="border border-gray-300 px-4 py-2">{currencyFormatter.format(withdrawal.amount)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
           <div>
             <p>Interviews</p>
-            <div>
-              {interviewData.map((interview) => (
-                <div>{interview.time} {interview.candidateName} {interview.amount}</div>
-              ))}
-            </div>
+            <table className="table-auto w-full border-collapse border border-gray-200">
+              <thead>
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2">Date</th>
+                  <th className="border border-gray-300 px-4 py-2">Candidate Name</th>
+                  <th className="border border-gray-300 px-4 py-2">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {interviewData.map((interview) => (
+                  <tr key={interview.interviewId}>
+                    <td className="border border-gray-300 px-4 py-2">{interview.time}</td>
+                    <td className="border border-gray-300 px-4 py-2">{interview.candidateName}</td>
+                    <td className="border border-gray-300 px-4 py-2">{currencyFormatter.format(interview.amount / 100)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-        
       </ScrollArea>
     </div>
   );
 };
+
 
 export default Balance;
