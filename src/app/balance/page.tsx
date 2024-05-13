@@ -4,6 +4,10 @@ import { PaymentStatus, UserRole } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { Button } from '@/common/components/ui/Button';
+import WithdrawButton from './components/WithdrawButton';
+import { Input } from '@/common/components/ui/Input';
+import SetPaypalEmail from './components/SetPaypalEmail';
 
 async function getBalance() {
   const session = await getServerSession(authOptions);
@@ -13,6 +17,18 @@ async function getBalance() {
     },
     select: {
       id: true,
+      interview: {
+        select: {
+          candidate: {
+            select: {
+              firstName: true,
+              lastName: true
+            }
+          },
+          scheduledTime: true,
+          id: true
+        }
+      },
       amount: true,
       status: true,
       createdAt: true,
@@ -20,6 +36,16 @@ async function getBalance() {
   })
 
   return payments;
+}
+
+async function getUser(userId: string) {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userId,
+    },
+  })
+
+  return user;
 }
 
 const Balance = async () => {
@@ -32,6 +58,7 @@ const Balance = async () => {
     )
   }
   const balances = await getBalance();
+  const user = await getUser(String(session?.user.id))
 
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -57,13 +84,21 @@ const Balance = async () => {
   const formattedWithdrawable = currencyFormatter.format(totalCompleted);
   const formattedPending = currencyFormatter.format(totalPending);
 
+  const interviewData = balances.map((balance) => ({
+    interviewId: balance.interview.id,
+    candidateName: balance.interview.candidate.firstName + balance.interview.candidate.lastName,
+    time: balance.interview.scheduledTime.toDateString(),
+    amount: balance.amount
+  }));
   
   return (
     <div className='h-screen'>
       <ScrollArea className="h-full">
         <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
           <div>
-            PayPal Email: 
+            PayPal Email: {user.payoutEmail ? user.payoutEmail : (
+              <SetPaypalEmail />
+            )}
           </div>
           <div>
             <p>Withdrawable: {formattedWithdrawable}</p>
@@ -71,7 +106,19 @@ const Balance = async () => {
           <div>
             <p>Pending: {formattedPending}</p>
           </div>
+          <div>
+            <WithdrawButton />
+          </div>
+          <div>
+            <p>Interviews</p>
+            <div>
+              {interviewData.map((interview) => (
+                <div>{interview.time} {interview.candidateName} {interview.amount}</div>
+              ))}
+            </div>
+          </div>
         </div>
+        
       </ScrollArea>
     </div>
   );

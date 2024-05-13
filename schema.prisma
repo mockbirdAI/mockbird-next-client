@@ -26,6 +26,8 @@ model User {
   recruiterRequests   InterviewRequest[] @relation("RecruiterRequests")
   profile             Profile?
   userFinances        UserFinances?
+  payoutEmail         String?
+  withdraws           Withdraws[]
 }
 
 model Profile {
@@ -38,7 +40,7 @@ model Profile {
   updatedAt       DateTime      @updatedAt
   schoolId        Int?
   id              Int           @id @default(autoincrement())
-  currentLocation String?       
+  currentLocation String?
   UserSchool      UserSchool[]
   user            User          @relation(fields: [userId], references: [id])
   receivedReviews Review[]      @relation("ReceivedReviews")
@@ -166,6 +168,14 @@ model Review {
   revieweeId      Int
   revieweeProfile Profile @relation("ReceivedReviews", fields: [revieweeId], references: [id])
   reviewerProfile Profile @relation("WrittenReviews", fields: [reviewerId], references: [id])
+}
+
+model Withdraws {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  amount    Float    @default(0.00)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
 }
 
 enum UserRole {
