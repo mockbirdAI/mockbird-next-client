@@ -207,13 +207,13 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { slug: string
       </div>
 
       <div className='flex flex-row w-full max-w-4xl mt-8'>
-        <div className='w-1/2 me-4 p-4 border border-gray-300 rounded-lg'>
+        <div className='w-full me-4 p-4 border border-gray-300 rounded-lg'>
           <h2 className="text-xl font-semibold mb-4">About {recruiterUser.firstName}</h2>
           <p className='leading-relaxed'>{recruiterUser.profile.bio}</p>
         </div>
-        <div className='w-1/2 ms-4 p-4 border border-gray-300 rounded-lg'>
+        {/* <div className='w-1/2 ms-4 p-4 border border-gray-300 rounded-lg'>
           <h2 className="text-xl font-semibold mb-6">__ years of experience</h2>
-        </div>
+        </div> */}
       </div>
 
       <div className='flex flex-row w-full max-w-4xl mt-8'>

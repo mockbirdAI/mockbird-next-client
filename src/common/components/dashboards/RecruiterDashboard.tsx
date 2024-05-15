@@ -50,7 +50,8 @@ async function getUserData() {
             include: {
               company: true
             }
-          }
+          },
+          receivedReviews: true
         }
       }
     }
@@ -86,6 +87,7 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
 
   const pendingRequests = userData.recruiterRequests.filter((request) => request.status === RequestStatus.PENDING)
   const pendingInterviews = userData.recruiterInterviews.filter((interview) => interview.status === InterviewStatus.SCHEDULED)
+  const completedInterviews = userData.recruiterInterviews.filter((interview) => interview.status === InterviewStatus.COMPLETED)
 
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -192,7 +194,7 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">0</div>
+                    <div className="text-2xl font-bold">{completedInterviews.length}</div>
                     <p className="text-xs text-muted-foreground">
                       +0.0% from last month
                     </p>
@@ -200,7 +202,7 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">StealthXI Score</CardTitle>
+                    <CardTitle className="text-sm font-medium">Mockbird Score</CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -216,7 +218,7 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">5</div>
+                    <div className="text-2xl font-bold">N/A</div>
                     <p className="text-xs text-muted-foreground">
                       +0.0% from last month
                     </p>
@@ -241,7 +243,7 @@ const RecruiterDashboard: React.FC<SessionProps> = async ({ session }) => {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">6</div>
+                    <div className="text-2xl font-bold">{userData.profile.receivedReviews.length}</div>
                     <p className="text-xs text-muted-foreground">
                       +0 since last hour
                     </p>
