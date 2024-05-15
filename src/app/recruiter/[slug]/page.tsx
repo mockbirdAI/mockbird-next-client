@@ -12,6 +12,8 @@ import Image from 'next/image';
 import { FaCalendar, FaLinkedin, FaLocationDot } from "react-icons/fa6";
 import EditProfileModal from '../components/EditProfileModal';
 import EditExperiencesModal from '../components/EditExperiencesModal';
+import EditEducationModal from '../components/EditEducationModal';
+import StarRating from '@/common/components/StarRating';
 
 async function getRecruiterUser(slug: string) {
   try {
@@ -234,7 +236,9 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { slug: string
           <div className="mt-8 border border-gray-300 rounded-lg p-5">
               <div className='flex flex-row justify-between'>
                 <h2 className="text-xl font-semibold">Work History</h2>
-                <EditExperiencesModal recruiterUser={recruiterUser} />
+                {session?.user.id === recruiterUser.id && (
+                  <EditExperiencesModal recruiterUser={recruiterUser} />
+                )}
               </div>
               
               {recruiterUser.profile.UserCompany.length ? (
@@ -274,7 +278,12 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { slug: string
               ) : <p>No experiences listed.</p>}
             </div>
           <div className="mt-8 border border-gray-300 rounded-lg p-5">
-            <h2 className="text-xl font-semibold">Education</h2>
+            <div className='flex flex-row justify-between'>
+              <h2 className="text-xl font-semibold">Education</h2>
+              {session?.user.id === recruiterUser.id && (
+                <EditEducationModal recruiterUser={recruiterUser} />
+              )}
+            </div>
             <div className='mt-4'>
               {recruiterUser.profile.UserSchool.length ? (
                 <div className="mt-4">
@@ -325,7 +334,10 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { slug: string
               <div className="mt-4">
                 {recruiterUser.profile.receivedReviews.map((review) => (
                   <div key={review.id} className="mb-6 p-4 border border-gray-300 rounded-lg">
-                    <h3 className="text-lg font-semibold">{review.reviewerProfile.user.firstName} {review.reviewerProfile.user.lastName}</h3>
+                    <div className='flex flex-row justify-between'>
+                      <h3 className="text-lg font-semibold">{review.reviewerProfile.user.firstName} {review.reviewerProfile.user.lastName}</h3>
+                      <StarRating rating={review.score} />
+                    </div>
                     <p className="text-gray-600">{review.reviewText}</p>
                   </div>
                 ))}
