@@ -73,6 +73,7 @@ model VerificationRequest {
 
 model Profile {
   userId          String        @unique
+  slug            String?       @unique
   linkedinUrl     String?
   resumeUrl       String?
   bio             String?

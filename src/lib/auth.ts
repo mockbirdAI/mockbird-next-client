@@ -70,13 +70,14 @@ export const authOptions: NextAuthOptions = {
         url: "https://api.linkedin.com/v2/userinfo",
       },
       async profile(profile, accessToken) {
-        console.log("PROFILE", profile);
         let user = await prisma.user.findUnique({
           where: { 
             email: profile.email,
             authType: AuthType.LINKEDIN 
           }
         });
+
+        console.log(profile);
     
         if (!user) {
           user = await prisma.user.create({

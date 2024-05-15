@@ -71,7 +71,8 @@ export async function POST(request: any) {
           })
         }
       },
-      currentLocation
+      currentLocation,
+      slug: userId
     },
     create: {
       userId: userId,
@@ -104,7 +105,8 @@ export async function POST(request: any) {
           })
         }
       },
-      currentLocation
+      currentLocation,
+      slug: userId
     }
   })
 

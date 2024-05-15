@@ -12,13 +12,21 @@ import Image from 'next/image';
 import { FaCalendar, FaLinkedin, FaLocationDot } from "react-icons/fa6";
 import EditProfileModal from '../components/EditProfileModal';
 
-async function getRecruiterUser(id: string) {
+async function getRecruiterUser(slug: string) {
   try {
-    const userIdTemp = id;
-    const recruiters = await prisma.user.findUniqueOrThrow({
+    const recruiters = await prisma.user.findFirst({
       where: {
-        id: userIdTemp,
-        role: UserRole.RECRUITER
+        OR: [
+          {
+            profile: {
+              slug: slug 
+            },
+          },
+          {
+            id: slug
+          }
+        ],
+        role: UserRole.RECRUITER,
       },
       include: {
         recruiterRequests: {
@@ -80,18 +88,18 @@ async function getRecruiterUser(id: string) {
   }
 }
 
-export async function generateMetadata({ params }: { params: { recruiterId: string } }) {
-  const recruiterUser = await getRecruiterUser(params.recruiterId);
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const recruiterUser = await getRecruiterUser(params.slug);
   return {
     title: `${recruiterUser?.firstName} ${recruiterUser?.lastName}`,
     description: recruiterUser?.profile?.bio,
     image: recruiterUser?.profile?.profilePicture,
-    url: `https://mockbird.ai/recruiter/${params.recruiterId}`,
+    url: `https://mockbird.ai/recruiter/${params.slug}`,
   }
 }
 
-const RecruiterPage: React.FC<any> = async ({ params }: { params: { recruiterId: string } }) => {
-  const recruiterUser = await getRecruiterUser(params.recruiterId);
+const RecruiterPage: React.FC<any> = async ({ params }: { params: { slug: string } }) => {
+  const recruiterUser = await getRecruiterUser(params.slug);
   const session = await getServerSession(authOptions);
 
   const services = [
@@ -189,7 +197,7 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { recruiterId:
           
         </div>
         {
-          session?.user.id === params.recruiterId && (
+          session?.user.id === recruiterUser.id && (
             <div className='flex flex-1 justify-end'>
               <EditProfileModal recruiterUser={recruiterUser} />
             </div>

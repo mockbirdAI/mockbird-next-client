@@ -20,6 +20,7 @@ import LoadingButton from '@/common/components/LoadingButton';
 import { useState } from 'react';
 import { toast } from '../ui/use-toast';
 import LinkedInSignInButton from '../LinkedInSignInButton';
+import { useSearchParams } from 'next/navigation'
 
 const FormSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email'),
@@ -28,6 +29,7 @@ const FormSchema = z.object({
     .min(1, 'Password is required')
     .min(8, 'Password must have than 8 characters'),
 });
+
 
 const SignInForm = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -38,6 +40,11 @@ const SignInForm = () => {
     },
   });
 
+  const searchParams = useSearchParams()
+  const hasError = searchParams.get('error') != null;
+
+  const [error, setError] = useState(hasError ? "An error has occured, please check your login credentials and try again." : "");
+
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     setSignInLoading(true);
     const signInData = await signIn('credentials', {
@@ -46,69 +53,72 @@ const SignInForm = () => {
       redirect: true, 
       callbackUrl: '/dashboard'
     });
+    
     setSignInLoading(false);
-    if (!signInData || signInData?.error) {
-      toast({
-        title: "Sign in failed",
-        description: "There was an error signing in. Please check your credentials.",
-        variant: 'destructive'
-      })
-    }
+    // if (signInData?.error) {
+    //   setError(signInData.error);
+    // }
   };
   
 
   const [signInLoading, setSignInLoading] = useState(false);
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='w-full'>
-        <div className='space-y-2'>
-          <FormField
-            control={form.control}
-            name='email'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder='mail@example.com' {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name='password'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input
-                    type='password'
-                    placeholder='Enter your password'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <div className='w-[300px]'>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='w-full'>
+          <div className='space-y-2'>
+            <FormField
+              control={form.control}
+              name='email'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder='mail@example.com' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='password'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='password'
+                      placeholder='Enter your password'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <LoadingButton loading={signInLoading} className='w-full mt-6' type='submit'>
+            Sign in
+          </LoadingButton>
+          
+          <div>
+            <p className='text-sm text-red-500'>{error}</p>
+          </div>
+        </form>
+        <div className='mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400'>
+          or
         </div>
-        <LoadingButton loading={signInLoading} className='w-full mt-6' type='submit'>
-          Sign in
-        </LoadingButton>
-      </form>
-      <div className='mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400'>
-        or
-      </div>
-      <LinkedInSignInButton>Sign in with LinkedIn</LinkedInSignInButton>
-      <p className='text-center text-sm text-gray-600 mt-2'>
-        If you don&apos;t have an account, please&nbsp;
-        <Link className='text-blue-500 hover:underline' href='/sign-up'>
-          Sign up
-        </Link>
-      </p>
-    </Form>
+        <LinkedInSignInButton>Sign in with LinkedIn</LinkedInSignInButton>
+        <p className='text-center text-sm text-gray-600 mt-2'>
+          If you don&apos;t have an account, please&nbsp;
+          <Link className='text-blue-500 hover:underline' href='/sign-up'>
+            Sign up
+          </Link>
+        </p>
+      </Form>
+    </div>
   );
 };
 

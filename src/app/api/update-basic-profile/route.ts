@@ -14,7 +14,8 @@ export async function POST(request: any) {
     lastName,
     about,
     location,
-    linkedinUrl
+    linkedinUrl,
+    slug
   } = res;
 
    const updateRequest = await prisma.user.update({
@@ -28,7 +29,8 @@ export async function POST(request: any) {
         update: {
           bio: about,
           currentLocation: location,
-          linkedinUrl
+          linkedinUrl,
+          slug
         },
       }
     }

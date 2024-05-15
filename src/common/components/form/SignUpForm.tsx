@@ -18,6 +18,7 @@ import GoogleSignInButton from '@/common/components/GoogleSignInButton';
 import { useRouter } from 'next/navigation';
 import { UserRole } from '@prisma/client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/Select';
+import { signIn } from 'next-auth/react';
 
 const FormSchema = z
   .object({
@@ -67,7 +68,12 @@ const SignUpForm = () => {
     });
 
     if (response.ok) {
-      router.push('/sign-in');
+      await signIn('credentials', {
+        email: values.email.toLowerCase(),
+        password: values.password,
+        redirect: true, 
+        callbackUrl: '/dashboard'
+      });
     } else {
       console.error('An error occurred. Please try again.');
     }
