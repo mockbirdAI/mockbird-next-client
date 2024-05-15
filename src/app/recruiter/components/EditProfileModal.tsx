@@ -193,14 +193,12 @@ export function EditProfileModal({ recruiterUser }: any) {
               setLoading(true);
               if (initialSlug !== slug) {
                 const validSlug = await validateSlug(slug);
-                console.log(validSlug);
                 if (!validSlug) {
                   setSlugError('This custom url is already taken.');
                   setLoading(false);
                   return;
                 }
               }
-              console.log("RAEREAREREAR")
               await saveChanges(firstName, lastName, about, location, linkedinUrl, slug)
               setOpen(false);
               toast({

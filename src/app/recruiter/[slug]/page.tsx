@@ -149,8 +149,6 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { slug: string
     });
   }
 
-  console.log(recruiterUser?.profile?.UserSchool[0]);
-
   if (!recruiterUser?.profile || !recruiterUser) {
     return <div className='h-screen'>404. Profile Not Found</div>
   }

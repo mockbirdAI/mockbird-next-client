@@ -175,9 +175,7 @@ export async function POST(request: any) {
   };
   
   try {
-    console.log(JSON.parse(options.body).recording_config.storage_config.access_key)
     const response = await fetch(meetingURL, options);
-    console.log(response)
     const data = await response.json();
     dyteMeetingId = data.data.id;
   } catch (error) {
@@ -263,7 +261,6 @@ export async function POST(request: any) {
 
   try {
     const response = await sendAcceptedInterviewEmail(emailClient, candidateEmail, candidateName, recruiterName, dateString);
-    console.log(response);
   } catch (error) {
     console.error(error);
   }

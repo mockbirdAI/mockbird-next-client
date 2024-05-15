@@ -92,8 +92,6 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
     })
   }
 
-  console.log(calendarEvents);
-
   return (
     <div className='h-screen'>
       <ScrollArea className="h-full">

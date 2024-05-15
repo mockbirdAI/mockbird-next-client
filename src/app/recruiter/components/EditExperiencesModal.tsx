@@ -33,17 +33,10 @@ const EditExperiencesModal = ({ recruiterUser }: any) => {
       });
       const data = await response.json();
       setCompanies(data.res);
-      console.log(companies)
     };
 
     fetchCompanies();
   }, []);
-
-  useEffect(() => {
-    console.log("Companies: ", companies);
-    console.log(companies)
-    console.log("experiences", experiences);
-  })
 
   const handleSaveChanges = async () => {
     setLoading(true);

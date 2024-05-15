@@ -11,8 +11,6 @@ export async function POST(request: any) {
   }
   const { experiences } = res;
 
-  console.log(experiences);
-
   const result = await prisma.$transaction(
     experiences.map((exp: { id: any; role: any; companyId: any; startDate: string | number | Date; endDate: string | number | Date; }) => {
       if (exp.id) {

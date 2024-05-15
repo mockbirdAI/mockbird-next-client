@@ -68,7 +68,6 @@ const Availability = ({ schedule, services }: any) => {
           availability: currSchedule
         }),
       });
-      console.log(response);
       toast({
         title: "Success",
         description: "Availability updated successfully.",

@@ -239,7 +239,6 @@ const Onboarding: React.FC = () => {
   }
   
   const addProfileData = async (userId: string, linkedinUrl: string, resumeUrl: string, bio: string, profilePicture: string, companyId: number, schools: any[], experiences: any[], currentLocation: string) => {
-    console.log(schools);
     try {
       const res = await fetch('/api/add-profile-data', {
         method: 'POST',
@@ -273,10 +272,6 @@ const Onboarding: React.FC = () => {
     control: form.control,
     name: "experiences",
   });
-
-  useEffect(() => {
-    console.log(form.getValues());
-  })
 
   return (
     <div className='flex flex-col items-center my-8'>

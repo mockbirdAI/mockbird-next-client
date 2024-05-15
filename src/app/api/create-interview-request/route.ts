@@ -131,7 +131,6 @@ export async function POST(request: any) {
 
   try {
     const response = await sendInterviewRequestEmail(emailClient, recruiterEmail, candidateEmail, candidateName, recruiterName, dateString, purpose);
-    console.log(response);
   } catch (error) {
     console.error(error);
   }

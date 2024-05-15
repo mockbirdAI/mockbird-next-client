@@ -169,7 +169,6 @@ export function BookTimeModal({ disabled, recruiterUser, recruiterProfile, servi
               <Select 
                 onValueChange={(e) => {
                   const serviceObject = services.find((service) => service.service === e);
-                  console.log(serviceObject);
                   if (serviceObject) {
                     setSelectedService(serviceObject.service)
                     setSelectedServiceDuration(serviceObject.duration);

@@ -64,8 +64,6 @@ export async function POST(req: NextRequest) {
 
     const paymentInfo = await getPayments(session?.user.id);
 
-    console.log(paymentInfo)
-
     const withdrawable = paymentInfo.filter((payment) => {
       return payment.status === PaymentStatus.COMPLETED
     })

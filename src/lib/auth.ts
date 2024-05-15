@@ -76,8 +76,6 @@ export const authOptions: NextAuthOptions = {
             authType: AuthType.LINKEDIN 
           }
         });
-
-        console.log(profile);
     
         if (!user) {
           user = await prisma.user.create({

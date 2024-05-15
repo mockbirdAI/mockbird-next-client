@@ -3,7 +3,6 @@ import { NextResponse } from "next/server"
 
 export async function POST(request: any) {
   const res = await request.json()
-  console.log(res)
   const {userId, linkedinUrl, resumeUrl, bio, profilePicture, schools, companyId, experiences, currentLocation } = res;
 
   function sortExperiences(a: any, b: any) {
