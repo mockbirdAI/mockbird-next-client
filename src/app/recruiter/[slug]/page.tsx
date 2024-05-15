@@ -11,6 +11,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FaCalendar, FaLinkedin, FaLocationDot } from "react-icons/fa6";
 import EditProfileModal from '../components/EditProfileModal';
+import EditExperiencesModal from '../components/EditExperiencesModal';
 
 async function getRecruiterUser(slug: string) {
   try {
@@ -233,7 +234,11 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { slug: string
 
         <div className='w-2/3'>
           <div className="mt-8 border border-gray-300 rounded-lg p-5">
-              <h2 className="text-xl font-semibold">Work History</h2>
+              <div className='flex flex-row justify-between'>
+                <h2 className="text-xl font-semibold">Work History</h2>
+                <EditExperiencesModal recruiterUser={recruiterUser} />
+              </div>
+              
               {recruiterUser.profile.UserCompany.length ? (
                 <div className="mt-4">
                   {recruiterUser.profile.UserCompany.map((experience) => (
