@@ -18,6 +18,8 @@ import GoogleSignInButton from '@/common/components/GoogleSignInButton';
 import { signIn } from 'next-auth/react';
 import LoadingButton from '@/common/components/LoadingButton';
 import { useState } from 'react';
+import { toast } from '../ui/use-toast';
+import LinkedInSignInButton from '../LinkedInSignInButton';
 
 const FormSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email'),
@@ -45,14 +47,15 @@ const SignInForm = () => {
       callbackUrl: '/dashboard'
     });
     setSignInLoading(false);
-    // if (!signInData || signInData?.error) {
-    //   toast({
-    //     title: "Sign in failed",
-    //     description: "There was an error signing in. Please check your credentials.",
-    //     variant: 'destructive'
-    //   })
-    // }
+    if (!signInData || signInData?.error) {
+      toast({
+        title: "Sign in failed",
+        description: "There was an error signing in. Please check your credentials.",
+        variant: 'destructive'
+      })
+    }
   };
+  
 
   const [signInLoading, setSignInLoading] = useState(false);
 
@@ -98,7 +101,7 @@ const SignInForm = () => {
       <div className='mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400'>
         or
       </div>
-      <GoogleSignInButton>Sign in with Google</GoogleSignInButton>
+      <LinkedInSignInButton>Sign in with LinkedIn</LinkedInSignInButton>
       <p className='text-center text-sm text-gray-600 mt-2'>
         If you don&apos;t have an account, please&nbsp;
         <Link className='text-blue-500 hover:underline' href='/sign-up'>

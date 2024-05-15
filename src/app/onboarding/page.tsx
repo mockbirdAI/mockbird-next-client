@@ -318,7 +318,7 @@ const Onboarding: React.FC = () => {
                                                   ? schools?.find(
                                                       (school) => school.name === field.value
                                                     )?.name
-                                                  : "Select school"}
+                                                  : "Select School"}
                                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                               </Button>
                                             </FormControl>
