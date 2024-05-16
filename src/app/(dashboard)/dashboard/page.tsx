@@ -1,3 +1,4 @@
+import AdminDashboard from "@/common/components/dashboards/AdminDashboard";
 import CandidateDashboard from "@/common/components/dashboards/CandidateDashboard";
 import RecruiterDashboard from "@/common/components/dashboards/RecruiterDashboard";
 import { authOptions } from "@/lib/auth";
@@ -9,10 +10,12 @@ const page = async () => {
 
   if (session?.user) {
     return (
-      <div className="h-screen">
+      <div className="min-h-screen">
         {
           session?.user.role == UserRole.RECRUITER ? (
             <RecruiterDashboard session={session} />
+          ) : session?.user.role == UserRole.ADMIN ? (
+            <AdminDashboard />
           ) : (
             <CandidateDashboard session={session} />
           )

@@ -31,13 +31,14 @@ model User {
   withdraws           Withdraws[]
   Account             Account[]
   Session             Session[]
+  SupportTicket       SupportTicket[]
 }
 
 model Account {
   id                 String    @id @default(cuid())
   userId             String
   providerType       String
-  provider          String
+  provider           String
   providerAccountId  String
   refreshToken       String?
   accessToken        String?
@@ -220,14 +221,32 @@ model Withdraws {
   userId    String
 }
 
+model SupportTicket {
+  id          Int                 @id @default(autoincrement())
+  name        String
+  senderEmail String
+  message     String
+  userId      String
+  user        User                @relation(fields: [userId], references: [id])
+  status      SupportTicketStatus @default(OPEN)
+  category    String
+  createdAt   DateTime            @default(now())
+}
+
 enum UserRole {
   RECRUITER
   CANDIDATE
+  ADMIN
 }
 
 enum AuthType {
   LOCAL
   LINKEDIN
+}
+
+enum SupportTicketStatus {
+  OPEN
+  CLOSED
 }
 
 enum InterviewStatus {
