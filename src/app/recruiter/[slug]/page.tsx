@@ -14,6 +14,7 @@ import EditProfileModal from '../components/EditProfileModal';
 import EditExperiencesModal from '../components/EditExperiencesModal';
 import EditEducationModal from '../components/EditEducationModal';
 import StarRating from '@/common/components/StarRating';
+import { Metadata } from 'next';
 
 async function getRecruiterUser(slug: string) {
   try {
@@ -91,13 +92,19 @@ async function getRecruiterUser(slug: string) {
   }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const recruiterUser = await getRecruiterUser(params.slug);
   return {
-    title: `${recruiterUser?.firstName} ${recruiterUser?.lastName}`,
+    title: `${recruiterUser?.firstName} ${recruiterUser?.lastName} ${recruiterUser?.profile?.UserCompany && recruiterUser?.profile?.UserCompany.length > 0 ? " - " + recruiterUser?.profile?.UserCompany[0].role + " @ " + recruiterUser?.profile.UserCompany[0].company.name : ""}`,
     description: recruiterUser?.profile?.bio,
-    image: recruiterUser?.profile?.profilePicture,
-    url: `https://mockbird.ai/recruiter/${params.slug}`,
+    openGraph: {
+      title: `${recruiterUser?.firstName} ${recruiterUser?.lastName} ${recruiterUser?.profile?.UserCompany && recruiterUser?.profile?.UserCompany.length > 0 ? " - " + recruiterUser?.profile?.UserCompany[0].role + " @ " + recruiterUser?.profile.UserCompany[0].company.name : ""}`,
+      description: String(recruiterUser?.profile?.bio),
+      url: `https://mockbird.ai/recruiter/${params.slug}`,
+      siteName: 'Mockbird',
+      locale: 'en_US',
+      type: 'website'
+    }
   }
 }
 

@@ -8,11 +8,18 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import ProdNavbar from "@/common/components/ProdNavbar";
 
-// export const metadata: Metadata = {
-//   title: "StealthXI",
-//   description: "Empowering candidates and recruiters with innovative tools and support.",
-
-// };
+export const metadata: Metadata = {
+  title: "Welcome",
+  openGraph: {
+    title: "Mockbird - Frictionless Mock Interviews",
+    description: "Frictionless Mock Interviews. Empowering candidates and recruiters with innovative tools and support.",
+    url: `https://mockbird.ai/`,
+    siteName: 'Mockbird',
+    locale: 'en_US',
+    type: 'website'
+  },
+  keywords: ['mockbird', 'mockbird ai', 'mockbird interview', 'mockbird.ai', 'frictionless mock interviews', 'mock interview platform', 'mock interviews', 'interview tips', 'practice interviews']
+};
 
 export default async function Home() {
   return (
