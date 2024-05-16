@@ -38,7 +38,7 @@ const Navbar = async () => {
               quality={100}
               className="w-7 h-7"
             />
-            <span className="text-2xl font-semibold">Mockbird</span>
+            <span className="text-xl font-semibold">Mockbird</span>
           </Link>
           <div className="flex gap-1 sm:gap-4 items-center">
             {!isUserSignedIn ? (

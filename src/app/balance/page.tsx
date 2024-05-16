@@ -127,7 +127,7 @@ const Balance = async () => {
             <WithdrawButton disabled={totalCompleted <= 0 || isWithinThreeDays} />
           </div>
           <div>
-            {isWithinThreeDays && <text>You have made a withdrawal within the last 3 days on {latestWithdraw?.createdAt.toDateString()}. Please wait 72 hours before next withdrawal.</text>}
+            {isWithinThreeDays && <p>You have made a withdrawal within the last 3 days on {latestWithdraw?.createdAt.toDateString()}. Please wait 72 hours before next withdrawal.</p>}
           </div>
           <div>
             <p>Withdrawal History</p>

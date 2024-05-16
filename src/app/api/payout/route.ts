@@ -72,6 +72,10 @@ export async function POST(req: NextRequest) {
       return acc + payment.amount / 100;
     }, 0);
 
+    if (totalAmount <= 0) {
+      return NextResponse.json({ error: `Withdrawable amount is 0` });
+    }
+
     const payoutRequest = {
       sender_batch_header: {
         sender_batch_id: "Payouts_2024_" + userInfo.firstName + "_" + userInfo.lastName + "_" + userInfo.withdraws.length + 1,

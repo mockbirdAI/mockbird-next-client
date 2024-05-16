@@ -38,7 +38,7 @@ export default async function Home() {
         </h1>
 
         <p className="mt-5 max-w-prose text-lg sm:text-2xl">
-        Empowering candidates and recruiters with innovative tools and support.
+        Mockbird empowering candidates and recruiters with innovative tools and support.
         </p>
 
         {

@@ -17,7 +17,8 @@ export default function WithdrawButton({ disabled }: any) {
             'Content-Type': 'application/json'
           }
         });
-        router.refresh()
+        setDisable(true);
+        router.refresh();
         toast({
           title: "Success",
           description: "Payout sent successfully",
