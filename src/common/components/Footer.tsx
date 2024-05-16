@@ -42,7 +42,8 @@ const Footer = () => {
           <div className="w-full md:w-1/3 px-4 text-right">
             {/* <p>123 Town Rd, City</p> */}
             <h3 className="text-xl font-semibold">Contact Us:</h3>
-            <p>ricky@mockbird.ai</p>
+            <p>contact@mockbird.ai</p>
+            <a href="/support-ticket">Create Support Ticket</a>
           </div>
         </div>
 

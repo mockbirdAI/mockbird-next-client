@@ -9,6 +9,7 @@ import { Input } from '@/common/components/ui/Input';
 import { TextArea } from '@/common/components/ui/TextArea';
 import { toast } from '@/common/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 // Define your form schema using zod
 const supportFormSchema = z.object({
@@ -24,6 +25,12 @@ const SupportPage: React.FC = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm<SupportFormData>({
     resolver: zodResolver(supportFormSchema)
   });
+
+  const { data: session } = useSession();
+
+  if (!session?.user.id) {
+    return <p>You must be logged in to create a support ticket.</p>
+  }
 
   const onSubmit: SubmitHandler<SupportFormData> = async (data) => {
     try {

@@ -134,6 +134,16 @@ const Navbar = async () => {
                   >
                     Dashboard
                   </Link>
+                  <Link
+                    className={buttonVariants({
+                      variant: "ghost",
+                      size: "sm",
+                      className: "text-black border-gray-400"
+                    })}
+                    href="/support-ticket"
+                  >
+                    Support
+                  </Link>
                   <SignOutButton />
                 </>
               )}
