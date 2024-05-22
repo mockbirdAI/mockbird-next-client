@@ -206,7 +206,7 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { slug: string
                 <BookTimeModal disabled={disableBookTime} recruiterUser={recruiterUser} recruiterProfile={recruiterUser.profile} services={recruiterUser.services || services} />
               </div>
             )
-            :
+            : session?.user.role === undefined ?
             (
               <div className='mt-5'>
                 <Link
@@ -220,7 +220,7 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { slug: string
                   Book Time
                 </Link> 
               </div>
-            )
+            ) : null
           }
           
         </div>
