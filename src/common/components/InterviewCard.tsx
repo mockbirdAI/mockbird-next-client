@@ -41,7 +41,7 @@ const InterviewCard: React.FC<InterviewCardProps> = ({ interviewToken, candidate
       <p className="occupation">{scheduledTime.toDateString()} @ {scheduledTime.toTimeString()}</p>
       {/* <p>Meeting URL: <a target='_blank' className='underline' href={"https://zoom.us/"}>https://zoom.us/</a> </p> */}
       <div className='mt-2'>
-        <CancelInterviewButton interviewId={interviewId} />
+        {/* <CancelInterviewButton interviewId={interviewId} /> */}
         <Button className='ms-2' onClick={() => router.push(`/meeting/${interviewToken}`)}>Join Meeting</Button>
       </div>
       <div>

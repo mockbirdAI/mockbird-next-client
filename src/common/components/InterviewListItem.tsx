@@ -41,9 +41,9 @@ export const InterviewListItem = ({ interviewToken, candidate, scheduledTime, in
         
         <div className="ml-auto font-medium">
           <div className='flex'>
-            <div className="mx-1">
+            {/* <div className="mx-1">
               <CancelInterviewButton interviewId={interviewId} />
-            </div>
+            </div> */}
             <div className="mx-1">
             {
                 Math.abs(new Date().getTime() - scheduledTime.getTime()) <= 1 * 60 * 60 * 1000 &&

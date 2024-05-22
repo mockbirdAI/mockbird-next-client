@@ -112,6 +112,7 @@ const Discover = ({ schools, companies }: any) => {
                     role={recruiter.profile?.UserCompany[0]?.role} 
                     companies={recruiter.profile?.UserCompany.map((uc: { company: any; }) => uc.company)} 
                     schools={recruiter.profile?.UserSchool.map((us: { school: any; }) => us.school)}
+                    slug={recruiter.profile?.slug}
                   />
                 ))}
               </div>

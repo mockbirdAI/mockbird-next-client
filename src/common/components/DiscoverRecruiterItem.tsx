@@ -13,9 +13,10 @@ interface DiscoverRecruiterItemProps {
   role: string;
   companies: Array<{ name: string, logoUrl: string | undefined | null }>;
   schools: Array<{ name: string, logoUrl: string | undefined | null }>;
+  slug: string;
 }
 
-export const DiscoverRecruiterItem = ({ userId, profilePicture, firstName, lastName, role, companies, schools }: DiscoverRecruiterItemProps) => {
+export const DiscoverRecruiterItem = ({ userId, profilePicture, firstName, lastName, role, companies, schools, slug }: DiscoverRecruiterItemProps) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -63,7 +64,7 @@ export const DiscoverRecruiterItem = ({ userId, profilePicture, firstName, lastN
           loading={loading}
           onClick={() => {
               setLoading(true);
-              router.push(`/recruiter/${userId}`);
+              router.push(`/recruiter/${slug}`);
               setLoading(false);
             }
           }

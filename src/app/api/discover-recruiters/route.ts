@@ -51,6 +51,7 @@ export async function GET(request: Request) {
             },
           },
           profilePicture: true,
+          slug: true
         },
       },
     },
