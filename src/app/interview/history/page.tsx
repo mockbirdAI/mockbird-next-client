@@ -8,18 +8,29 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { ScrollArea } from '@/common/components/ui/ScrollArea';
 
-const Recordings: React.FC<any> = async () => {
+const getInterviews = async () => {
   const session = await getServerSession(authOptions);
-
   const meetings = await prisma.interview.findMany({
     where: {
-      candidateId: session?.user.id,
+      OR: [
+        {
+          candidateId: session?.user.id,
+        },
+        {
+          recruiterId: session?.user.id
+        }
+      ],
       status: InterviewStatus.COMPLETED,
-      NOT: {
-        downloadUrl: null
-      }
     }
   })
+  return meetings;
+}
+
+const History: React.FC<any> = async () => {
+
+  const meetings = await getInterviews();
+
+  console.log(meetings);
 
   return (
     <div className='h-screen'>
@@ -35,7 +46,9 @@ const Recordings: React.FC<any> = async () => {
           </div>
           
           <div>
-            
+            {meetings.map((meeting) => (
+              <div key={meeting.id}>{meeting.id}</div>
+            ))}
           </div>
 
           
@@ -46,4 +59,4 @@ const Recordings: React.FC<any> = async () => {
   );
 };
 
-export default Recordings;
+export default History;
