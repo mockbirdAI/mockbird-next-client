@@ -77,6 +77,16 @@ const Navbar = async () => {
                       size: "sm",
                       className: "text-black"
                     })}
+                    href="/discover"
+                  >
+                    Discover
+                  </Link>
+                  <Link
+                    className={buttonVariants({
+                      variant: "ghost",
+                      size: "sm",
+                      className: "text-black"
+                    })}
                     href="/sign-in"
                   >
                     Log In

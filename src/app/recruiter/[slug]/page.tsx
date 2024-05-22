@@ -1,4 +1,4 @@
-import { Button } from '@/common/components/ui/Button';
+import { Button, buttonVariants } from '@/common/components/ui/Button';
 import { $Enums, InterviewRequest, RequestStatus, UserRole, User, Profile } from '@prisma/client';
 import React from 'react';
 import prisma from '@/lib/prisma';
@@ -15,6 +15,8 @@ import EditExperiencesModal from '../components/EditExperiencesModal';
 import EditEducationModal from '../components/EditEducationModal';
 import StarRating from '@/common/components/StarRating';
 import { Metadata } from 'next';
+import { redirect } from 'next/dist/server/api-utils';
+import { cn } from '@/lib/utils';
 
 async function getRecruiterUser(slug: string) {
   try {
@@ -103,8 +105,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       url: `https://mockbird.ai/recruiter/${params.slug}`,
       siteName: 'Mockbird',
       locale: 'en_US',
-      type: 'website'
-    }
+      type: 'website',
+    },
+    keywords: ['mockbird', 'mockbird ai', 'mockbird recruiter', 'recruiter', recruiterUser?.firstName! + ' ' + recruiterUser?.lastName!, 'mockbird interview', recruiterUser?.profile?.UserCompany[0].role!]
   }
 }
 
@@ -197,10 +200,27 @@ const RecruiterPage: React.FC<any> = async ({ params }: { params: { slug: string
             </div>
           </div>
           {
-            session?.user.role === UserRole.CANDIDATE &&
-            <div className='mt-5'>
-              <BookTimeModal disabled={disableBookTime} recruiterUser={recruiterUser} recruiterProfile={recruiterUser.profile} services={recruiterUser.services || services} />
-            </div>
+            session?.user.role === UserRole.CANDIDATE ?
+            (
+              <div className='mt-5'>
+                <BookTimeModal disabled={disableBookTime} recruiterUser={recruiterUser} recruiterProfile={recruiterUser.profile} services={recruiterUser.services || services} />
+              </div>
+            )
+            :
+            (
+              <div className='mt-5'>
+                <Link
+                  className={cn(
+                    buttonVariants({
+                      size: "default",
+                    }),
+                  )}
+                  href="/sign-in"
+                >
+                  Book Time
+                </Link> 
+              </div>
+            )
           }
           
         </div>

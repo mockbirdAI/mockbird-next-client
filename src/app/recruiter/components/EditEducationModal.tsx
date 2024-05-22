@@ -79,10 +79,6 @@ const EditEducationModal = ({ recruiterUser }: any) => {
     setEducation(newEducation);
   };
 
-  useEffect(() => {
-    console.log(education);
-  })
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

@@ -106,6 +106,13 @@ const SignInForm = () => {
           <LoadingButton loading={signInLoading} className='w-full mt-6' type='submit'>
             Sign in
           </LoadingButton>
+
+          <p className='text-center text-sm text-gray-600 mt-2'>
+          Forgot your password? &nbsp;
+          <Link className='text-blue-500 hover:underline' href='/request-password-reset'>
+            Reset password
+          </Link>
+          </p>
           
           <div>
             <p className='text-sm text-red-500'>{error}</p>

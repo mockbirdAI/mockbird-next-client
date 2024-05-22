@@ -32,6 +32,7 @@ model User {
   Account             Account[]
   Session             Session[]
   SupportTicket       SupportTicket[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model Account {
@@ -231,6 +232,15 @@ model SupportTicket {
   status      SupportTicketStatus @default(OPEN)
   category    String
   createdAt   DateTime            @default(now())
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  expiresAt DateTime
 }
 
 enum UserRole {

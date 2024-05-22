@@ -184,6 +184,11 @@ export function EditProfileModal({ recruiterUser }: any) {
             </div>
             {slugError && <DialogDescription className="text-red-500 col-span-4">{slugError}</DialogDescription>}
           </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="purpose" className="text-right">
+              <a href="/request-password-reset">Reset your password</a>
+            </Label>
+          </div>
         </div>
         <DialogFooter>
           <LoadingButton
