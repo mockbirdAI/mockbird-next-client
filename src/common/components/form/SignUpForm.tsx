@@ -53,6 +53,10 @@ const SignUpForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    if (values.role === UserRole.RECRUITER) {
+      router.push('https://forms.gle/duFKw7MEejDCCKnE6');
+    }
+
     const response = await fetch('/api/user', {
       method: 'POST',
       headers: {

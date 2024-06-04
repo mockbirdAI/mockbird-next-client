@@ -6,7 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import ProdNavbar from "@/common/components/ProdNavbar";
 
 export const metadata: Metadata = {
   title: "Welcome",
@@ -37,26 +36,9 @@ export default async function Home() {
           Experience
         </h1>
 
-        <p className="mt-5 max-w-prose text-lg sm:text-2xl">
+        <p className="mt-5 max-w-xl text-lg sm:text-2xl">
         Mockbird empowering candidates and recruiters with innovative tools and support.
         </p>
-
-        {
-          process.env.NODE_ENV === "production" ? 
-          <Link
-            className={cn(
-              buttonVariants({
-                size: "lg",
-                className: "mt-5",
-              }),
-              "text-lg",
-            )}
-            href={"https://forms.gle/n9siDSWyFAxVmAh98"}
-            target="_blank"
-          >
-            Join the Waitlist
-          </Link> 
-        : 
           <Link
             className={cn(
               buttonVariants({
@@ -67,9 +49,8 @@ export default async function Home() {
             )}
             href={"/dashboard"}
           >
-            Start Prepping Now
+            Get Started &rarr;
           </Link>
-        }
       </MaxWidthWrapper>
 
       {/* Value Prop */}

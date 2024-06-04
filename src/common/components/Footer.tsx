@@ -43,7 +43,7 @@ const Footer = () => {
             {/* <p>123 Town Rd, City</p> */}
             <h3 className="text-xl font-semibold">Contact Us:</h3>
             <p>contact@mockbird.ai</p>
-            <a href="/support-ticket">Create Support Ticket</a>
+            <a target='_blank' href="/support-ticket">Create Support Ticket</a>
           </div>
         </div>
 

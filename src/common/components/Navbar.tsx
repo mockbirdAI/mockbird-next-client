@@ -2,14 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { cn } from "@/lib/utils";
-
 import MaxWidthWrapper from "@/common/components/MaxWidthWrapper";
-import { Button, buttonVariants } from "@/common/components/ui/Button";
+import { buttonVariants } from "@/common/components/ui/Button";
 import { MobileNav } from "@/common/components/MobileNav";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import SignOutButton from "./SignOutButton";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 import ClickableAvatar from "./ClickableAvatar";
 import { UserRole } from "@prisma/client";
 
@@ -17,11 +15,11 @@ const Navbar = async () => {
   const session = await getServerSession(authOptions);
   const isUserSignedIn = session?.user ? true : false;
   const isRecruiter = session?.user?.role === "recruiter" ? true : false;
-
+  
   return (
     <nav
       className={cn(
-        "sticky h-14 inset-x-0 top-0 z-30 bg-white-400 text-black border-b border-gray-700 backdrop-blur-lg transition-all"
+        "sticky h-15 inset-x-0 top-0 z-30 bg-white-400 text-black bg-white border-b backdrop-blur-lg transition-all"
       )}
     >
       <MaxWidthWrapper>
@@ -40,8 +38,9 @@ const Navbar = async () => {
             />
             <span className="text-xl font-semibold">Mockbird</span>
           </Link>
-          <div className="flex gap-1 sm:gap-4 items-center">
-            {!isUserSignedIn ? (
+          
+          <div className="flex gap-1 sm:gap-4 items-center mx-auto">
+            {/* {!isUserSignedIn ? (
               <MobileNav />
             ) : (
               <div>
@@ -56,64 +55,127 @@ const Navbar = async () => {
                   Dashboard
                 </Link>
               </div>
-            )}
+            )} */}
 
             <div className="hidden items-center space-x-4 sm:flex">
               {!isUserSignedIn ? (
                 <>
-                  {/* <Link
-                    href="/pricing"
-                    className={buttonVariants({
-                      variant: "ghost",
-                      size: "sm",
-                      className: "text-white"
-                    })}
-                  >
-                    Pricing
-                  </Link> */}
                   <Link
                     className={buttonVariants({
                       variant: "ghost",
                       size: "sm",
-                      className: "text-black"
+                      className: "text-black py-2 px-4 w-full"
+                    })}
+                    href="https://www.linkedin.com/company/mockbird/about/"
+                    target="_blank"
+                  >
+                    About
+                  </Link>
+                  <Link
+                    className={buttonVariants({
+                      variant: "ghost",
+                      size: "sm",
+                      className: "text-black py-2 px-4 w-full"
                     })}
                     href="/discover"
                   >
-                    Discover
+                    Explore
                   </Link>
-                  <Link
-                    className={buttonVariants({
-                      variant: "ghost",
-                      size: "sm",
-                      className: "text-black"
-                    })}
-                    href="/sign-in"
-                  >
-                    Log In
-                  </Link>
-                  <Link
-                    className={buttonVariants({
-                      variant: "default",
-                      size: "sm",
-                      className: "bg-sxpurple text-white hover:bg-sxpurple/80"
-                    })}
-                    href="/sign-up"
-                  >
-                    Sign Up
-                  </Link>
+          
+                  <div className="relative group">
+                    <Link
+                      className={buttonVariants({
+                        variant: "ghost",
+                        size: "sm",
+                        className: "text-black flex items-center"
+                      })}
+                      href="#"
+                    >
+                      Recruiters
+                      <svg
+                        className="ml-1 w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 9l-7 7-7-7"
+                        ></path>
+                      </svg>
+                    </Link>
+                    <div className="absolute left-0 mt-0 group-hover:block hidden bg-white shadow-lg rounded-md">
+                      <Link
+                        className={buttonVariants({
+                          variant: "ghost",
+                          size: "sm",
+                          className: "text-black py-2 px-4 w-full",
+                        })}
+                        href="https://forms.gle/duFKw7MEejDCCKnE6"
+                        target="_blank"
+                      >
+                        Join as a Recruiter
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="relative group">
+                    <Link
+                      className={buttonVariants({
+                        variant: "ghost",
+                        size: "sm",
+                        className: "text-black flex items-center"
+                      })}
+                      href="#"
+                    >
+                      Resources
+                      <svg
+                        className="ml-1 w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 9l-7 7-7-7"
+                        ></path>
+                      </svg>
+                    </Link>
+                    <div className="absolute left-0 mt-0 group-hover:block hidden bg-white shadow-lg rounded-md">
+                      <Link
+                        className={buttonVariants({
+                          variant: "ghost",
+                          size: "sm",
+                          className: "text-black py-2 px-4 w-full"
+                        })}
+                        target="_blank"
+                        href="https://www.linkedin.com/company/mockbird/"
+                      >
+                        Blogs
+                      </Link>
+                    </div>
+                  </div>
                 </>
               ) : (
                 <>
-                  {session?.user.role === UserRole.CANDIDATE && <Link
+                  {session?.user.role === UserRole.CANDIDATE && (
+                    <Link
                     className={buttonVariants({
                       variant: "ghost",
                       size: "sm",
-                      className: "text-black border-gray-400"
+                      className: "text-black py-2 px-4"
                     })}
                     href="/discover"
                   >
                     Discover
-                  </Link>}
+                  </Link>
+                  )}
                   {session?.user.role === UserRole.RECRUITER && <Link
                     className={buttonVariants({
                       variant: "ghost",
@@ -154,14 +216,40 @@ const Navbar = async () => {
                   >
                     Support
                   </Link>
-                  <SignOutButton />
                 </>
               )}
             </div>
+          </div>
 
-            {isUserSignedIn && (
-              // <div className="bg-emerald-600 border-2 border-gray-700 shadow-lg rounded-full w-10 h-10"></div>
-              <ClickableAvatar imageUrl={""} altText={""} />
+          <div className="flex gap-1 sm:gap-4 items-center">
+            {!isUserSignedIn ? (
+              <>
+                <Link
+                  className={buttonVariants({
+                    variant: "ghost",
+                    size: "sm",
+                    className: "text-black"
+                  })}
+                  href="/sign-in"
+                >
+                  Log In
+                </Link>
+                <Link
+                  className={buttonVariants({
+                    variant: "default",
+                    size: "sm",
+                    className: "bg-sxpurple text-white hover:bg-sxpurple/80"
+                  })}
+                  href="/sign-up"
+                >
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <>
+                <SignOutButton />
+                <ClickableAvatar imageUrl={""} altText={""} />
+              </>
             )}
           </div>
         </div>

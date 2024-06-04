@@ -17,6 +17,7 @@ import StarRating from '@/common/components/StarRating';
 import { Metadata } from 'next';
 import { redirect } from 'next/dist/server/api-utils';
 import { cn } from '@/lib/utils';
+import BookTimeModalV2 from '@/common/components/BookTimeModalV2';
 
 async function getRecruiterUser(slug: string) {
   try {
