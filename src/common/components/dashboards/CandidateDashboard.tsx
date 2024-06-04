@@ -189,7 +189,7 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">5</div>
+                    <div className="text-2xl font-bold">N/A</div>
                     <p className="text-xs text-muted-foreground">
                       +0.0% from last month
                     </p>
@@ -214,7 +214,7 @@ const CandidateDashboard: React.FC<SessionProps> = async ({ session }) => {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">6</div>
+                    <div className="text-2xl font-bold">0</div>
                     <p className="text-xs text-muted-foreground">
                       +0 since last hour
                     </p>
