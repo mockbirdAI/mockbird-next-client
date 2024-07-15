@@ -6,6 +6,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Welcome",
@@ -21,6 +24,11 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
+  const session = await getServerSession(authOptions);
+  if (session?.user) {
+    redirect('/dashboard')
+  }
+
   return (
     <>
       {/* Hero */}

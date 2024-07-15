@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
-import { Button } from './ui/Button';
+import { Button, buttonVariants } from './ui/Button';
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -24,7 +25,17 @@ const Footer = () => {
             </div>
             
             <h2 className="text font-thin mb-3">Book with recruiters now & get the practice for your next interview.</h2>
-            <Button size="lg" variant='default'>Join as a Recruiter</Button>
+            <Link
+              className={buttonVariants({
+                variant: "default",
+                size: "sm",
+                className: "text-black w-[250px]",
+              })}
+              href="https://forms.gle/duFKw7MEejDCCKnE6"
+              target="_blank"
+            >
+              Join as a Recruiter
+            </Link>
           </div>
 
           {/* Social Media Links */}
